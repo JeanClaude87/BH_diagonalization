@@ -4,8 +4,6 @@ import math
 import itertools
 
 
-
-
 #..................................hilbert space dimension
 def fact_creation(a):
 	tab = [factorial(x) for x in range(a)]
@@ -37,12 +35,14 @@ def Base_prep(l,n):
 #..................................index search
 # n number of particles
 # l number of sites
-def get_index(state, l, n):
+def get_index(state, l, n, fact_tab):
 
 	size = int(n+l-1)
 	r_par = int(n)  #remaining_particles
 	r_sit = int(l)	#remaining_sites
-	result = hilb_dim(n,l)
+	result = hilb_dim(fact_tab,n,l)
+
+	#print(size, len(state), state)
 
 	for jj in range(size):
 		action_i = int(state[jj]);
@@ -51,14 +51,14 @@ def get_index(state, l, n):
 		if action_i == 0:
 			#print(jj,r_par)		
 		
-			result -= hilb_dim(r_par-1,r_sit);
+			result -= hilb_dim(fact_tab, r_par-1, r_sit);
 			r_sit  -= 1;
 
 		else:
 			r_par -= 1;
 			#print('else',jj,r_par)
 
-	return result 
+	return hilb_dim(fact_tab,n,l)-result
 
 #..................................from configuration to bin number
 def TO_bin(xx):
@@ -72,11 +72,8 @@ def TO_con(x,L):
 
 #..................................hop. preparation
 #...................BC=0 periodic, BC=1 open
-def Hop_prep(L,N,BC):
-	if BC == 1:
-		Hop_dim=L+N-1
-	else:
-		Hop_dim=L+N-2
+def Hop_prep(L,N):
+	Hop_dim=L+N-2
 	return [TO_con(2**i+2**((i+1)%(L+N-1)),L+N-1) for i in range(Hop_dim)]
 
 #..................................counting number of one
@@ -98,22 +95,107 @@ def TO_bose_conf(x,ll):
 			p+=1	
 	return 	conf
 
-def bose_sparse_Hamiltonian (ll,nn,BC,BASE_bin,tab_fact):
 
-	for hh in range(hilb_dim(tab_fact,nn,ll)):
-		state = BASE_bin[hh]
-		#
-		# -> we fill the INTERACTION
-		#
-		for hop in Hop_prep(ll,nn,BC):
-			uga = TO_bin(state)^TO_bin(hop)
-			if one_count(uga) == nn:
-				ciao=0
-				#print(TO_bose_conf(state,ll),
-				#	hop,
-				#	TO_bose_conf(TO_con(uga,ll+nn-1),ll))
+def kin_expval(x,y,ll,BASE_bin):
 
-				#
-				# -> we fill the KINETIC
-				#
-	return 0
+	state_x   = BASE_bin[x]
+	bosecon_x = TO_bose_conf(state_x,ll)
+
+	state_y   = BASE_bin[y]
+	bosecon_y = TO_bose_conf(state_y,ll)
+
+	jump_c  =	np.argmax(bosecon_x-bosecon_y)
+	jump_cd  =	np.argmin(bosecon_x-bosecon_y)
+
+	result	  = np.sqrt((bosecon_x[jump_cd]+1)*(bosecon_x[jump_c])) 
+	
+	return result
+
+
+def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
+
+	DIM_H=hilb_dim(tab_fact,nn,ll)
+	ham_ind1 = []
+	ham_ind2 = []
+	ham_val  = []
+
+	for i in range(DIM_H):
+		state = BASE_bin[i]
+
+##----- INTERACTIONS
+
+		bosecon = TO_bose_conf(state,ll)
+
+		int_val = 0
+		for x in range(ll):
+			nx = bosecon[x]
+			int_val += U*nx*(nx-1.)/(2.)
+
+		#---- INTERACTION = we store i,i,int_val !!!!
+		ham_ind1.append( i )
+		ham_ind2.append( i )
+		ham_val.append( int_val )
+
+
+
+##----- KINETIC
+		for hop in Hop_prep(ll,nn):
+			hop_state_bin = TO_bin(state)^TO_bin(hop)
+			hop_state     = TO_con(hop_state_bin,ll+nn-1)
+			
+			# we cut states with not N particles
+			if one_count(hop_state_bin) == nn:
+
+				j = get_index(hop_state , ll, nn, tab_fact)	
+				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+
+		#---- KINETIC = we store i,j,kin_val !!!!
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
+	
+		# here we put the PERIODIC
+		#...................BC=0 periodic, BC=1 open
+
+		if BC == 0:
+			if state[0] == '1':
+
+				PBC_newstate1 = state[1:]+state[0]				
+				j = get_index(PBC_newstate1, ll, nn, tab_fact)	
+
+				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+				
+		#---- KINETIC = we store i,j,kin_val !!!!
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
+
+			if state[-1] == '1':
+
+				PBC_newstate2 = state[-1]+state[:-1]
+				j = get_index(PBC_newstate2, ll, nn, tab_fact)	
+
+				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+				
+		#---- KINETIC = we store i,j,kin_val !!!!
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
+		
+	return ham_ind1,ham_ind2,ham_val
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
