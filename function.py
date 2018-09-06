@@ -3,8 +3,8 @@ from math import factorial
 import math
 import itertools
 from scipy.sparse import csc_matrix
-from scipy.sparse import linalg
-from numpy import linalg as LA
+from scipy.sparse import linalg as linalgS
+from numpy import linalg as linalgD
 
 #..................................hilbert space dimension
 def fact_creation(a):
@@ -219,16 +219,17 @@ def diagonalization(X,Y,A_XY,DIM_H,num_eig,sparse):
 
 	if sparse == True:
 
-		eig = linalg.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+		eig = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
 
 	else:
 
-		hamdens = csr_matrix.todense(Hamiltonian)
-		eig = _la.eigh(hamdens)
+		hamdens = csc_matrix.todense(Hamiltonian)
+		eig  = linalgD.eigh(hamdens)
+		eigl = list(eig)
+		eigl[1] = np.squeeze(np.asarray(eig[1]))
+		eig = eigl
 
 	return eig
-
-
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
