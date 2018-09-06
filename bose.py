@@ -11,6 +11,13 @@ from numpy import linalg as LA
 import function as ff
 
 
+
+
+corr_1b = False
+dens 	= False
+
+
+
 PATH_now = os.path.abspath('.')
 
 ll=10
@@ -40,15 +47,14 @@ E,V = ff.diagonalization(ham_ind1,ham_ind2,ham_val,DIM_H, nstate)
 CORR_BASE = ff.OUTER_creation(BASE_bose)
 
 corr0 = ff.NiNj(V[:,0],CORR_BASE)
+
 dens0 = ff.density(V[:,0],BASE_bose)
 
-ext = str('.dat')
-
 corr_name = str('NiNj')
-np.savetxt(PATH_now+os.sep+corr_name+ext, corr0, fmt='%.9f')
+np.savetxt(PATH_now+os.sep+corr_name+str('.dat'), corr0, fmt='%.9f')
 
 dens_name = str('dens')
-np.savetxt(PATH_now+os.sep+dens_name+ext, dens0, fmt='%.9f')
+np.savetxt(PATH_now+os.sep+dens_name+str('.dat'), dens0, fmt='%.9f')
 
 
 
