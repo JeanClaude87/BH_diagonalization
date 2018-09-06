@@ -142,7 +142,7 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 		int_val = 0
 		for x in range(ll):
 			nx = bosecon[x]
-			int_val += U*nx*(nx-1.)/(2.)
+			int_val += U*nx*(nx-1.)/(2.) #+10**-3*np.random.random()
 
 		#---- INTERACTION = we store i,i,int_val !!!!
 		ham_ind1.append( i )
@@ -215,7 +215,8 @@ def diagonalization(X,Y,A_XY,DIM_H,num_eig):
 
 
 	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM_H,DIM_H), dtype=np.double)
-	eig = linalg.eigsh(Hamiltonian, k=num_eig, return_eigenvectors=True)
+	#...... tol=10**-20
+	eig = linalg.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
 
 	return eig
 
@@ -250,7 +251,11 @@ def NiNj(V,matrix):
 
 	return NN
 
-#def NfixNr
+def NfixNr(i,V,matrix):
+
+	NiN = np.einsum('n,nj -> j', V**2, matrix[:,i])
+
+	return NiN
 
 
 
