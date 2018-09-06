@@ -198,7 +198,7 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 	return ham_ind1,ham_ind2,ham_val
 
 
-def diagonalization(X,Y,A_XY,DIM_H,num_eig):
+def diagonalization(X,Y,A_XY,DIM_H,num_eig,sparse):
 
 # X 		-> vector index i
 # Y 		-> vector index j
@@ -216,7 +216,15 @@ def diagonalization(X,Y,A_XY,DIM_H,num_eig):
 
 	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM_H,DIM_H), dtype=np.double)
 	#...... tol=10**-20
-	eig = linalg.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+
+	if sparse == True:
+
+		eig = linalg.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+
+	else:
+
+		hamdens = csr_matrix.todense(Hamiltonian)
+		eig = _la.eigh(hamdens)
 
 	return eig
 

@@ -39,7 +39,9 @@ DIM_H = ff.hilb_dim(tab_fact,nn,ll)
 
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(ll,nn,BC,t,U,BASE_bin,tab_fact)
 
-E,V = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_H, nstate)
+E,V = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_H, nstate, sparse)
+
+
 
 
 
