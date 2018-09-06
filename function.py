@@ -2,7 +2,9 @@ import numpy as np
 from math import factorial
 import math
 import itertools
-
+from scipy.sparse import csc_matrix
+from scipy.sparse import linalg
+from numpy import linalg as LA
 
 #..................................hilbert space dimension
 def fact_creation(a):
@@ -21,16 +23,25 @@ def hilb_dim(fact_tab,n,l):
 #..................................base preparation
 # n number of particles
 # l number of sites
+
 def Base_prep(l,n):
-	base_bin = []
-	base_num = []
-	for bits in itertools.combinations(range(n+l-1), n):
-		s = ['0'] * (n+l-1)	
-		for bit in bits:
-			s[bit] = '1'
-		base_num.append(s)
-		base_bin.append(''.join(s))
-	return base_num, base_bin
+
+		base_bin = []
+		base_num = []
+		for bits in itertools.combinations(range(n+l-1), n):
+			s = ['0'] * (n+l-1)	
+			for bit in bits:
+				s[bit] = '1'		
+			base_bin.append(''.join(s))
+
+			bose = TO_bose_conf(s,l)
+			base_num.append(bose)
+
+		base_bose = np.asarray(base_num, dtype=np.int8)
+		return base_bin, base_bose
+
+
+
 
 #..................................index search
 # n number of particles
@@ -85,6 +96,8 @@ def one_count(v):
 	return (POPCOUNT_TABLE16[ v        & 0xffff] +
 			POPCOUNT_TABLE16[(v >> 16) & 0xffff])
 
+
+#from 00100111001 to 010301 (or come cazzo si fa)
 def TO_bose_conf(x,ll):
 	p=0
 	conf = np.zeros(ll, dtype=np.int)
@@ -185,13 +198,79 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 	return ham_ind1,ham_ind2,ham_val
 
 
+def diagonalization(X,Y,A_XY,DIM_H,num_eig):
+
+# X 		-> vector index i
+# Y 		-> vector index j
+# A_XY 		-> matrix element A[i,j]
+# DIM_H 	-> hilbert space dimension
+# num_eig 	-> how many eigenvalues: less than DIM_H
+
+	if num_eig >= DIM_H:
+		num_eig = DIM_H-2
+
+	numpy_ind1 = np.asarray(X)
+	numpy_ind2 = np.asarray(Y)
+	numpy_val  = np.asarray(A_XY)
+
+
+	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM_H,DIM_H), dtype=np.double)
+	eig = linalg.eigsh(Hamiltonian, k=num_eig, return_eigenvectors=True)
+
+	return eig
 
 
 
+## .................................................................
+## ....................OBSERVABLES..................................
+## .................................................................
+
+#def density():
+
+#..................................................dens
+def density(V,Base_bose):
+
+	den   = np.dot(np.transpose(V**2),Base_bose)
+
+	return den
+
+def OUTER_creation(A):
+	
+	Dim = len(A)
+	L = len(A[0])
+	B = np.zeros((Dim,L,L), dtype=np.float)
+
+	for i in range(Dim):
+		B[i] = np.outer(A[i],A[i])
+	return B
+
+def NiNj(V,matrix):
+
+	NN = np.einsum('n,nij -> ij', V**2, matrix)
+
+	return NN
+
+#def NfixNr
 
 
 
+#..................................................generate filename
+def generate_filename(basename):
+	unix_timestamp = int(time.time())
+	local_time = str(int(round(time.time() * 1000)))
+	xx = basename + local_time + ".dat"
+	if os.path.isfile(xx):
+		time.sleep(1)
+		return generate_filename(basename)
+	return xx
 
+#..................................................Traslations MEAN
+def Trasl_Mean(A):
+	a = A.shape
+	B = np.zeros((a[1],a[1]), dtype=np.float)
+	for i in range(a[1]):
+		B[i] = np.roll(A[i],-i)
+	return np.mean(B, axis=0)
 
 
 
