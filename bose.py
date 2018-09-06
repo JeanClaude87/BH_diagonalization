@@ -20,18 +20,17 @@ dens 	= False
 
 PATH_now = os.path.abspath('.')
 
-ll=10
-nn=2
+ll=30
+nn=3
 
 tab_fact = ff.fact_creation(nn+ll)
 
 t=-1.
-U=-2.
+U=-0.2
 
 BC=0
 
-nstate = 5
-
+nstate = 1
 
 
 BASE_bin, BASE_bose = ff.Base_prep(ll,nn)
