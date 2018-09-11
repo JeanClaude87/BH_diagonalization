@@ -41,7 +41,6 @@ def Base_prep(l,n):
 		return base_bin, base_bose
 
 
-
 #..................................parity transformation
 # A states
 # n number of particles
@@ -56,6 +55,26 @@ def parity(state,l,n,fact_tab):
 	index_ps = get_index(parity_state, l, n, fact_tab)
 	
 	return parity_state,index_ps
+
+def base_parity(l,n,fact_tab,base):
+
+	DIM_H = hilb_dim(fact_tab,n,l)
+
+	base_par = []
+	UGA = [i for i in range(DIM_H)]
+
+	for i in range(DIM_H):
+
+		if UGA[i] == "hola" :
+			continue
+
+		p_state,index_p_state = parity(base[i],l,n,fact_tab)
+
+		UGA[index_p_state] 	  = "hola"
+		
+		base_par.append((i,index_p_state))
+
+	return base_par
 
 
 #..................................index search
@@ -139,6 +158,15 @@ def kin_expval(x,y,ll,BASE_bin):
 	
 	return result
 
+def action_interactions(state,U,ll):
+	bosecon = TO_bose_conf(state,ll)
+
+	int_val = 0
+	for x in range(ll):
+		nx = bosecon[x]
+		int_val += U*nx*(nx-1.)/(2.) #+10**-3*np.random.random()
+
+	return int_val 
 
 def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 
@@ -152,12 +180,7 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 
 ##----- INTERACTIONS
 
-		bosecon = TO_bose_conf(state,ll)
-
-		int_val = 0
-		for x in range(ll):
-			nx = bosecon[x]
-			int_val += U*nx*(nx-1.)/(2.) #+10**-3*np.random.random()
+		int_val = action_interactions(state,U,ll)
 
 		#---- INTERACTION = we store i,i,int_val !!!!
 		ham_ind1.append( i )
