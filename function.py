@@ -42,6 +42,21 @@ def Base_prep(l,n):
 
 
 
+#..................................parity transformation
+# A states
+# n number of particles
+# l number of sites
+def parity(state,l,n,fact_tab):
+	
+	#~ B_state 		= TO_bose_conf(state,l)
+	parity_state 	= state[::-1]
+	#~ B_parity_state	= TO_bose_conf(parity_state,l)
+	
+	#~ index_s	 = get_index(state, l, n, fact_tab)
+	index_ps = get_index(parity_state, l, n, fact_tab)
+	
+	return parity_state,index_ps
+
 
 #..................................index search
 # n number of particles

@@ -20,8 +20,8 @@ dens 	= False
 
 PATH_now = os.path.abspath('.')
 
-ll=3
-nn=2
+ll=4
+nn=3
 
 tab_fact = ff.fact_creation(nn+ll)
 
@@ -36,7 +36,25 @@ DIM_H = ff.hilb_dim(tab_fact,nn,ll)
 
 nstate = DIM_H
 
-ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(ll,nn,BC,t,U,BASE_bin,tab_fact)
+UGA = BASE_bin
+
+for i in range(DIM_H):
+	
+	if UGA[i] == "hola" :
+		continue
+
+	p_state,index_p_state = ff.parity(UGA[i],ll,nn,tab_fact)
+
+	UGA[index_p_state] 	  = "hola"
+
+	
+	print(ff.get_index(UGA[i], ll, nn, tab_fact), UGA[i], index_p_state , p_state)
+	
+
+
+#~ ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(ll,nn,BC,t,U,BASE_bin,tab_fact)
+
+'''
 
 ED,VD = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_H, nstate, False)
 ES,VS = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_H, nstate, True)
@@ -46,7 +64,7 @@ print(ES)
 
 print(VD)
 print(VS)
-
+'''
 
 '''
 
