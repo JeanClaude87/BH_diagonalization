@@ -4,7 +4,8 @@ import math
 import itertools
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
-from numpy import linalg as linalgD
+from numpy import linalg as lin
+from numpy import matlib
 
 #..................................hilbert space dimension
 def fact_creation(a):
@@ -229,9 +230,107 @@ def bose_Hamiltonian (BC,t,U):
 	return ham_ind1,ham_ind2,ham_val
 
 
-# 
 
+def bose_Hamiltonian_parity(H,b_p_inp,BC,t,U,parity):
+
+	b_p   = np.asarray(b_p_inp)
+	DX    = DIM_H -1
+
+	H_par = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+
+	if isinstance(H, csc_matrix):
+		H_dense = csc_matrix.todense(H)
+	else:
+		H_dense = H
+
+	for i in range(len(b_p)):
+
+		if b_p[i,0] == b_p[i,1]:
+			H_par[i,:] 	+= H_dense[int(b_p[i,0]),:]
+		else:
+			H_par[i,:]  += (1/np.sqrt(2))*H_dense[int(b_p[i,0]),:] 
+			H_par[i,:]  += (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
+			H_par[DX,:] += (1/np.sqrt(2))*H_dense[int(b_p[i,0]),:]
+			H_par[DX,:] -= (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
+			DX -= 1
+
+	H_dense = H_par
+	H_par	= np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+	DX      = DIM_H -1
+
+	for i in range(len(b_p)):
+
+		if b_p[i,0] == b_p[i,1]:
+			H_par[:,i]  += H_dense[:,int(b_p[i,0])]
+		else:
+			H_par[:,i]  += (1/np.sqrt(2))*H_dense[:,int(b_p[i,0])] 
+			H_par[:,i]  += (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
+			H_par[:,DX] += (1/np.sqrt(2))*H_dense[:,int(b_p[i,0])] 
+			H_par[:,DX] -= (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
+			DX -= 1
+
+	if isinstance(H, csc_matrix):
+		H_dense = csc_matrix.todense(H)
+	else:
+		H_dense = H
+
+	eig0, V0  = lin.eigh(H_par)
+	#eig1, V1  = lin.eigh(H_dense)
+
+	return  H_par
+
+
+
+
+
+
+
+
+'''
 def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
+
+	for x in base_parity_ind:
+
+		ind_x=[]
+
+		for a in range(2):
+
+			state = BASE_bin[x[a]]
+			#print('state', state)
+
+		##----- KINETIC
+			for hop in Hop_prep(ll,nn):
+				hop_state_bin = TO_bin(state)^TO_bin(hop)
+				hop_state     = TO_con(hop_state_bin,ll+nn-1)
+				
+				# we cut states with not N particles
+				if one_count(hop_state_bin) == nn:
+
+					j = get_index(hop_state)	
+					ind_x.append( j )
+					#print('hop',BASE_bin[j])
+
+
+			if BC == 0:
+				if state[0] == '1':
+
+					PBC_newstate1 = state[1:]+state[0]				
+					j = get_index(PBC_newstate1)
+					ind_x.append( j )	
+					#print('hop',BASE_bin[j])
+
+				if state[-1] == '1':
+
+					PBC_newstate2 = state[-1]+state[:-1]
+					j = get_index(PBC_newstate2)
+					ind_x.append( j )	
+					#print('hop',BASE_bin[j])
+		print(ind_x)
+
+
+
+
+
 
 	p=parity
 
@@ -262,18 +361,22 @@ def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
 #		ham_ind2.append( i )
 #		ham_val.append( int_val )
 
-	return  ham_ind1,ham_ind2,ham_val
+
+	return  0
+'''
 
 
-def diagonalization(X,Y,A_XY,DIM,num_eig,sparse):
 
+
+
+
+
+
+def make_sparse_mat(X,Y,A_XY,DIM):
 # X 		-> vector index i
 # Y 		-> vector index j
 # A_XY 		-> matrix element A[i,j]
 # num_eig 	-> how many eigenvalues: less than DIM_H
-
-	if num_eig >= DIM_H:
-		num_eig = DIM_H-4
 
 	numpy_ind1 = np.asarray(X)
 	numpy_ind2 = np.asarray(Y)
@@ -281,7 +384,16 @@ def diagonalization(X,Y,A_XY,DIM,num_eig,sparse):
 
 
 	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM,DIM), dtype=np.double)
-	#...... tol=10**-20
+
+	return Hamiltonian
+
+def diagonalization(Hamiltonian,num_eig,sparse):
+
+
+# num_eig 	-> how many eigenvalues: less than DIM_H
+
+	if num_eig >= DIM_H:
+		num_eig = DIM_H-4
 
 	if sparse == True:
 
@@ -290,14 +402,22 @@ def diagonalization(X,Y,A_XY,DIM,num_eig,sparse):
 	else:
 
 		hamdens = csc_matrix.todense(Hamiltonian)
-		eig  = linalgD.eigh(hamdens)
+		eig  = lin.eigh(hamdens)
 		eigl = list(eig)
 		eigl[1] = np.squeeze(np.asarray(eig[1]))
 		eig = eigl
 
 	return eig
 
+def print_hamiltonian(H):
 
+	if isinstance(H, csc_matrix):
+		print_h = csc_matrix.todense(H)
+		print(print_h)
+	else:
+		print(H)
+
+	return 0
 
 
 ## .................................................................

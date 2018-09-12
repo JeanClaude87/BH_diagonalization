@@ -18,10 +18,10 @@ PATH_now = os.path.abspath('.')
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
 
-ll           = 3
+ll           = 21
 ff.ll        = ll
 
-nn           = 2
+nn           = 3
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
@@ -40,7 +40,7 @@ ff.CORR_BASE = CORR_BASE
 #........ LIST OF HAMILTONIAN PARAMETERS
 
 t=-1.
-U=-2.0
+U=-1.0
 
 BC=0
 
@@ -50,25 +50,29 @@ BC=0
 nstate = DIM_H
 
 base_parity_ind = ff.base_parity()
-print(base_parity_ind)
 
 DIM_par_H = len(base_parity_ind)
 
+ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
+ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind,BC,t,U,1)
 
-ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian_parity(base_parity_ind,BC,t,U,1)
+#ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian_parity(base_parity_ind,BC,t,U,1)
 
-print(ham_ind1)
-print(ham_ind2)
+#print(ham_ind1)
+#print(ham_ind2)
 #print(DIM_par_H)
 #ED,VD = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_par_H, nstate, False)
 
 #print(ED)
 
-ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
-ED,VD = ff.diagonalization(ham_ind1, ham_ind2, ham_val, DIM_H, nstate, False)
+#ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+#Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
-print(ED)
+#ED,VD = ff.diagonalization(Sp_Hamiltonian, nstate, False)
+
+#ff.print_hamiltonian(Sp_Hamiltonian)
 
 
 '''
