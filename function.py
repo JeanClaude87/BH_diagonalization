@@ -9,56 +9,47 @@ from numpy import linalg as linalgD
 #..................................hilbert space dimension
 def fact_creation(a):
 	tab = [factorial(x) for x in range(a)]
+
+	#...... put the faster way
+
 	return tab
 
-def fast_fact(fact_tab,x):
-	return fact_tab[x]
+def hilb_dim(x,y):
 
-
-def hilb_dim(fact_tab,n,l):
-	kk = fast_fact(fact_tab,n+l-1)/(fast_fact(fact_tab,n)*fast_fact(fact_tab,l-1)) 
+	kk = tab_fact[x+y-1]/(tab_fact[x]*tab_fact[y-1])
 	uga= int(kk)
+	
 	return uga
 
 #..................................base preparation
-# n number of particles
-# l number of sites
-
-def Base_prep(l,n):
-
+def Base_prep():
 		base_bin = []
 		base_num = []
-		for bits in itertools.combinations(range(n+l-1), n):
-			s = ['0'] * (n+l-1)	
+		for bits in itertools.combinations(range(nn+ll-1), nn):
+			s = ['0'] * (nn+ll-1)	
 			for bit in bits:
 				s[bit] = '1'		
 			base_bin.append(''.join(s))
 
-			bose = TO_bose_conf(s,l)
+			bose = TO_bose_conf(s)
 			base_num.append(bose)
 
 		base_bose = np.asarray(base_num, dtype=np.int8)
+
 		return base_bin, base_bose
 
 
 #..................................parity transformation
 # A states
-# n number of particles
-# l number of sites
-def parity(state,l,n,fact_tab):
+def parity(state):
 	
-	#~ B_state 		= TO_bose_conf(state,l)
 	parity_state 	= state[::-1]
-	#~ B_parity_state	= TO_bose_conf(parity_state,l)
-	
-	#~ index_s	 = get_index(state, l, n, fact_tab)
-	index_ps = get_index(parity_state, l, n, fact_tab)
+
+	index_ps = get_index(parity_state)
 	
 	return parity_state,index_ps
 
-def base_parity(l,n,fact_tab,base):
-
-	DIM_H = hilb_dim(fact_tab,n,l)
+def base_parity():
 
 	base_par = []
 	UGA = [i for i in range(DIM_H)]
@@ -68,7 +59,7 @@ def base_parity(l,n,fact_tab,base):
 		if UGA[i] == "hola" :
 			continue
 
-		p_state,index_p_state = parity(base[i],l,n,fact_tab)
+		p_state,index_p_state = parity(BASE_bin[i])
 
 		UGA[index_p_state] 	  = "hola"
 		
@@ -78,14 +69,12 @@ def base_parity(l,n,fact_tab,base):
 
 
 #..................................index search
-# n number of particles
-# l number of sites
-def get_index(state, l, n, fact_tab):
+def get_index(state):
 
-	size = int(n+l-1)
-	r_par = int(n)  #remaining_particles
-	r_sit = int(l)	#remaining_sites
-	result = hilb_dim(fact_tab,n,l)
+	size   = int(nn+ll-1)
+	r_par  = int(nn)    #remaining_particles
+	r_sit  = int(ll)	#remaining_sites
+	result = DIM_H
 
 	#print(size, len(state), state)
 
@@ -96,14 +85,14 @@ def get_index(state, l, n, fact_tab):
 		if action_i == 0:
 			#print(jj,r_par)		
 		
-			result -= hilb_dim(fact_tab, r_par-1, r_sit);
+			result -= hilb_dim(r_par-1, r_sit);
 			r_sit  -= 1;
 
 		else:
 			r_par -= 1;
 			#print('else',jj,r_par)
 
-	return hilb_dim(fact_tab,n,l)-result
+	return DIM_H-result
 
 #..................................from configuration to bin number
 def TO_bin(xx):
@@ -116,10 +105,14 @@ def TO_con(x,L):
 	return np.binary_repr(x1, width=L1)
 
 #..................................hop. preparation
-#...................BC=0 periodic, BC=1 open
-def Hop_prep(L,N):
-	Hop_dim=L+N-2
-	return [TO_con(2**i+2**((i+1)%(L+N-1)),L+N-1) for i in range(Hop_dim)]
+#............. ......BC=0 periodic, BC=1 open
+def Hop_prep(X,Y):
+
+	Hop_dim=X+Y-2
+	
+	return [TO_con(2**i+2**((i+1)%(X+Y-1)),X+Y-1) for i in range(Hop_dim)]
+
+
 
 #..................................counting number of one
 POPCOUNT_TABLE16 = [0] * 2**16
@@ -131,8 +124,9 @@ def one_count(v):
 			POPCOUNT_TABLE16[(v >> 16) & 0xffff])
 
 
+
 #from 00100111001 to 010301 (or come cazzo si fa)
-def TO_bose_conf(x,ll):
+def TO_bose_conf(x):
 	p=0
 	conf = np.zeros(ll, dtype=np.int)
 	for jj in range(len(x)):
@@ -143,13 +137,13 @@ def TO_bose_conf(x,ll):
 	return 	conf
 
 
-def kin_expval(x,y,ll,BASE_bin):
+def kin_expval(x,y):
 
 	state_x   = BASE_bin[x]
-	bosecon_x = TO_bose_conf(state_x,ll)
+	bosecon_x = TO_bose_conf(state_x)
 
 	state_y   = BASE_bin[y]
-	bosecon_y = TO_bose_conf(state_y,ll)
+	bosecon_y = TO_bose_conf(state_y)
 
 	jump_c  =	np.argmax(bosecon_x-bosecon_y)
 	jump_cd  =	np.argmin(bosecon_x-bosecon_y)
@@ -158,8 +152,8 @@ def kin_expval(x,y,ll,BASE_bin):
 	
 	return result
 
-def action_interactions(state,U,ll):
-	bosecon = TO_bose_conf(state,ll)
+def action_interactions(state,U):
+	bosecon = TO_bose_conf(state)
 
 	int_val = 0
 	for x in range(ll):
@@ -168,9 +162,8 @@ def action_interactions(state,U,ll):
 
 	return int_val 
 
-def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
+def bose_Hamiltonian (BC,t,U):
 
-	DIM_H=hilb_dim(tab_fact,nn,ll)
 	ham_ind1 = []
 	ham_ind2 = []
 	ham_val  = []
@@ -180,7 +173,7 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 
 ##----- INTERACTIONS
 
-		int_val = action_interactions(state,U,ll)
+		int_val = action_interactions(state,U)
 
 		#---- INTERACTION = we store i,i,int_val !!!!
 		ham_ind1.append( i )
@@ -197,8 +190,8 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 			# we cut states with not N particles
 			if one_count(hop_state_bin) == nn:
 
-				j = get_index(hop_state , ll, nn, tab_fact)	
-				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+				j = get_index(hop_state)	
+				kin_val = t*kin_expval(i,j)
 
 		#---- KINETIC = we store i,j,kin_val !!!!
 				ham_ind1.append( i )
@@ -212,9 +205,9 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 			if state[0] == '1':
 
 				PBC_newstate1 = state[1:]+state[0]				
-				j = get_index(PBC_newstate1, ll, nn, tab_fact)	
+				j = get_index(PBC_newstate1)	
 
-				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+				kin_val = t*kin_expval(i,j)
 				
 		#---- KINETIC = we store i,j,kin_val !!!!
 				ham_ind1.append( i )
@@ -224,9 +217,9 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 			if state[-1] == '1':
 
 				PBC_newstate2 = state[-1]+state[:-1]
-				j = get_index(PBC_newstate2, ll, nn, tab_fact)	
+				j = get_index(PBC_newstate2)	
 
-				kin_val = t*kin_expval(i,j,ll,BASE_bin)
+				kin_val = t*kin_expval(i,j)
 				
 		#---- KINETIC = we store i,j,kin_val !!!!
 				ham_ind1.append( i )
@@ -236,23 +229,58 @@ def bose_Hamiltonian (ll,nn,BC,t,U,BASE_bin,tab_fact):
 	return ham_ind1,ham_ind2,ham_val
 
 
-def diagonalization(X,Y,A_XY,DIM_H,num_eig,sparse):
+# 
+
+def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
+
+	p=parity
+
+	ham_ind1 = []
+	ham_ind2 = []
+	ham_val  = []
+
+	for i in range(len(base_parity_ind)):
+
+		x = base_parity_ind[i]
+
+		print(x)
+
+##----- INTERACTIONS
+
+		if x[0] == x[1]:
+			if p == -1:
+				continue
+			else:
+				int_val = action_interactions(BASE_bin[x[0]],U)
+
+		else:		
+			int_val =   (1/np.sqrt(2))*(action_interactions(BASE_bin[x[0]],U))
+			int_val +=	(p/np.sqrt(2))*(action_interactions(BASE_bin[x[1]],U))
+
+		#---- INTERACTION = we store i,i,int_val !!!!
+#		ham_ind1.append( i )
+#		ham_ind2.append( i )
+#		ham_val.append( int_val )
+
+	return  ham_ind1,ham_ind2,ham_val
+
+
+def diagonalization(X,Y,A_XY,DIM,num_eig,sparse):
 
 # X 		-> vector index i
 # Y 		-> vector index j
 # A_XY 		-> matrix element A[i,j]
-# DIM_H 	-> hilbert space dimension
 # num_eig 	-> how many eigenvalues: less than DIM_H
 
 	if num_eig >= DIM_H:
-		num_eig = DIM_H-2
+		num_eig = DIM_H-4
 
 	numpy_ind1 = np.asarray(X)
 	numpy_ind2 = np.asarray(Y)
 	numpy_val  = np.asarray(A_XY)
 
 
-	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM_H,DIM_H), dtype=np.double)
+	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM,DIM), dtype=np.double)
 	#...... tol=10**-20
 
 	if sparse == True:
@@ -269,6 +297,9 @@ def diagonalization(X,Y,A_XY,DIM_H,num_eig,sparse):
 
 	return eig
 
+
+
+
 ## .................................................................
 ## ....................OBSERVABLES..................................
 ## .................................................................
@@ -276,7 +307,7 @@ def diagonalization(X,Y,A_XY,DIM_H,num_eig,sparse):
 #def density():
 
 #..................................................dens
-def density(V,Base_bose):
+def density(V):
 
 	den   = np.dot(np.transpose(V**2),Base_bose)
 
