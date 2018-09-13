@@ -18,7 +18,7 @@ start = time.time()
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
-ll           = 30
+ll           = 20
 ff.ll        = ll
 
 nn           = 5

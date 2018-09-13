@@ -2,12 +2,14 @@ import numpy as np
 from math import factorial
 import math
 import itertools
-
+import os
 from scipy.sparse import csc_matrix
 from scipy.sparse import lil_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
 from numpy import matlib
+from joblib import Parallel, delayed
+import time
 
 
 
@@ -42,7 +44,6 @@ def Base_prep():
 		base_bose = np.asarray(base_num, dtype=np.int8)
 
 		return base_bin, base_bose
-
 
 #..................................parity transformation
 # A states
@@ -117,8 +118,6 @@ def Hop_prep(X,Y):
 	
 	return [TO_con(2**i+2**((i+1)%(X+Y-1)),X+Y-1) for i in range(Hop_dim)]
 
-
-
 #..................................counting number of one
 POPCOUNT_TABLE16 = [0] * 2**16
 for index in range(len(POPCOUNT_TABLE16)):
@@ -128,9 +127,6 @@ def one_count(v):
 	return (POPCOUNT_TABLE16[ v        & 0xffff] +
 			POPCOUNT_TABLE16[(v >> 16) & 0xffff])
 
-
-
-#from 00100111001 to 010301 (or come cazzo si fa)
 def TO_bose_conf(x):
 	p=0
 	conf = np.zeros(ll, dtype=np.int)
@@ -260,7 +256,7 @@ def matrix_parity_symmetrize(H_tmp,b_p_inp):
 	for i in range(len(b_p)):
 
 		if b_p[i,0] == b_p[i,1]:
-			H_par[i,:] 	+= H[int(b_p[i,0]),:]
+			H_par[i,:] 	+= H_tmp[int(b_p[i,0]),:]
 		else:
 			H_par[i,:]  += (1/np.sqrt(2))*H_tmp[int(b_p[i,0]),:] 
 			H_par[i,:]  += (1/np.sqrt(2))*H_tmp[int(b_p[i,1]),:]
@@ -287,7 +283,7 @@ def matrix_parity_symmetrize(H_tmp,b_p_inp):
 			H_par[:,DX] += (1/np.sqrt(2))*H_dense[:,int(b_p[i,0])] 
 			H_par[:,DX] -= (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
 			DX += 1
-			
+
 	return csc_matrix.tocsc(H_par)
 
 def vectors_parity_symmetrize(V1,b_p_inp):
