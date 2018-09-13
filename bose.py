@@ -11,14 +11,14 @@ from numpy import linalg as LA
 import function as ff
 
 np.set_printoptions(precision=4)
-PATH_now = os.path.abspath('.')
+
 
 
 #........ LIST OF GLOBAL PARAMETERS
 
-### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
+### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
-ll           = 10
+ll           = 20
 ff.ll        = ll
 
 nn           = 3
@@ -37,6 +37,9 @@ ff.BASE_bose = BASE_bose
 
 CORR_BASE    = ff.OUTER_creation(BASE_bose)
 ff.CORR_BASE = CORR_BASE
+
+PATH_now = os.path.abspath('.')
+ff.PATH_now
 
 
 #........ LIST OF HAMILTONIAN PARAMETERS
@@ -59,34 +62,33 @@ ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
 Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
 E,V   = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
-ED,VD = ff.diagonalization(Sp_Hamiltonian, 5, False)
+#ED,VD = ff.diagonalization(Sp_Hamiltonian, 5, False)
 
 
 st_ind = 5
 
-for i in range (st_ind):
-	print('par', E[i], 'nopar', ED[i])
+#for i in range (st_ind):
+#	print('par', E[i], 'nopar', ED[i])
 
+xx = 0
 
-for i in range(st_ind):
+for i in range(DIM_H):
 	
 	dens0   = ff.density(V[:,i])
-	print(i, 'dens  PPP', dens0)
 
-	'''
-	corr0   = ff.NiNj   (V[:,i])
-	corr0_r = ff.NfixNr (V[:,i],ll-3)
+#	corr0   = ff.NiNj   (V[:,i])
+#	corr0_r = ff.NfixNr (V[:,i],int(xx))
 
-	corr_name = str('NiNj')
-	np.savetxt(PATH_now+os.sep+corr_name+str('_')+str(i)+str('.dat'),   corr0,   fmt='%.3f')
+#	corr_name = str('NiNj')
+#	np.savetxt(PATH_now+os.sep+corr_name+str('_')+str(i)+str('.dat'),   corr0,   fmt='%.3f')
 
-	corr_name_r = str('N5Nr')
-	np.savetxt(PATH_now+os.sep+corr_name_r+str('_')+str(i)+str('.dat'), corr0_r, fmt='%.3f')
+#	corr_name_r = str('N_'+str(xx)+'Nr')
+#	np.savetxt(PATH_now+os.sep+corr_name_r+str('_')+str(i)+str('.dat'), corr0_r, fmt='%.3f')
 
-	dens_name = str('dens')
-	np.savetxt(PATH_now+os.sep+dens_name+str('_')+str(i)+str('.dat'),   dens0,   fmt='%.3f')
+#	dens_name = str('dens')
+#	np.savetxt(PATH_now+os.sep+dens_name+str('_')+str(i)+str('.dat'),   dens0,   fmt='%.3f')
 
-	'''
+
 
 
 

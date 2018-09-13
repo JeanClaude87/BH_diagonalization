@@ -460,13 +460,13 @@ def NiNj(V):
 
 	NN = np.einsum('n,nij -> ij', V**2, CORR_BASE)
 
-	return 0
+	return NN
 
 def NfixNr(V,i):
 
 	NiN = np.einsum('n,nj -> j', V**2, CORR_BASE[:,i])
 
-	return 0
+	return NiN
 
 
 
