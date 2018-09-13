@@ -10,7 +10,7 @@ from numpy import linalg as LA
 
 import function as ff
 
-
+np.set_printoptions(precision=4)
 PATH_now = os.path.abspath('.')
 
 
@@ -18,10 +18,10 @@ PATH_now = os.path.abspath('.')
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
 
-ll           = 21
+ll           = 5
 ff.ll        = ll
 
-nn           = 3
+nn           = 1
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
@@ -42,7 +42,7 @@ ff.CORR_BASE = CORR_BASE
 t=-1.
 U=-1.0
 
-BC=0
+BC=1
 
 
 
@@ -56,7 +56,33 @@ DIM_par_H = len(base_parity_ind)
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
 Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
-ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind,BC,t,U,1)
+E,V = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
+
+
+st_ind = 5
+
+for i in range(st_ind):
+
+	corr0   = ff.NiNj   (V[:,i])
+	corr0_r = ff.NfixNr (V[:,i],ll-3)
+
+	dens0   = ff.density(V[:,i])
+	print(i, 'dens  ', dens0)
+
+	'''
+	corr_name = str('NiNj')
+	np.savetxt(PATH_now+os.sep+corr_name+str('_')+str(i)+str('.dat'),   corr0,   fmt='%.3f')
+
+	corr_name_r = str('N5Nr')
+	np.savetxt(PATH_now+os.sep+corr_name_r+str('_')+str(i)+str('.dat'), corr0_r, fmt='%.3f')
+
+	dens_name = str('dens')
+	np.savetxt(PATH_now+os.sep+dens_name+str('_')+str(i)+str('.dat'),   dens0,   fmt='%.3f')
+
+	'''
+
+
+
 
 #ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian_parity(base_parity_ind,BC,t,U,1)
 

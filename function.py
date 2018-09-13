@@ -231,10 +231,19 @@ def bose_Hamiltonian (BC,t,U):
 
 
 
-def bose_Hamiltonian_parity(H,b_p_inp,BC,t,U,parity):
+def bose_Hamiltonian_parity(H,b_p_inp):
+
+	H_par    = matrix_parity_symmetrize(H,b_p_inp)
+	eig, V0  = lin.eigh(H_par)
+
+	V 		 = vectos_parity_symmetrize(V0,b_p_inp)
+	return  eig, V
+
+
+def matrix_parity_symmetrize(H,b_p_inp):
 
 	b_p   = np.asarray(b_p_inp)
-	DX    = DIM_H -1
+	DX    = len(b_p)
 
 	H_par = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
 
@@ -252,11 +261,11 @@ def bose_Hamiltonian_parity(H,b_p_inp,BC,t,U,parity):
 			H_par[i,:]  += (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
 			H_par[DX,:] += (1/np.sqrt(2))*H_dense[int(b_p[i,0]),:]
 			H_par[DX,:] -= (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
-			DX -= 1
+			DX += 1
 
 	H_dense = H_par
 	H_par	= np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
-	DX      = DIM_H -1
+	DX      = len(b_p)
 
 	for i in range(len(b_p)):
 
@@ -267,24 +276,39 @@ def bose_Hamiltonian_parity(H,b_p_inp,BC,t,U,parity):
 			H_par[:,i]  += (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
 			H_par[:,DX] += (1/np.sqrt(2))*H_dense[:,int(b_p[i,0])] 
 			H_par[:,DX] -= (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
-			DX -= 1
+			DX += 1
 
-	if isinstance(H, csc_matrix):
-		H_dense = csc_matrix.todense(H)
-	else:
-		H_dense = H
-
-	eig0, V0  = lin.eigh(H_par)
-	#eig1, V1  = lin.eigh(H_dense)
-
-	return  H_par
+	return H_par
 
 
+def vectos_parity_symmetrize(V1,b_p_inp):
+
+	V0=np.transpose(V1)
 
 
+	V   = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+	b_p = np.asarray(b_p_inp, dtype=np.int8)
+	
+	DX      = len(b_p)
 
+	for i in range(len(b_p)):
 
+		if b_p[i,0] == b_p[i,1]:
+			V[:,int(b_p[i,0])] += V0[:,i]
 
+		else:
+			
+			V[:,int(b_p[i,0])]  += np.sqrt(2)/2*V0[:,i]
+			V[:,int(b_p[i,1])]  += np.sqrt(2)/2*V0[:,i]
+			
+			V[:,int(b_p[i,0])]  += np.sqrt(2)/2*V0[:,DX]
+			V[:,int(b_p[i,1])]  -= np.sqrt(2)/2*V0[:,DX]
+
+			DX += 1
+
+	Vf = np.asarray(np.transpose(V))
+
+	return Vf
 
 '''
 def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
@@ -327,11 +351,6 @@ def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
 					#print('hop',BASE_bin[j])
 		print(ind_x)
 
-
-
-
-
-
 	p=parity
 
 	ham_ind1 = []
@@ -365,13 +384,6 @@ def bose_Hamiltonian_parity(base_parity_ind,BC,t,U,parity):
 	return  0
 '''
 
-
-
-
-
-
-
-
 def make_sparse_mat(X,Y,A_XY,DIM):
 # X 		-> vector index i
 # Y 		-> vector index j
@@ -381,7 +393,6 @@ def make_sparse_mat(X,Y,A_XY,DIM):
 	numpy_ind1 = np.asarray(X)
 	numpy_ind2 = np.asarray(Y)
 	numpy_val  = np.asarray(A_XY)
-
 
 	Hamiltonian = csc_matrix((numpy_val, (numpy_ind1, numpy_ind2)), shape=(DIM,DIM), dtype=np.double)
 
@@ -429,7 +440,7 @@ def print_hamiltonian(H):
 #..................................................dens
 def density(V):
 
-	den   = np.dot(np.transpose(V**2),Base_bose)
+	den   = np.dot(np.transpose(V**2),BASE_bose)
 
 	return den
 
@@ -443,17 +454,17 @@ def OUTER_creation(A):
 		B[i] = np.outer(A[i],A[i])
 	return B
 
-def NiNj(V,matrix):
+def NiNj(V):
 
-	NN = np.einsum('n,nij -> ij', V**2, matrix)
+	NN = np.einsum('n,nij -> ij', V**2, CORR_BASE)
 
-	return NN
+	return 0
 
-def NfixNr(i,V,matrix):
+def NfixNr(V,i):
 
-	NiN = np.einsum('n,nj -> j', V**2, matrix[:,i])
+	NiN = np.einsum('n,nj -> j', V**2, CORR_BASE[:,i])
 
-	return NiN
+	return 0
 
 
 
