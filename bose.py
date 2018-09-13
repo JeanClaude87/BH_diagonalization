@@ -7,28 +7,28 @@ import itertools
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg
 from numpy import linalg as LA
-
+import time
 import function as ff
 
 np.set_printoptions(precision=4)
 
-
+start = time.time()
 
 #........ LIST OF GLOBAL PARAMETERS
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
-ll           = 20
+ll           = 30
 ff.ll        = ll
 
-nn           = 3
+nn           = 5
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
 
 ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
 
-print(DIM_H)
+print('dim H', DIM_H)
 
 BASE_bin, BASE_bose       = ff.Base_prep()
 
@@ -39,7 +39,7 @@ CORR_BASE    = ff.OUTER_creation(BASE_bose)
 ff.CORR_BASE = CORR_BASE
 
 PATH_now = os.path.abspath('.')
-ff.PATH_now
+#ff.PATH_now
 
 
 #........ LIST OF HAMILTONIAN PARAMETERS
@@ -51,31 +51,52 @@ BC=0
 
 
 
-
 nstate = DIM_H
 
 base_parity_ind = ff.base_parity()
 
 DIM_par_H = len(base_parity_ind)
 
+end = time.time()
+tempotras = (end - start)
+print('preparation done', tempotras)
+
+start = time.time()
+
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian built', tempotras)
+
+start = time.time()
+
 Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
-E,V   = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
-#ED,VD = ff.diagonalization(Sp_Hamiltonian, 5, False)
+#E,V   = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
 
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian sparse', tempotras)
 
-st_ind = 5
+start = time.time()
 
-#for i in range (st_ind):
-#	print('par', E[i], 'nopar', ED[i])
+ED,VD = ff.diagonalization(Sp_Hamiltonian, 2, True)
 
-xx = 0
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian diagonal', tempotras)
 
-for i in range(DIM_H):
+number_state = 2
+
+for i in range(number_state):
 	
-	dens0   = ff.density(V[:,i])
+	dens   = ff.density(VD[:,i])
+	print(i, 'dens', dens)
 
+
+
+'''
 #	corr0   = ff.NiNj   (V[:,i])
 #	corr0_r = ff.NfixNr (V[:,i],int(xx))
 
@@ -110,7 +131,7 @@ for i in range(DIM_H):
 #ff.print_hamiltonian(Sp_Hamiltonian)
 
 
-'''
+
 
 ED,VD = ff.diagonalization(ham_ind1, ham_ind2, ham_val, nstate, False)
 ES,VS = ff.diagonalization(ham_ind1, ham_ind2, ham_val, nstate, True)
@@ -120,9 +141,7 @@ print(ES)
 
 print(VD)
 print(VS)
-'''
 
-'''
 
 
 

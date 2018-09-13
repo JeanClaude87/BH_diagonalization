@@ -2,7 +2,9 @@ import numpy as np
 from math import factorial
 import math
 import itertools
+
 from scipy.sparse import csc_matrix
+from scipy.sparse import lil_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
 from numpy import matlib
@@ -235,38 +237,44 @@ def bose_Hamiltonian (BC,t,U):
 
 def bose_Hamiltonian_parity(H,b_p_inp):
 
+	H=csc_matrix.todense(H)
+
 	H_par    = matrix_parity_symmetrize(H,b_p_inp)
-	eig, V0  = lin.eigh(H_par)
+	eig, V0  = diagonalization(H_par,2,True)
 
-	V 		 = vectos_parity_symmetrize(V0,b_p_inp)
-	return  eig, V
+	#V 		 = vectors_parity_symmetrize(V0,b_p_inp)
+	return  eig, V0
 
-
-def matrix_parity_symmetrize(H,b_p_inp):
+def matrix_parity_symmetrize(H_tmp,b_p_inp):
 
 	b_p   = np.asarray(b_p_inp)
 	DX    = len(b_p)
 
-	H_par = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
-
-	if isinstance(H, csc_matrix):
-		H_dense = csc_matrix.todense(H)
+	if isinstance(H_tmp, csc_matrix):
+		H_par = lil_matrix((DIM_H,DIM_H), dtype=np.float)
+		H_tmp = csc_matrix.tolil(H_tmp)
 	else:
-		H_dense = H
+		H_par = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+		#H_tmp = H
 
 	for i in range(len(b_p)):
 
 		if b_p[i,0] == b_p[i,1]:
-			H_par[i,:] 	+= H_dense[int(b_p[i,0]),:]
+			H_par[i,:] 	+= H[int(b_p[i,0]),:]
 		else:
-			H_par[i,:]  += (1/np.sqrt(2))*H_dense[int(b_p[i,0]),:] 
-			H_par[i,:]  += (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
-			H_par[DX,:] += (1/np.sqrt(2))*H_dense[int(b_p[i,0]),:]
-			H_par[DX,:] -= (1/np.sqrt(2))*H_dense[int(b_p[i,1]),:]
+			H_par[i,:]  += (1/np.sqrt(2))*H_tmp[int(b_p[i,0]),:] 
+			H_par[i,:]  += (1/np.sqrt(2))*H_tmp[int(b_p[i,1]),:]
+			H_par[DX,:] += (1/np.sqrt(2))*H_tmp[int(b_p[i,0]),:]
+			H_par[DX,:] -= (1/np.sqrt(2))*H_tmp[int(b_p[i,1]),:]
 			DX += 1
 
 	H_dense = H_par
-	H_par	= np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+
+	if isinstance(H_tmp, lil_matrix):
+		H_par = lil_matrix((DIM_H,DIM_H), dtype=np.float)
+	else:
+		H_par = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
+
 	DX      = len(b_p)
 
 	for i in range(len(b_p)):
@@ -279,11 +287,10 @@ def matrix_parity_symmetrize(H,b_p_inp):
 			H_par[:,DX] += (1/np.sqrt(2))*H_dense[:,int(b_p[i,0])] 
 			H_par[:,DX] -= (1/np.sqrt(2))*H_dense[:,int(b_p[i,1])]
 			DX += 1
+			
+	return csc_matrix.tocsc(H_par)
 
-	return H_par
-
-
-def vectos_parity_symmetrize(V1,b_p_inp):
+def vectors_parity_symmetrize(V1,b_p_inp):
 
 	V0=np.transpose(V1)
 
