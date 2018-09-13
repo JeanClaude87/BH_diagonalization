@@ -18,15 +18,17 @@ PATH_now = os.path.abspath('.')
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
 
-ll           = 5
+ll           = 10
 ff.ll        = ll
 
-nn           = 1
+nn           = 3
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
 
 ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
+
+print(DIM_H)
 
 BASE_bin, BASE_bose       = ff.Base_prep()
 
@@ -42,7 +44,7 @@ ff.CORR_BASE = CORR_BASE
 t=-1.
 U=-1.0
 
-BC=1
+BC=0
 
 
 
@@ -56,20 +58,25 @@ DIM_par_H = len(base_parity_ind)
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
 Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
-E,V = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
+E,V   = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
+ED,VD = ff.diagonalization(Sp_Hamiltonian, 5, False)
 
 
 st_ind = 5
 
-for i in range(st_ind):
+for i in range (st_ind):
+	print('par', E[i], 'nopar', ED[i])
 
+
+for i in range(st_ind):
+	
+	dens0   = ff.density(V[:,i])
+	print(i, 'dens  PPP', dens0)
+
+	'''
 	corr0   = ff.NiNj   (V[:,i])
 	corr0_r = ff.NfixNr (V[:,i],ll-3)
 
-	dens0   = ff.density(V[:,i])
-	print(i, 'dens  ', dens0)
-
-	'''
 	corr_name = str('NiNj')
 	np.savetxt(PATH_now+os.sep+corr_name+str('_')+str(i)+str('.dat'),   corr0,   fmt='%.3f')
 

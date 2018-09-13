@@ -7,6 +7,8 @@ from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
 from numpy import matlib
 
+
+
 #..................................hilbert space dimension
 def fact_creation(a):
 	tab = [factorial(x) for x in range(a)]
@@ -287,7 +289,7 @@ def vectos_parity_symmetrize(V1,b_p_inp):
 
 
 	V   = np.matlib.zeros((DIM_H,DIM_H), dtype=np.float)
-	b_p = np.asarray(b_p_inp, dtype=np.int8)
+	b_p = np.asarray(b_p_inp)
 	
 	DX      = len(b_p)
 
