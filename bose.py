@@ -7,10 +7,12 @@ import itertools
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg
 from numpy import linalg as LA
+import time
 
 import function as ff
+import function_jp as ffjp
 
-
+np.set_printoptions(precision=2)
 PATH_now = os.path.abspath('.')
 
 
@@ -18,10 +20,10 @@ PATH_now = os.path.abspath('.')
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
 
-ll           = 21
+ll           = 8
 ff.ll        = ll
 
-nn           = 3
+nn           = 6
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
@@ -40,7 +42,7 @@ ff.CORR_BASE = CORR_BASE
 #........ LIST OF HAMILTONIAN PARAMETERS
 
 t=-1.
-U=-1.0
+U=-3.0
 
 BC=0
 
@@ -51,12 +53,109 @@ nstate = DIM_H
 
 base_parity_ind = ff.base_parity()
 
+#~ print(base_parity_ind)
+
 DIM_par_H = len(base_parity_ind)
 
+
+
+################################################ Original Hamiltonian
+
+print('Preparing Base')
+time0=time.clock()
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+#~ print('original bose base',BASE_bose)
 Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
-ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind,BC,t,U,1)
+#~ ff.print_hamiltonian(Sp_Hamiltonian)
+
+print('Diagonalizing')
+time0=time.clock()
+ED1 ,EV1 = ff.diagonalization(Sp_Hamiltonian,DIM_H-1,True)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+#~ print(ED1)
+
+
+################################################ PIERO STUFF
+
+print('Preparing Base')
+time0=time.clock()
+H_par = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind,BC,t,U,1)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+#~ ff.print_hamiltonian(H_par)
+
+print('Diagonalizing')
+time0=time.clock()
+ED ,EV = ff.diagonalization(H_par,DIM_H-1,True)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+#~ print(ED)
+
+
+
+################################################ My stuff
+
+print('Preparing Base')
+time0=time.clock()
+ham_p_ind1, ham_p_ind2, ham_p_val = ffjp.bose_Hamiltonian_parity2(base_parity_ind,ham_ind1,ham_ind2,ham_val,BC,t,U,1)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+SP_Hamiltonian = ff.make_sparse_mat(ham_p_ind1, ham_p_ind2, ham_p_val, DIM_H)
+
+#~ ff.print_hamiltonian(SP_Hamiltonian)
+
+print('Diagonalizing')
+time0=time.clock()
+ED ,EV = ff.diagonalization(SP_Hamiltonian,2,False)
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+#~ print(ED)
+
+
+
+
+
+
+
+
+
+#~ difference = []
+#~ difference_temp = ED[:-1]-ED1
+#~ for i in difference_temp:
+	#~ if i < 1e-10:
+		#~ difference.append(0)
+	#~ else:
+		#~ difference.append(i)
+#~ print ('difference with respect to sparse', difference)
+
+
+
+
 
 #ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian_parity(base_parity_ind,BC,t,U,1)
 
