@@ -51,7 +51,7 @@ def Base_prep(**args):
 	Max = int(sum([2**(ll+nn-2-x) for x in range(nn)]))
 	print(Max)
 
-	TO_con_tab = [None] #* Max
+	TO_con_tab = [None] * Max
 
 	for bits in itertools.combinations(range(nn+ll-1), nn):
 		s = ['0'] * (nn+ll-1)	
