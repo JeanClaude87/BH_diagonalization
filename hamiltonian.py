@@ -36,9 +36,9 @@ def bose_Hamiltonian (**args):
 
 	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
 	
-	num_cores = 2
-	step = DIM_H // num_cores
-	split = Parallel(n_jobs=num_cores)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(num_cores))
+	cores_num = args.get("cores_num")
+	step = DIM_H // cores_num
+	split = Parallel(n_jobs=cores_num)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(cores_num))
 
 	for i in range(len(split)):
 		Hamiltonian += split[i]

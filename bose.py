@@ -24,6 +24,8 @@ t_inp  = -1
 U_inp  = -1
 mat_type_inp = 'Sparse'
 
+cores_num = 1
+
 
 ######............PREPARATION OF DICTIONARSS
 
@@ -36,6 +38,7 @@ Constants_dictionary = {
 	"BC" : BC_inp, 
 	"t"  : t_inp ,
 	"U"  : U_inp ,
+	"cores_num" : cores_num,
 	"mat_type" : mat_type_inp,
 	"PATH_now" : os.path.abspath('.'),
 	}
