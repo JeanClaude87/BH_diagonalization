@@ -71,6 +71,7 @@ nstate = DIM_H
 #ff.bose_Hamiltonian_parity_0(base_parity_ind,BC,t,U,parity)
 
 
+
 '''
 
 start = time.time()
