@@ -6,10 +6,10 @@ from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
 from numpy import matlib
+import time
 
-
-
-
+from joblib import Parallel, delayed
+import multiprocessing
 
 
 
@@ -147,22 +147,51 @@ from numpy import matlib
 
 
 
+def test_parallel():
+
+	print('Test sequential')
+	time0=time.time()
+
+	c = 0
+
+	for k in range(int(math.pow(10,8))):
+		c+=k
+	print(c)
+
+	time1=time.time()
+	print ('')
+	print ('Time=',time0,time1,"%e" % (time1-time0))
+	print ('')
 
 
 
 
 
 
+	print('Test parallel')
+	time0=time.time()
 
+	def cosa (a, b):
+		c=0
+		for x in range(a,b):
+			c+=x
+		return c
 
+	num_cores = 4
+	step = int(math.pow(10,8)) // num_cores  # if not divisible by 4 do the last steps sequentially
 
+	# chunks_idx_pairs = np.array_split(list(idx_pairs), num_cores) ## to divide a list in chunks
 
+	out_pts = Parallel(n_jobs=num_cores)(delayed(cosa)(
+			  step*k, step*(k+1)) for k in range(num_cores))
 
+	print(np.sum(out_pts))
 
-
-
-
-
+			  
+	time1=time.time() 
+	print ('')
+	print ('Time=',time0,time1,"%e" % (time1-time0))
+	print ('')
 
 
 

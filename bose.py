@@ -16,14 +16,16 @@ np.set_printoptions(precision=2)
 PATH_now = os.path.abspath('.')
 
 
+
+
 #........ LIST OF GLOBAL PARAMETERS
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
 
-ll           = 8
+ll           = 10
 ff.ll        = ll
 
-nn           = 6
+nn           = 10
 ff.nn        = nn
 
 ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
@@ -49,6 +51,85 @@ BC=0
 
 
 
+
+
+
+
+
+
+
+################################################ test parallel
+
+
+
+print('Test sequential')
+time0=time.clock()
+
+c=ffjp.test_function()
+print(c)
+
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+print('Test parallel')
+time0=time.clock()
+
+c=ffjp.test_function_parallel()
+#~ print(c)
+
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+
+
+
+quit()
+
+################################################ Time for original sparse Hamiltonian
+
+
+
+print('Preparing Base')
+time0=time.clock()
+
+
+ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+
+
+
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
+
+
+time1=time.clock()
+print ('')
+print ('Time=',time0,time1,"%e" % (time1-time0))
+print ('')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 nstate = DIM_H
 
 base_parity_ind = ff.base_parity()
@@ -61,7 +142,7 @@ DIM_par_H = len(base_parity_ind)
 
 ################################################ Original Hamiltonian
 
-print('Preparing Base')
+print('Preparing Base Hamiltonian')
 time0=time.clock()
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
 time1=time.clock()
@@ -75,7 +156,7 @@ Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 
 #~ ff.print_hamiltonian(Sp_Hamiltonian)
 
-print('Diagonalizing')
+print('Diagonalizing Hamiltonian')
 time0=time.clock()
 ED1 ,EV1 = ff.diagonalization(Sp_Hamiltonian,DIM_H-1,True)
 time1=time.clock()
@@ -88,7 +169,7 @@ print ('')
 
 ################################################ PIERO STUFF
 
-print('Preparing Base')
+print('Preparing Base praity Hamiltonian Piero')
 time0=time.clock()
 H_par = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind,BC,t,U,1)
 time1=time.clock()
@@ -96,9 +177,9 @@ print ('')
 print ('Time=',time0,time1,"%e" % (time1-time0))
 print ('')
 
-#~ ff.print_hamiltonian(H_par)
+#~ #ff.print_hamiltonian(H_par)
 
-print('Diagonalizing')
+print('Diagonalizing praity Hamiltonian Piero')
 time0=time.clock()
 ED ,EV = ff.diagonalization(H_par,DIM_H-1,True)
 time1=time.clock()
@@ -107,13 +188,13 @@ print ('Time=',time0,time1,"%e" % (time1-time0))
 print ('')
 
 
-#~ print(ED)
+#~ #print(ED)
 
 
 
 ################################################ My stuff
 
-print('Preparing Base')
+print('Preparing Base praity Hamiltonian Joan')
 time0=time.clock()
 ham_p_ind1, ham_p_ind2, ham_p_val = ffjp.bose_Hamiltonian_parity2(base_parity_ind,ham_ind1,ham_ind2,ham_val,BC,t,U,1)
 time1=time.clock()
@@ -126,7 +207,7 @@ SP_Hamiltonian = ff.make_sparse_mat(ham_p_ind1, ham_p_ind2, ham_p_val, DIM_H)
 
 #~ ff.print_hamiltonian(SP_Hamiltonian)
 
-print('Diagonalizing')
+print('Diagonalizing praity Hamiltonian Joan')
 time0=time.clock()
 ED ,EV = ff.diagonalization(SP_Hamiltonian,2,False)
 time1=time.clock()
