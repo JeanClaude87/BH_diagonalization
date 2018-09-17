@@ -67,7 +67,7 @@ def Base_prep(**args):
 		in_bi=int(bi,2)
 		base_ind.append(in_bi)
 
-		#TO_con_tab[in_bi] = bi
+		TO_con_tab[in_bi] = bi
 
 	print(max(base_ind))
 
