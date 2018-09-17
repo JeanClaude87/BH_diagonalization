@@ -9,8 +9,85 @@ from scipy.sparse import linalg
 from numpy import linalg as LA
 import time
 
+import hamiltonian as ham
 import function as ff
-import function_jp as ffjp
+
+
+ll_inp = 10
+nn_inp = 4
+BC_inp = 0
+t_inp  = -1
+U_inp  = -1
+mat_type_inp = 'Sparse'
+
+
+Constants_dictionary = {}
+Global_dictionary    = {}
+
+Constants_dictionary = {
+	"ll" : ll_inp, 
+	"nn" : nn_inp,
+	"BC" : BC_inp, 
+	"t"  : t_inp ,
+	"U"  : U_inp ,
+	"mat_type" : mat_type_inp,
+	"PATH_now" : os.path.abspath('.'),
+	}
+
+Constants_dictionary["tab_fact"] = ff.fact_creation(**Constants_dictionary)
+Constants_dictionary["DIM_H"]    = ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+
+
+Global_dictionary.update(Constants_dictionary)
+
+
+BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+
+Global_dictionary["BASE_bin"]  = BASE_bin
+Global_dictionary["BASE_bose"] = BASE_bose
+Global_dictionary["CONF_tab"]  = CONF_tab
+
+HOP_list     = ff.Hop_prep(**Constants_dictionary)
+
+Global_dictionary["HOP_list"]  = HOP_list
+
+
+
+
+ham = ham.bose_Hamiltonian(**Global_dictionary)
+
+ff.print_matrix(ham)
+
+
+
+
+
+quit()
+
+'''
+
+#binomial_table = ff.tab_bin(nn,ll)
+#CONF_tab_sp  = ff.create_TOCONF_tab(CONF_tab,DIM_H)
+
+
+
+
+
+
+
+
+
+#ham.prova(A=BASE_bin, C=U)
+
+
+
+
+
+
+
+
+
+
 
 np.set_printoptions(precision=2)
 PATH_now = os.path.abspath('.')
@@ -21,24 +98,19 @@ PATH_now = os.path.abspath('.')
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
-ll           = 10
+ll           = 3
 ff.ll        = ll
 
-nn           = 10
+nn           = 2
 ff.nn        = nn
 
 ff.tab_fact       = tab_fact        = ff.fact_creation(nn+ll+1)
 ff.binomial_table = binomial_table  = ff.tab_bin(nn,ll)
 
-
-
 DIM_H        = ff.hilb_dim(nn,ll)
-
-#ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
-
+ff.DIM_H     = DIM_H
 
 BASE_bin, BASE_bose, CONF_tab = ff.Base_prep()
-
 
 CONF_tab_sp = ff.create_TOCONF_tab(CONF_tab,DIM_H)
 
@@ -50,7 +122,6 @@ ff.BASE_bose    = BASE_bose
 ff.CONF_tab_sp  = CONF_tab_sp
 
 PATH_now = os.path.abspath('.')
-#ff.PATH_now
 
 #........ LIST OF HAMILTONIAN PARAMETERS
 
@@ -63,14 +134,28 @@ parity = 1
 
 nstate = DIM_H
 
-#base_parity_ind = ff.base_parity()
+
+#........ NORMAL HAMILTONIAN
+
+ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U,DIM_H)
 
 
-#DIM_par_H = len(base_parity_ind)
+#........ PARITY HAMILTONIAN
 
-#ff.bose_Hamiltonian_parity_0(base_parity_ind,BC,t,U,parity)
+base_parity_ind = ff.base_parity()
+DIM_par_H = len(base_parity_ind)
 
-'''
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
+
+H_par = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
+
+E  ,V  = ff.diagonalization(H_par,DIM_H-1,False)
+E1 ,V1 = ff.diagonalization(Sp_Hamiltonian,DIM_H-1,False)
+
+print(E)
+print(E1)
+
+
 
 start = time.time()
 
@@ -96,6 +181,8 @@ Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
 print('Diagonalizing Hamiltonian')
 time0=time.clock()
 ED1 ,EV1 = ff.diagonalization(Sp_Hamiltonian,DIM_H-1,True)
+ED ,EV = ff.diagonalization(H_par,DIM_H-1,True)
+
 time1=time.clock()
 print ('')
 print ('Time=',time0,time1,"%e" % (time1-time0))
