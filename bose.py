@@ -9,38 +9,47 @@ from scipy.sparse import linalg
 from numpy import linalg as LA
 import time
 import function as ff
+import profile
 
-np.set_printoptions(precision=4)
+start = time.clock()
 
-start = time.time()
+np.set_printoptions(precision=5)
+
 
 #........ LIST OF GLOBAL PARAMETERS
 
 ### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
-ll           = 20
+ll           = 10
 ff.ll        = ll
 
-nn           = 5
+nn           = 10
 ff.nn        = nn
 
-ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
+ff.tab_fact       = tab_fact        = ff.fact_creation(nn+ll+1)
+ff.binomial_table = binomial_table  = ff.tab_bin(nn,ll)
 
-ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
 
-print('dim H', DIM_H)
 
-BASE_bin, BASE_bose       = ff.Base_prep()
+DIM_H        = ff.hilb_dim(nn,ll)
 
-ff.BASE_bin  = BASE_bin
-ff.BASE_bose = BASE_bose
+#ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
 
-CORR_BASE    = ff.OUTER_creation(BASE_bose)
-ff.CORR_BASE = CORR_BASE
+
+BASE_bin, BASE_bose, CONF_tab = ff.Base_prep()
+
+
+CONF_tab_sp = ff.create_TOCONF_tab(CONF_tab,DIM_H)
+
+HOP_list     = ff.Hop_prep(ll,nn)
+ff.HOP_list  = HOP_list 
+
+ff.BASE_bin     = BASE_bin
+ff.BASE_bose    = BASE_bose
+ff.CONF_tab_sp  = CONF_tab_sp
 
 PATH_now = os.path.abspath('.')
 #ff.PATH_now
-
 
 #........ LIST OF HAMILTONIAN PARAMETERS
 
@@ -49,17 +58,19 @@ U=-1.0
 
 BC=0
 
-
+parity = 1
 
 nstate = DIM_H
 
-base_parity_ind = ff.base_parity()
+#base_parity_ind = ff.base_parity()
 
-DIM_par_H = len(base_parity_ind)
+#DIM_par_H = len(base_parity_ind)
 
-end = time.time()
-tempotras = (end - start)
-print('preparation done', tempotras)
+
+
+#ff.bose_Hamiltonian_parity_0(base_parity_ind,BC,t,U,parity)
+
+'''
 
 start = time.time()
 
@@ -68,6 +79,48 @@ ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
 end = time.time()
 tempotras = (end - start)
 print ('Hamiltonian built', tempotras)
+
+'''
+
+print('dim H', DIM_H)
+
+
+ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U,DIM_H)
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
+
+end = time.clock()
+tempotras = (end - start)
+print('hamiltonian done', tempotras)
+
+#ciao = profile.run('ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U,DIM_H)', sort='ncalls')
+#print(ciao)
+
+
+'''
+
+start = time.time()
+
+ham_ind1 = ff.bose_Hamiltonian_1(BC,t,U)
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian built', tempotras)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 start = time.time()
 
@@ -96,7 +149,6 @@ for i in range(number_state):
 
 
 
-'''
 #	corr0   = ff.NiNj   (V[:,i])
 #	corr0_r = ff.NfixNr (V[:,i],int(xx))
 
@@ -143,7 +195,8 @@ print(VD)
 print(VS)
 
 
-
+CORR_BASE    = ff.OUTER_creation(BASE_bose)
+ff.CORR_BASE = CORR_BASE
 
 st_ind = 5
 
