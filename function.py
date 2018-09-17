@@ -49,8 +49,9 @@ def Base_prep(**args):
 	base_ind = []
 
 	Max = int(sum([2**(ll-x+1) for x in range(nn)]))+1
+	print(Max)
 
-	TO_con_tab = [None] * Max
+	TO_con_tab = [None] #* Max
 
 	for bits in itertools.combinations(range(nn+ll-1), nn):
 		s = ['0'] * (nn+ll-1)	
@@ -67,6 +68,8 @@ def Base_prep(**args):
 		base_ind.append(in_bi)
 
 		TO_con_tab[in_bi] = bi
+
+	print(max(base_ind))
 
 	base_bose = np.asarray(base_num, dtype=np.int8)
 

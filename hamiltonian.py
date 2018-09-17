@@ -134,8 +134,8 @@ def evaluate_ham(i,**args):
 		# we cut states with not N particles
 		if ff.one_count(hop_state_bin) == nn:
 
-			hop_state     = TO_con_tab[hop_state_bin]
-			#ff.TO_con(hop_state_bin,ll+nn-1)
+			#hop_state     = TO_con_tab[hop_state_bin]
+			hop_state     = ff.TO_con(hop_state_bin,ll+nn-1)
 
 			j = ff.get_index(hop_state,**args)	
 			kin_val = t*action_hopping(i,j,**args)
