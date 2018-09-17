@@ -48,7 +48,7 @@ def Base_prep(**args):
 	base_num = []
 	base_ind = []
 
-	Max = int(sum([2**(ll+nn-1) for x in range(nn)]))+1
+	Max = int(sum([2**(ll+nn-1-x) for x in range(nn)]))+1
 	print(Max)
 
 	TO_con_tab = [None] #* Max
