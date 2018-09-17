@@ -48,6 +48,10 @@ def Base_prep(**args):
 	base_num = []
 	base_ind = []
 
+	Max = int(sum([2**(ll-x+1) for x in range(nn)]))+1
+
+	TO_con_tab = [None] * Max
+
 	for bits in itertools.combinations(range(nn+ll-1), nn):
 		s = ['0'] * (nn+ll-1)	
 		for bit in bits:
@@ -58,26 +62,17 @@ def Base_prep(**args):
 		bose = TO_bose_conf(s,ll)
 
 		base_num.append(bose)
-		base_ind.append(int(bi,2))
+
+		in_bi=int(bi,2)
+		base_ind.append(in_bi)
+
+		TO_con_tab[in_bi] = bi
 
 	base_bose = np.asarray(base_num, dtype=np.int8)
 
 
 
-	return base_bin, base_bose, base_ind
-
-
-def create_TOCONF_tab(ind1,DIM_H):
-
-	size = len(ind1)
-	DIM_H  = max(ind1)
-
-	sp_toconf = np.zeros(DIM_H+1, dtype=np.int8) #csc_matrix((DIM_H,1), dtype=np.int64)
-	
-	for i in range(size):
-		sp_toconf[ind1[i]] = i
-
-	return sp_toconf
+	return base_bin, base_bose, base_ind, TO_con_tab
 
 
 #..................................index search
@@ -122,7 +117,11 @@ def TO_bin(xx):
 def TO_con(x,L):
 	x1=int(x)
 	L1=int(L)
-	return  np.binary_repr(x1, width=L1)
+	bi=np.binary_repr(x1, width=L1)
+
+#	print(x1,bi)
+
+	return  bi
 
 #def TO_con_1(x,L):
 	

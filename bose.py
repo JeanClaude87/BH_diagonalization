@@ -17,8 +17,8 @@ np.set_printoptions(precision=2)
 
 t1 = time.time()
 
-ll_inp = 20
-nn_inp = 5
+ll_inp = 5
+nn_inp = 3
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -51,11 +51,12 @@ print(Constants_dictionary.get("DIM_H"))
 Global_dictionary.update(Constants_dictionary)
 
 
-BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+BASE_bin, BASE_bose, CONF_tab, TO_con_tab = ff.Base_prep(**Constants_dictionary)
 
 Global_dictionary["BASE_bin"]  = BASE_bin
 Global_dictionary["BASE_bose"] = BASE_bose
 Global_dictionary["CONF_tab"]  = CONF_tab
+Global_dictionary["TO_con_tab"]  = TO_con_tab
 
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
