@@ -17,10 +17,9 @@ PATH_now = os.path.abspath('.')
 
 
 
-
 #........ LIST OF GLOBAL PARAMETERS
 
-### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE
+### -> ll, nn, tab_fact, DIM_H, BASE_bin, BASE_bose, CORR_BASE, PATH_now
 
 ll           = 10
 ff.ll        = ll
@@ -28,18 +27,30 @@ ff.ll        = ll
 nn           = 10
 ff.nn        = nn
 
-ff.tab_fact  = tab_fact   = ff.fact_creation(nn+ll)
+ff.tab_fact       = tab_fact        = ff.fact_creation(nn+ll+1)
+ff.binomial_table = binomial_table  = ff.tab_bin(nn,ll)
 
-ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
 
-BASE_bin, BASE_bose       = ff.Base_prep()
 
-ff.BASE_bin  = BASE_bin
-ff.BASE_bose = BASE_bose
+DIM_H        = ff.hilb_dim(nn,ll)
 
-CORR_BASE    = ff.OUTER_creation(BASE_bose)
-ff.CORR_BASE = CORR_BASE
+#ff.DIM_H     = DIM_H      = ff.hilb_dim(nn,ll)
 
+
+BASE_bin, BASE_bose, CONF_tab = ff.Base_prep()
+
+
+CONF_tab_sp = ff.create_TOCONF_tab(CONF_tab,DIM_H)
+
+HOP_list     = ff.Hop_prep(ll,nn)
+ff.HOP_list  = HOP_list 
+
+ff.BASE_bin     = BASE_bin
+ff.BASE_bose    = BASE_bose
+ff.CONF_tab_sp  = CONF_tab_sp
+
+PATH_now = os.path.abspath('.')
+#ff.PATH_now
 
 #........ LIST OF HAMILTONIAN PARAMETERS
 
@@ -48,95 +59,20 @@ U=-3.0
 
 BC=0
 
-
-
-
-
-
-
-
-
-
-
-################################################ test parallel
-
-
-
-print('Test sequential')
-time0=time.clock()
-
-c=ffjp.test_function()
-print(c)
-
-time1=time.clock()
-print ('')
-print ('Time=',time0,time1,"%e" % (time1-time0))
-print ('')
-
-
-print('Test parallel')
-time0=time.clock()
-
-c=ffjp.test_function_parallel()
-#~ print(c)
-
-time1=time.clock()
-print ('')
-print ('Time=',time0,time1,"%e" % (time1-time0))
-print ('')
-
-
-
-
-
-quit()
-
-################################################ Time for original sparse Hamiltonian
-
-
-
-print('Preparing Base')
-time0=time.clock()
-
-
-ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
-
-
-
-Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
-
-
-time1=time.clock()
-print ('')
-print ('Time=',time0,time1,"%e" % (time1-time0))
-print ('')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+parity = 1
 
 nstate = DIM_H
 
-base_parity_ind = ff.base_parity()
+#base_parity_ind = ff.base_parity()
 
-#~ print(base_parity_ind)
 
-DIM_par_H = len(base_parity_ind)
+#DIM_par_H = len(base_parity_ind)
+
+#ff.bose_Hamiltonian_parity_0(base_parity_ind,BC,t,U,parity)
+
+'''
+
+start = time.time()
 
 
 
@@ -145,6 +81,7 @@ DIM_par_H = len(base_parity_ind)
 print('Preparing Base Hamiltonian')
 time0=time.clock()
 ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U)
+<<<<<<< HEAD
 time1=time.clock()
 print ('')
 print ('Time=',time0,time1,"%e" % (time1-time0))
@@ -233,6 +170,92 @@ print ('')
 	#~ else:
 		#~ difference.append(i)
 #~ print ('difference with respect to sparse', difference)
+=======
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian built', tempotras)
+
+
+print('dim H', DIM_H)
+
+
+ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U,DIM_H)
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
+
+end = time.clock()
+tempotras = (end - start)
+print('hamiltonian done', tempotras)
+
+#ciao = profile.run('ham_ind1, ham_ind2, ham_val = ff.bose_Hamiltonian(BC,t,U,DIM_H)', sort='ncalls')
+#print(ciao)
+
+
+
+start = time.time()
+
+ham_ind1 = ff.bose_Hamiltonian_1(BC,t,U)
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian built', tempotras)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+start = time.time()
+
+Sp_Hamiltonian = ff.make_sparse_mat(ham_ind1, ham_ind2, ham_val, DIM_H)
+
+#E,V   = ff.bose_Hamiltonian_parity(Sp_Hamiltonian,base_parity_ind)
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian sparse', tempotras)
+
+start = time.time()
+
+ED,VD = ff.diagonalization(Sp_Hamiltonian, 2, True)
+
+end = time.time()
+tempotras = (end - start)
+print ('Hamiltonian diagonal', tempotras)
+
+number_state = 2
+
+for i in range(number_state):
+	
+	dens   = ff.density(VD[:,i])
+	print(i, 'dens', dens)
+
+
+
+#	corr0   = ff.NiNj   (V[:,i])
+#	corr0_r = ff.NfixNr (V[:,i],int(xx))
+
+#	corr_name = str('NiNj')
+#	np.savetxt(PATH_now+os.sep+corr_name+str('_')+str(i)+str('.dat'),   corr0,   fmt='%.3f')
+
+#	corr_name_r = str('N_'+str(xx)+'Nr')
+#	np.savetxt(PATH_now+os.sep+corr_name_r+str('_')+str(i)+str('.dat'), corr0_r, fmt='%.3f')
+
+#	dens_name = str('dens')
+#	np.savetxt(PATH_now+os.sep+dens_name+str('_')+str(i)+str('.dat'),   dens0,   fmt='%.3f')
+
+>>>>>>> 15a7234280fe0d82a0477903620fb7e765d90853
 
 
 
@@ -255,7 +278,7 @@ print ('')
 #ff.print_hamiltonian(Sp_Hamiltonian)
 
 
-'''
+
 
 ED,VD = ff.diagonalization(ham_ind1, ham_ind2, ham_val, nstate, False)
 ES,VS = ff.diagonalization(ham_ind1, ham_ind2, ham_val, nstate, True)
@@ -265,11 +288,10 @@ print(ES)
 
 print(VD)
 print(VS)
-'''
-
-'''
 
 
+CORR_BASE    = ff.OUTER_creation(BASE_bose)
+ff.CORR_BASE = CORR_BASE
 
 st_ind = 5
 
