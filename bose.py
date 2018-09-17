@@ -1,5 +1,5 @@
 import os
-
+import profile
 import numpy as np
 from math import factorial
 import math
@@ -17,8 +17,8 @@ np.set_printoptions(precision=2)
 
 t1 = time.time()
 
-ll_inp = 20
-nn_inp = 4
+ll_inp = 10
+nn_inp = 5
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -63,7 +63,12 @@ Global_dictionary["HOP_list"]  = HOP_list
 
 print('hamiltonian start')
 
-Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
+#Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
+
+ciao = profile.run('ham.bose_Hamiltonian(**Global_dictionary)', sort='ncalls')
+ciao
+
+quit()
 
 t2 = time.time()
 print('Dt 1', t2-t1)

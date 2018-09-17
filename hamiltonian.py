@@ -22,7 +22,7 @@ def bose_Hamiltonian (**args):
 
 #...... Parameter: DIM_H
 
-	DIM_H 	 = args.get("DIM_H")
+	DIM_H 	 = np.int(args.get("DIM_H"))
 
 #Hamiltonian returns:
 #...... Sparse or Dense matrix. By default is SPARSE
@@ -34,25 +34,32 @@ def bose_Hamiltonian (**args):
 
 #...... Creates i,j,H[i,j]
 
-	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
-	
-	cores_num = args.get("cores_num")
-	step = DIM_H // cores_num
-	split = Parallel(n_jobs=cores_num)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(cores_num))
+	cores_num = np.int(args.get("cores_num"))
 
-	for i in range(len(split)):
-		Hamiltonian += split[i]
+	if cores_num > 1:
+		
+		Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
+		
+		step = DIM_H // cores_num
+		split = Parallel(n_jobs=cores_num)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(cores_num))
 
-	'''
+		for i in range(cores_num):
+			Hamiltonian += split[i]
 
-	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
+	else:
 
-	for i in range(DIM_H):
+		X0 = []
+		Y0 = []
+		A0 = []
 
-		A, B, C = evaluate_ham(i,**args)
+		for i in range(DIM_H):
 
-		Hamiltonian += csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
-	'''
+			A, B, C = evaluate_ham(i,**args)
+			X0.append(A)
+			Y0.append(B)
+			A0.append(C)
+
+		Hamiltonian = csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
 
 	if mat_type == 'Dense':
 
@@ -188,16 +195,11 @@ def action_hopping(x,y,**args):
 
 def action_interactions(state,**args):
 
-
 	ll 		 = args.get("ll")
 	U 		 = args.get("U")
 
 	bosecon = ff.TO_bose_conf(state,ll)
-
-	int_val = 0
-	for x in range(ll):
-		nx = bosecon[x]
-		int_val += U*nx*(nx-1.)/(2.) #+10**-3*np.random.random()
+	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)
 
 	return int_val
 
