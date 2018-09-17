@@ -15,16 +15,16 @@ import observables as ob
 
 np.set_printoptions(precision=2)
 
-t1 = time.clock()
+t1 = time.time()
 
-ll_inp = 40
+ll_inp = 20
 nn_inp = 4
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
 mat_type_inp = 'Sparse'
 
-cores_num = 30
+cores_num = 1
 
 
 ######............PREPARATION OF DICTIONARSS
@@ -65,7 +65,7 @@ print('hamiltonian start')
 
 Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
 
-t2 = time.clock()
+t2 = time.time()
 print('Dt 1', t2-t1)
 
 n_diag_state = 3
@@ -77,7 +77,7 @@ for i in range(n_diag_state):
 	dens0  = ob.density(   V[:,i],BASE_bose)
 	#print(dens0)
 
-t3 = time.clock()
+t3 = time.time()
 
 print('Dt 2', t3-t2)
 
