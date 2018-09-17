@@ -17,8 +17,8 @@ np.set_printoptions(precision=2)
 
 t1 = time.clock()
 
-ll_inp = 4
-nn_inp = 2
+ll_inp = 40
+nn_inp = 4
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
