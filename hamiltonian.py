@@ -11,6 +11,8 @@ from numpy import matlib
 import time
 import function as ff
 
+from joblib import Parallel, delayed
+import multiprocessing
 
 
 
@@ -31,7 +33,18 @@ def bose_Hamiltonian (**args):
 
 
 #...... Creates i,j,H[i,j]
+
+	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
 	
+	num_cores = 2
+	step = DIM_H // num_cores
+	split = Parallel(n_jobs=num_cores)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(num_cores))
+
+	for i in range(len(split)):
+		Hamiltonian += split[i]
+
+	'''
+
 	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
 
 	for i in range(DIM_H):
@@ -39,6 +52,7 @@ def bose_Hamiltonian (**args):
 		A, B, C = evaluate_ham(i,**args)
 
 		Hamiltonian += csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
+	'''
 
 	if mat_type == 'Dense':
 
@@ -46,6 +60,21 @@ def bose_Hamiltonian (**args):
 
 
 	return Hamiltonian
+
+
+
+
+def parallel_evaluate_ham (a,b,**args):
+	
+	DIM_H      = args.get("DIM_H")
+	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
+	
+	for i in range(DIM_H):
+		A, B, C = evaluate_ham(i,**args)
+		Hamiltonian += csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
+
+	return Hamiltonian
+
 
 
 
