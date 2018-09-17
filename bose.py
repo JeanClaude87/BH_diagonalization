@@ -17,7 +17,7 @@ np.set_printoptions(precision=2)
 
 t1 = time.time()
 
-ll_inp = 10
+ll_inp = 20
 nn_inp = 5
 BC_inp = 0
 t_inp  = -1
