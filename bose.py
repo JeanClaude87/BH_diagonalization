@@ -24,7 +24,7 @@ t_inp  = -1
 U_inp  = -1
 mat_type_inp = 'Sparse'
 
-cores_num = 1
+cores_num = 30
 
 
 ######............PREPARATION OF DICTIONARSS
@@ -61,6 +61,7 @@ HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
 
+print('hamiltonian start')
 
 Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
 
