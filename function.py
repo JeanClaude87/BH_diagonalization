@@ -124,14 +124,14 @@ def TO_con(x,L):
 	L1=int(L)
 	return  np.binary_repr(x1, width=L1)
 
-def TO_con_1(x,L):
+#def TO_con_1(x,L):
 	
-	ind = CONF_tab_sp[x]
+#	ind = CONF_tab_sp[x]
 
 	#ind0 = CONF_tab_sp[x].toarray()
 	#ind  = ind0[0,0]
 
-	return BASE_bin[ind]
+#	return BASE_bin[ind]
 
 #..................................hop. preparation
 #............. ......BC=0 periodic, BC=1 open
