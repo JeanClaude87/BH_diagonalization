@@ -17,8 +17,8 @@ np.set_printoptions(precision=2)
 
 t1 = time.time()
 
-ll_inp = 20
-nn_inp = 5
+ll_inp = 6
+nn_inp = 3
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -46,30 +46,40 @@ Constants_dictionary = {
 Constants_dictionary["tab_fact"] = ff.fact_creation(**Constants_dictionary)
 Constants_dictionary["DIM_H"]    = ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
 
-print(Constants_dictionary.get("DIM_H"))
+print('dimH', Constants_dictionary.get("DIM_H"))
 
 Global_dictionary.update(Constants_dictionary)
 
 
 BASE_bin, BASE_bose, CONF_tab, TO_con_tab = ff.Base_prep(**Constants_dictionary)
 
-Global_dictionary["BASE_bin"]  = BASE_bin
-Global_dictionary["BASE_bose"] = BASE_bose
-Global_dictionary["CONF_tab"]  = CONF_tab
-Global_dictionary["TO_con_tab"]  = TO_con_tab
+Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
+Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
+Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
+Global_dictionary["TO_con_tab"]  = TO_con_tab	#.......
+
+print(TO_con_tab[0])
+print(type(TO_con_tab[0]))
+
 
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
+
+ciao = profile.run('ob.CdiCj(**Global_dictionary)', sort='ncalls')
+
+
+quit()
+
+
+
 
 print('hamiltonian start')
 
 #Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
 
 ciao = profile.run('ham.bose_Hamiltonian(**Global_dictionary)', sort='ncalls')
-ciao
 
-quit()
 
 t2 = time.time()
 print('Dt 1', t2-t1)
