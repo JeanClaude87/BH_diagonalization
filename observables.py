@@ -9,6 +9,7 @@ from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
 from numpy import matlib
 import time
+import function as ff
 
 
 ## .................................................................
@@ -48,42 +49,20 @@ def NfixNr(V,i,CORR_BASE):
 
 def CdiCj(**args):
 
-	state    = np.asarray(args.get("BASE_bose"))
+	state    = np.asarray(args.get("BASE_bin"))
 	DIM_H 	 = args.get("DIM_H")
 	ll  	 = args.get("ll")
+	nn  	 = args.get("nn")	
 
+	BB = np.zeros((ll,ll,DIM_H,DIM_H))
+
+	t1=time.time()
 
 	for i, j in itertools.product(range(ll), range(ll)):
 
-		t1=time.time()
-
-		BB = np.zeros((DIM_H,DIM_H))
-
-		operator    = [0 for i in range(ll)]
-		operator[i] = +1
-		operator[j] = -1
-
 		for psi0 in range(DIM_H):
 
-			XX = []
-			YY = []
-			AA = []
-
-			a = state[psi0] + operator
-
-			for psi1 in range(DIM_H):
-
-				if np.array_equal(state[psi1],a):
-					
-					XX.append(psi0)
-					YY.append(psi1)
-					AA.append(1)
-
-					BB[psi0,psi1] = 1
-
-					#print(i,'i', state[i],'.....',j,'j', state[j], '...', a)
-
-		print(i,j)
+			a = state[psi0]
 
 	t2=time.time()
 	

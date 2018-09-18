@@ -70,8 +70,6 @@ def Base_prep(**args):
 
 	base_bose = np.asarray(base_num, dtype=np.int8)
 
-
-
 	return base_bin, base_bose, base_ind, TO_con_tab
 
 
@@ -87,8 +85,6 @@ def get_index(state,**args):
 	r_par  = int(nn)    #remaining_particles
 	r_sit  = int(ll)	#remaining_sites
 	result = DIM_H
-
-	#print(size, len(state), state)
 
 	for jj in range(size):
 		action_i = int(state[jj]);
@@ -107,6 +103,29 @@ def get_index(state,**args):
 			#print('else',jj,r_par)
 
 	return DIM_H-result
+
+#..................................from BOSE configuration to bin number
+def FROM_bose_TO_bin(state,**args):
+
+	ll  	 = args.get("ll")
+	nn  	 = args.get("nn")
+
+	i=[]
+
+	for x in state:
+		if x == 0:
+			i.append('0')
+		else:
+			for x in range(x):
+				i.append('1')
+			i.append('0')
+
+	i   = i[:-1]
+	uga = ''.join(i)
+
+	return uga
+
+
 
 
 #..................................from configuration to bin number
@@ -160,6 +179,7 @@ def TO_bose_conf(x,ll):
 			conf[p]+=1
 		else: 
 			p+=1	
+
 	return 	conf
 
 

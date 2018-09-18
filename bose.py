@@ -17,7 +17,7 @@ np.set_printoptions(precision=2)
 
 t1 = time.time()
 
-ll_inp = 6
+ll_inp = 4
 nn_inp = 3
 BC_inp = 0
 t_inp  = -1
@@ -69,14 +69,16 @@ Global_dictionary["HOP_list"]  = HOP_list
 ciao = profile.run('ob.CdiCj(**Global_dictionary)', sort='ncalls')
 
 
-quit()
+
 
 
 
 
 print('hamiltonian start')
 
-#Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
+Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
+
+quit()
 
 ciao = profile.run('ham.bose_Hamiltonian(**Global_dictionary)', sort='ncalls')
 
