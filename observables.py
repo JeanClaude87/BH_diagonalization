@@ -19,7 +19,9 @@ import function as ff
 #def density():
 
 #..................................................dens
-def density(V,BASE_bose):
+def density(V,**args):
+	
+	BASE_bose = args.get("BASE_bose")
 
 	den   = np.dot(np.transpose(V**2),BASE_bose)
 
@@ -47,26 +49,39 @@ def NfixNr(V,i,CORR_BASE):
 
 	return NiN
 
-def CdiCj(**args):
 
-	state    = np.asarray(args.get("BASE_bin"))
+def CdiCj(V, dens, **args):
+
+	states   = args.get("BASE_bose")
 	DIM_H 	 = args.get("DIM_H")
 	ll  	 = args.get("ll")
 	nn  	 = args.get("nn")	
 
-	BB = np.zeros((ll,ll,DIM_H,DIM_H))
+	Cd  = np.power(np.remainder(states+1,nn+1),1/4)
+	C   = np.power(states,1/4)
+	V_c = np.conj(V)
 
-	t1=time.time()
+	CdiCj = np.zeros((ll,ll), dtype=np.float)
 
-	for i, j in itertools.product(range(ll), range(ll)):
+	for i in range(ll):
+		for j in range(i+1,ll):
 
-		for psi0 in range(DIM_H):
+				Cd_C = Cd[:,i] * C[:,j]		# V
+				C_Cd = C[:,i]  * Cd[:,j] 	# V*
 
-			a = state[psi0]
+				A = V   * Cd_C
+				B = V_c * C_Cd
+				
+				CdiCj[i,j] = np.dot(A[A!=0],B[B!=0])
 
-	t2=time.time()
-	
-	return t2-t1
+				
+
+	CdiCj += CdiCj.T
+	CdiCj += np.diag(dens)
+
+
+
+	return CdiCj
 
 
 

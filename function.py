@@ -213,6 +213,8 @@ def Trasl_Mean(A):
 #..................................................Print_MATRIX
 def print_matrix(H):
 
+	print('matrix to print')
+
 	if isinstance(H, csc_matrix):
 		print_h = csc_matrix.todense(H)
 		print(print_h)

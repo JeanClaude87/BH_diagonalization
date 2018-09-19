@@ -13,11 +13,11 @@ import hamiltonian as ham
 import function as ff
 import observables as ob
 
-np.set_printoptions(precision=2)
+np.set_printoptions(precision=5)
 
 t1 = time.time()
 
-ll_inp = 4
+ll_inp = 30
 nn_inp = 3
 BC_inp = 0
 t_inp  = -1
@@ -58,47 +58,38 @@ Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarra
 Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
 Global_dictionary["TO_con_tab"]  = TO_con_tab	#.......
 
-print(TO_con_tab[0])
-print(type(TO_con_tab[0]))
-
+#print(TO_con_tab[0])
+#print(type(TO_con_tab[0]))
 
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
 
-ciao = profile.run('ob.CdiCj(**Global_dictionary)', sort='ncalls')
-
-
-
-
-
-
-
-print('hamiltonian start')
 
 Hamiltonian  = ham.bose_Hamiltonian(**Global_dictionary)
-
-quit()
-
-ciao = profile.run('ham.bose_Hamiltonian(**Global_dictionary)', sort='ncalls')
 
 
 t2 = time.time()
 print('Dt 1', t2-t1)
 
-n_diag_state = 3
+n_diag_state = 1
 
 E,V = ham.diagonalization(Hamiltonian,n_diag_state,**Constants_dictionary)
+print("Ground state eigvec=", V[:,0])
+
+t3 = time.time()
+print('Dt 2', t3-t2)
 
 for i in range(n_diag_state):
 
-	dens0  = ob.density(   V[:,i],BASE_bose)
-	#print(dens0)
+	dens   = ob.density( V[:,i],       **Global_dictionary)
+	#CdiCj  = ob.CdiCj(   V[:,i], dens, **Global_dictionary)
+	CdiCj  = profile.run('ob.CdiCj(   V[:,i], dens, **Global_dictionary)', sort='ncalls')
+	
+	print(CdiCj)
 
-t3 = time.time()
-
-print('Dt 2', t3-t2)
-
+t4 = time.time()
+print('Dt 3', t4-t3)
 
 
 

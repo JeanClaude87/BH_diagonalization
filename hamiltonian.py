@@ -55,15 +55,25 @@ def bose_Hamiltonian (**args):
 		for i in range(DIM_H):
 
 			A, B, C = evaluate_ham(i,**args)
+			
 			X0.append(A)
 			Y0.append(B)
 			A0.append(C)
 
-		Hamiltonian = csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
+		#here we flatten the arrays
+		X1 = [item for sublist in X0 for item in sublist]
+		Y1 = [item for sublist in Y0 for item in sublist]
+		A1 = [item for sublist in A0 for item in sublist]
+
+		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
+
 
 	if mat_type == 'Dense':
 
 		Hamiltonian = csc_matrix.todense(Hamiltonian)
+
+
+	#ff.print_matrix(Hamiltonian)
 
 
 	return Hamiltonian
@@ -224,8 +234,7 @@ def diagonalization(Hamiltonian,num_eig,**args):
 
 	else:
 
-		hamdens = csc_matrix.todense(Hamiltonian)
-		eig  = lin.eigh(hamdens)
+		eig  = lin.eigh(Hamiltonian)
 		eigl = list(eig)
 		eigl[1] = np.squeeze(np.asarray(eig[1]))
 		eig = eigl
