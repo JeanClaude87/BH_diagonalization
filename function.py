@@ -1,13 +1,7 @@
 import numpy as np
-from math import factorial
-import math
 import itertools
 import os
 from scipy.sparse import csc_matrix
-from scipy.sparse import lil_matrix
-from scipy.sparse import linalg as linalgS
-from numpy import linalg as lin
-from numpy import matlib
 import time
 
 
@@ -48,9 +42,8 @@ def Base_prep(**args):
 	base_num = []
 	base_ind = []
 
-	Max = int(sum([2**(ll+nn-2-x) for x in range(nn)]))
-
-	TO_con_tab = [None] * Max
+#	Max = int(sum([2**(ll+nn-2-x) for x in range(nn)]))
+#	TO_con_tab = [None] * Max
 
 	for bits in itertools.combinations(range(nn+ll-1), nn):
 		s = ['0'] * (nn+ll-1)	
@@ -70,7 +63,7 @@ def Base_prep(**args):
 
 	base_bose = np.asarray(base_num, dtype=np.int8)
 
-	return base_bin, base_bose, base_ind, TO_con_tab
+	return base_bin, base_bose, base_ind
 
 
 #..................................index search
@@ -106,9 +99,6 @@ def get_index(state,**args):
 
 #..................................from BOSE configuration to bin number
 def FROM_bose_TO_bin(state,**args):
-
-	ll  	 = args.get("ll")
-	nn  	 = args.get("nn")
 
 	i=[]
 
@@ -183,17 +173,8 @@ def TO_bose_conf(x,ll):
 	return 	conf
 
 
-
-
-
-
-
-
-
-
 #..................................................generate filename
 def generate_filename(basename):
-	unix_timestamp = int(time.time())
 	local_time = str(int(round(time.time() * 1000)))
 	xx = basename + local_time + ".dat"
 	if os.path.isfile(xx):

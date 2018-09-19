@@ -1,15 +1,4 @@
 import numpy as np
-from math import factorial
-import math
-import itertools
-import os
-from scipy.sparse import csc_matrix
-from scipy.sparse import lil_matrix
-from scipy.sparse import linalg as linalgS
-from numpy import linalg as lin
-from numpy import matlib
-import time
-import function as ff
 
 
 ## .................................................................
@@ -53,7 +42,6 @@ def NfixNr(V,i,CORR_BASE):
 def CdiCj(V, dens, **args):
 
 	states   = args.get("BASE_bose")
-	DIM_H 	 = args.get("DIM_H")
 	ll  	 = args.get("ll")
 	nn  	 = args.get("nn")	
 

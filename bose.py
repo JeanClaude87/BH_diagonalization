@@ -1,12 +1,6 @@
 import os
 import profile
 import numpy as np
-from math import factorial
-import math
-import itertools
-from scipy.sparse import csc_matrix
-from scipy.sparse import linalg
-from numpy import linalg as LA
 import time
 
 import hamiltonian as ham
@@ -51,12 +45,12 @@ print('dimH', Constants_dictionary.get("DIM_H"))
 Global_dictionary.update(Constants_dictionary)
 
 
-BASE_bin, BASE_bose, CONF_tab, TO_con_tab = ff.Base_prep(**Constants_dictionary)
+BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
 
 Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
 Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
 Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
-Global_dictionary["TO_con_tab"]  = TO_con_tab	#.......
+#Global_dictionary["TO_con_tab"]  = TO_con_tab	#.......
 
 #print(TO_con_tab[0])
 #print(type(TO_con_tab[0]))

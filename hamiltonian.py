@@ -1,18 +1,10 @@
 import numpy as np
-from math import factorial
-import math
-import itertools
-import os
 from scipy.sparse import csc_matrix
-from scipy.sparse import lil_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
-from numpy import matlib
-import time
 import function as ff
 
 from joblib import Parallel, delayed
-import multiprocessing
 
 
 
@@ -103,16 +95,12 @@ def evaluate_ham(i,**args):
 	ll 		 = args.get("ll")	
 	BC 		 = args.get("BC")
 	t 		 = args.get("t")	
-	U 		 = args.get("U")
-	DIM_H 	 = args.get("DIM_H")	
-	tab_fact = args.get("tab_fact")
 
 #...... Functions in ham.py: action_hopping, action_interactions
 #...... Fundamental tables:  BASE_bin, HOP_list
 
 	BASE_bin = args.get("BASE_bin")
-	HOP_list = args.get("HOP_list")	
-	TO_con_tab = args.get("TO_con_tab") 
+	HOP_list = args.get("HOP_list")
 
 
 #Hamiltonian returns:
