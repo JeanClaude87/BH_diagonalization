@@ -50,10 +50,6 @@ BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
 Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
 Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
 Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
-#Global_dictionary["TO_con_tab"]  = TO_con_tab	#.......
-
-#print(TO_con_tab[0])
-#print(type(TO_con_tab[0]))
 
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
@@ -69,7 +65,7 @@ print('Dt 1', t2-t1)
 n_diag_state = 1
 
 E,V = ham.diagonalization(Hamiltonian,n_diag_state,**Constants_dictionary)
-print("Ground state eigvec=", V[:,0])
+
 
 t3 = time.time()
 print('Dt 2', t3-t2)
@@ -77,13 +73,12 @@ print('Dt 2', t3-t2)
 for i in range(n_diag_state):
 
 	dens   = ob.density( V[:,i],       **Global_dictionary)
-	#CdiCj  = ob.CdiCj(   V[:,i], dens, **Global_dictionary)
-	CdiCj  = profile.run('ob.CdiCj(   V[:,i], dens, **Global_dictionary)', sort='ncalls')
-	
-	print(CdiCj)
+	CdiCj  = ob.CdiCj(   V[:,i], dens, **Global_dictionary)
 
 t4 = time.time()
 print('Dt 3', t4-t3)
+
+print('tot time', t4-t1)
 
 
 
