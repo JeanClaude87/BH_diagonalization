@@ -67,9 +67,9 @@ def CdiCj(V, dens, **args):
 	CdiCj += CdiCj.T
 	CdiCj += np.diag(dens)
 
-
-
 	return CdiCj
+
+
 
 
 

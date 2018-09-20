@@ -2,8 +2,9 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
-import function as ff
 
+import function as ff
+import hamiltonian_parity as ham_par
 from joblib import Parallel, delayed
 
 
@@ -205,27 +206,30 @@ def action_interactions(state,**args):
 
 	return int_val
 
-def diagonalization(Hamiltonian,num_eig,**args):
-
-# num_eig 	-> how many eigenvalues: less than DIM_H
-
+def diagonalization(Hamiltonian,**args):
 
 	DIM_H    = args.get("DIM_H")
 	mat_type = args.get("mat_type")
+	parity	 = args.get("parity")
+	num_eig	 = args.get("n_diag_state")
 
 	if num_eig >= DIM_H:
 		num_eig = DIM_H-2
 
 	if mat_type == 'Sparse':
 
-		eig = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+		A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+
+		print('')
+		print(B)
 
 	else:
 
-		eig  = lin.eigh(Hamiltonian)
-		eigl = list(eig)
-		eigl[1] = np.squeeze(np.asarray(eig[1]))
-		eig = eigl
+		A,B   = lin.eigh(Hamiltonian)
 
-	return eig
+	if parity == 'True':
+		
+		B = ham_par.vectors_parity_symmetrize(B,**args)
+
+	return A,B
 
