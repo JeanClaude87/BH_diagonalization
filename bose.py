@@ -13,8 +13,8 @@ np.set_printoptions(precision=5)
 
 t1 = time.time()
 
-ll_inp = 20
-nn_inp = 4
+ll_inp = 3
+nn_inp = 2
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -59,6 +59,14 @@ Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
+
+if Constants_dictionary.get("parity") == 'True':
+
+	Global_dictionary["parity_index"] = ham_par.base_parity(**Global_dictionary)
+	print('I do parity!! ')
+	ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
+
+quit()
 
 
 if Constants_dictionary.get("parity") == 'True':

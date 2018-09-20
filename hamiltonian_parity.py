@@ -10,7 +10,9 @@ from scipy.sparse import linalg
 from numpy import linalg as LA
 import time
 
-import function as ff
+import hamiltonian        as ham
+import function           as ff
+import observables        as ob
 
 #..................................parity transformation
 # A states
@@ -124,3 +126,78 @@ def vectors_parity_symmetrize(V1,**args):
 	Vf = np.asarray(np.transpose(V))
 
 	return Vf
+
+
+def bose_Hamiltonian_parity_fast(**args):
+
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	BASE_bin = args.get("BASE_bin")
+	mat_type = args.get("mat_type")
+	b_p_inp	 = args.get("parity_index")
+	b_p = np.asarray(b_p_inp)
+
+	len_sym  = len(b_p)
+	len_asym = DIM_H - len_sym
+
+#	H_par_sym  = np.matlib.zeros((len_sym,len_sym), dtype=np.float)
+#	H_par_asym = np.matlib.zeros((len_asym,len_asym), dtype=np.float)
+
+
+	X0_s = []
+	Y0_s = []
+	A0_s = []
+
+
+	X0_a = []
+	Y0_a = []
+	A0_a = []
+
+	for i in range(len_sym):
+
+		if b_p[i,0] == b_p[i,1]:
+
+			state     = BASE_bin[b_p[i,0]]
+
+			X,Y,A = ham.evaluate_ham( b_p[i,0] ,**args)
+
+			for j in range(len(A)):
+				
+				state_0    = BASE_bin[Y[j]]
+				state_rev  = state_0[::-1]
+
+				ind_0   = ff.get_index(state_0,**args)
+				ind_rev = ff.get_index(state_rev,**args)
+	
+
+				print(b_p[i,0],ind_0,ind_rev,min(ind_0,ind_rev))
+
+#				print(X[i],Y[i],A[i])
+	
+#			X0_s.append(A)
+#			Y0_s.append(B)
+#			A0_s.append(C)
+
+		else:
+			state0 = BASE_bin[b_p[i,0]]
+			state1 = BASE_bin[b_p[i,0]]
+
+
+#	X1_s = [item for sublist in X0_s for item in sublist]
+#	Y1_s = [item for sublist in Y0_s for item in sublist]
+#	A1_s = [item for sublist in A0_s for item in sublist]
+
+#	Hamiltonian_sym = csc_matrix((A1_s, (X1_s,Y1_s)), shape=(len_sym,len_sym), dtype=np.double)
+
+#	if mat_type == 'Dense':
+
+#		Hamiltonian_sym = csc_matrix.todense(Hamiltonian)
+
+#	ff.print_matrix(Hamiltonian)
+
+
+
+
+
+
+	return 0
+

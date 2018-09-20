@@ -37,6 +37,7 @@ def bose_Hamiltonian (**args):
 		split = Parallel(n_jobs=cores_num)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(cores_num))
 
 		for i in range(cores_num):
+			
 			Hamiltonian += split[i]
 
 	else:
