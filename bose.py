@@ -13,8 +13,8 @@ np.set_printoptions(precision=5)
 
 t1 = time.time()
 
-ll_inp = 3
-nn_inp = 2
+ll_inp = 20
+nn_inp = 4
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -77,8 +77,8 @@ else:
 
 E,V = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
-print(E)
-print(V)
+t2 = time.time()
+print('Dt 1', t2-t1)
 
 quit()
 

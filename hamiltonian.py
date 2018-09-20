@@ -220,9 +220,6 @@ def diagonalization(Hamiltonian,**args):
 
 		A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
 
-		print('')
-		print(B)
-
 	else:
 
 		A,B   = lin.eigh(Hamiltonian)
@@ -232,4 +229,8 @@ def diagonalization(Hamiltonian,**args):
 		B = ham_par.vectors_parity_symmetrize(B,**args)
 
 	return A,B
+
+
+
+
 
