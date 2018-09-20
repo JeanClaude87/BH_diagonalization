@@ -130,23 +130,19 @@ def vectors_parity_symmetrize(V1,**args):
 
 def bose_Hamiltonian_parity_fast(**args):
 
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	BASE_bin = args.get("BASE_bin")
-	mat_type = args.get("mat_type")
-	b_p_inp	 = args.get("parity_index")
-	b_p = np.asarray(b_p_inp)
+	DIM_H 	  = np.int(args.get("DIM_H"))
+	BASE_bin  = args.get("BASE_bin")
+	BASE_bose = args.get("BASE_bose")
+	mat_type  = args.get("mat_type")
+	b_p_inp	  = args.get("parity_index")
+	b_p       = np.asarray(b_p_inp)
 
-	len_sym  = len(b_p)
-	len_asym = DIM_H - len_sym
-
-#	H_par_sym  = np.matlib.zeros((len_sym,len_sym), dtype=np.float)
-#	H_par_asym = np.matlib.zeros((len_asym,len_asym), dtype=np.float)
-
+	len_sym   = len(b_p)
+	len_asym  = DIM_H - len_sym
 
 	X0_s = []
 	Y0_s = []
 	A0_s = []
-
 
 	X0_a = []
 	Y0_a = []
@@ -156,7 +152,7 @@ def bose_Hamiltonian_parity_fast(**args):
 
 		if b_p[i,0] == b_p[i,1]:
 
-			state     = BASE_bin[b_p[i,0]]
+			print(b_p[i])
 
 			X,Y,A = ham.evaluate_ham( b_p[i,0] ,**args)
 
@@ -165,35 +161,89 @@ def bose_Hamiltonian_parity_fast(**args):
 				state_0    = BASE_bin[Y[j]]
 				state_rev  = state_0[::-1]
 
-				ind_0   = ff.get_index(state_0,**args)
 				ind_rev = ff.get_index(state_rev,**args)
 	
+				if Y[j] < ind_rev:
 
-				print(b_p[i,0],ind_0,ind_rev,min(ind_0,ind_rev))
+					if Y[j] >= len_sym:
+						print('porcodio', b_p[j],Y[j],ind_Y_rev)
 
-#				print(X[i],Y[i],A[i])
-	
-#			X0_s.append(A)
-#			Y0_s.append(B)
-#			A0_s.append(C)
+
+					X0_s.append( i)
+					Y0_s.append( Y[j])
+					A0_s.append( A[j]*np.sqrt(2))
+
+				elif Y[j] == ind_rev:
+
+					if Y[j] >= len_sym:
+						print('porcodio', b_p[j],Y[j],ind_Y_rev)
+
+
+					X0_s.append( i)
+					Y0_s.append( Y[j])
+					A0_s.append( A[j])
 
 		else:
-			state0 = BASE_bin[b_p[i,0]]
-			state1 = BASE_bin[b_p[i,0]]
+
+			X_1,Y_1,A_1 = ham.evaluate_ham( b_p[i,0] ,**args)
+			X_2,Y_2,A_2 = ham.evaluate_ham( b_p[i,1] ,**args)
+
+			X = [item for sublist in [X_1,X_2] for item in sublist]
+			Y = [item for sublist in [Y_1,Y_2] for item in sublist]
+			A = [item for sublist in [A_1,A_2] for item in sublist]
+
+			for j in range(len(A)):
+
+				if A[j] == 0:
+					continue
+
+				state_X_0    = BASE_bin[X[j]]
+				state_X_rev  = state_X_0[::-1]
+				ind_X_rev    = ff.get_index(state_X_rev,**args)
+				
+				state_Y_0    = BASE_bin[Y[j]]
+				state_Y_rev  = state_Y_0[::-1]
+				ind_Y_rev    = ff.get_index(state_Y_rev,**args)
 
 
-#	X1_s = [item for sublist in X0_s for item in sublist]
-#	Y1_s = [item for sublist in Y0_s for item in sublist]
-#	A1_s = [item for sublist in A0_s for item in sublist]
+				if Y[j] < ind_Y_rev:
 
-#	Hamiltonian_sym = csc_matrix((A1_s, (X1_s,Y1_s)), shape=(len_sym,len_sym), dtype=np.double)
+					if Y[j] >= len_sym:
+						print('porcodio', b_p[j],Y[j],ind_Y_rev)
+
+					X0_s.append( min(X[j],ind_X_rev))
+					Y0_s.append( Y[j])
+					A0_s.append( A[j])
+
+				elif Y[j] == ind_Y_rev:
+
+					if Y[j] >= len_sym:
+						print('porcodio', b_p[j],Y[j],ind_Y_rev)
+
+					X0_s.append( min(X[j],ind_X_rev))
+					Y0_s.append( Y[j])
+					A0_s.append( A[j]/np.sqrt(2))
+
+				else:
+
+					continue
+
+#					X0_a.append(b_p[i,1])
+#					Y0_a.append(Y[j])
+#					A0_a.append(-A[j])
+
+	print(len_sym)
+	print(X0_s)
+	print(Y0_s)
+
+#	Hamiltonian_sym = csc_matrix((A0_s, (X0_s,Y0_s)), shape=(len_sym,len_sym), dtype=np.double)
 
 #	if mat_type == 'Dense':
 
-#		Hamiltonian_sym = csc_matrix.todense(Hamiltonian)
+#		Hamiltonian_sym = csc_matrix.todense(Hamiltonian_sym)
 
-#	ff.print_matrix(Hamiltonian)
-
+#	ff.print_matrix(Hamiltonian_sym)
+	
 
 
 

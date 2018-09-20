@@ -9,12 +9,12 @@ import function           as ff
 import observables        as ob
 
 
-np.set_printoptions(precision=5)
+np.set_printoptions(precision=3)
 
 t1 = time.time()
 
-ll_inp = 3
-nn_inp = 2
+ll_inp = 6
+nn_inp = 6
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -64,9 +64,17 @@ if Constants_dictionary.get("parity") == 'True':
 
 	Global_dictionary["parity_index"] = ham_par.base_parity(**Global_dictionary)
 	print('I do parity!! ')
+	
 	ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 
-quit()
+	quit()
+
+	Hamiltonian   = ham.bose_Hamiltonian(**Global_dictionary)
+	Hamiltonian   = ham_par.bose_Hamiltonian_parity(Hamiltonian, **Global_dictionary)
+
+	ff.print_matrix(Hamiltonian)
+
+
 
 
 if Constants_dictionary.get("parity") == 'True':
