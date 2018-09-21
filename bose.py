@@ -1,6 +1,8 @@
 import os
 import profile
 import numpy as np
+import scipy as sp
+from scipy.sparse import csc_matrix
 import time
 
 import hamiltonian        as ham
@@ -11,10 +13,8 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-t1 = time.time()
-
 ll_inp = 6
-nn_inp = 6
+nn_inp = 2
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -62,19 +62,37 @@ Global_dictionary["HOP_list"]  = HOP_list
 
 if Constants_dictionary.get("parity") == 'True':
 
-	Global_dictionary["parity_index"] = ham_par.base_parity(**Global_dictionary)
+	Global_dictionary["parity_index"], Constants_dictionary["sim_sec_len"] = ham_par.base_parity(**Global_dictionary)
+	Global_dictionary.update(Constants_dictionary)
+
 	print('I do parity!! ')
+
+	DIM_H = Constants_dictionary.get("DIM_H")
+
+	t1 = time.time()
+
+	Hamiltonian_par   = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 	
-	ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
+	t2 = time.time()
+	print('par_fast', t2-t1)
+
+	Hamiltonian       = ham.bose_Hamiltonian(**Global_dictionary)
+
+	t4 = time.time()
+	
+	Hamiltonian_p       = ham_par.bose_Hamiltonian_parity(Hamiltonian, **Global_dictionary)
+
+	t3 = time.time()
+	print('par_slow', t3-t2)
+	print('ham', t3-t4)	
+
+	tot = csc_matrix.sum((np.square(np.absolute(Hamiltonian_par-Hamiltonian_p))))
+	print(tot)
+
+	ff.print_matrix(Hamiltonian_par)
+	ff.print_matrix(Hamiltonian_p)
 
 	quit()
-
-	Hamiltonian   = ham.bose_Hamiltonian(**Global_dictionary)
-	Hamiltonian   = ham_par.bose_Hamiltonian_parity(Hamiltonian, **Global_dictionary)
-
-	ff.print_matrix(Hamiltonian)
-
-
 
 
 if Constants_dictionary.get("parity") == 'True':
