@@ -11,10 +11,10 @@ import function           as ff
 import observables        as ob
 
 
-np.set_printoptions(precision=3)
+np.set_printoptions(precision=4)
 
-ll_inp = 6
-nn_inp = 2
+ll_inp = 10
+nn_inp = 6
 BC_inp = 0
 t_inp  = -1
 U_inp  = -1
@@ -43,8 +43,12 @@ Constants_dictionary = {
 	"parity"   : parity_inp,
 	}
 
-Constants_dictionary["tab_fact"] = ff.fact_creation(**Constants_dictionary)
-Constants_dictionary["DIM_H"]    = ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+n_diag_state=Constants_dictionary.get("n_diag_state")
+
+
+Constants_dictionary["tab_fact"]     = ff.fact_creation(**Constants_dictionary)
+Constants_dictionary["DIM_H"]        = ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
 print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
 
@@ -67,75 +71,21 @@ if Constants_dictionary.get("parity") == 'True':
 
 	print('I do parity!! ')
 
-	DIM_H = Constants_dictionary.get("DIM_H")
-
-	t1 = time.time()
-
-	Hamiltonian_par   = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
-	
-	t2 = time.time()
-	print('par_fast', t2-t1)
-
-	Hamiltonian       = ham.bose_Hamiltonian(**Global_dictionary)
-
-	t4 = time.time()
-	
-	Hamiltonian_p       = ham_par.bose_Hamiltonian_parity(Hamiltonian, **Global_dictionary)
-
-	t3 = time.time()
-	print('par_slow', t3-t2)
-	print('ham', t3-t4)	
-
-	tot = csc_matrix.sum((np.square(np.absolute(Hamiltonian_par-Hamiltonian_p))))
-	print(tot)
-
-	ff.print_matrix(Hamiltonian_par)
-	ff.print_matrix(Hamiltonian_p)
-
-	quit()
-
-
-if Constants_dictionary.get("parity") == 'True':
-
-	Global_dictionary["parity_index"] = ham_par.base_parity(**Global_dictionary)
-	print('I do parity!! ')
-
-	#...... we need it like this
-	
-	Hamiltonian   = ham.bose_Hamiltonian(**Global_dictionary)
-	Hamiltonian   = ham_par.bose_Hamiltonian_parity(Hamiltonian, **Global_dictionary)
+	Hamiltonian = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 
 else:
-	Hamiltonian   = ham.bose_Hamiltonian(**Global_dictionary)
-	
+
+	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
+
 
 E,V = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
-t2 = time.time()
-print('Dt 1', t2-t1)
-
-quit()
-
-
-
-
-t2 = time.time()
-print('Dt 1', t2-t1)
-
-
-
-t3 = time.time()
-print('Dt 2', t3-t2)
 
 for i in range(n_diag_state):
 
 	dens   = ob.density( V[:,i],       **Global_dictionary)
-	CdiCj  = ob.CdiCj(   V[:,i], dens, **Global_dictionary)
 
-t4 = time.time()
-print('Dt 3', t4-t3)
-
-print('tot time', t4-t1)
+	print(dens)
 
 
 

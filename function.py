@@ -11,7 +11,7 @@ def fact_creation(**args):
 	ll = args.get("ll")
 	nn = args.get("nn")	
 
-	tab = [1 for x in range(nn+ll)]
+	tab = [1 for x in range(nn+ll+2)]
 
 	for i in range(nn+ll-1):
 		tab[i+1] = int(tab[i]*(i+1))
@@ -30,6 +30,16 @@ def hilb_dim(x,y,tab_fact):
 	uga = int(kk)
 	
 	return uga
+
+def hilb_dim_tab(**args):
+
+	ll = args.get("ll")
+	nn = args.get("nn")	
+	tab_fact = args.get("tab_fact")
+
+	tab = [[hilb_dim(n, l, tab_fact) for l in range(ll+1)] for n in range(nn+1)]
+
+	return tab
 
 #..................................base preparation
 
@@ -69,10 +79,11 @@ def Base_prep(**args):
 #..................................index search
 def get_index(state,**args):
 
-	ll       = args.get("ll")
-	nn       = args.get("nn")
-	DIM_H    = args.get("DIM_H")
-	tab_fact = args.get("tab_fact")
+	ll           = args.get("ll")
+	nn           = args.get("nn")
+	DIM_H        = args.get("DIM_H")
+	tab_fact     = args.get("tab_fact")
+	hilb_dim_tab = args.get("hilb_dim_tab")
 
 	size   = int(nn+ll-1)
 	r_par  = int(nn)    #remaining_particles
@@ -87,7 +98,7 @@ def get_index(state,**args):
 		if action_i == 0:
 			#print(jj,r_par)		
 		
-			result -= hilb_dim(r_par-1, r_sit, tab_fact)
+			result -= hilb_dim_tab[r_par-1][r_sit]
 			#result -= binomial_table[r_par-1][r_sit]
 			r_sit  -= 1;
 
@@ -194,7 +205,7 @@ def Trasl_Mean(A):
 #..................................................Print_MATRIX
 def print_matrix(H):
 
-	print('matrix to print')
+	#print('matrix to print')
 
 	if isinstance(H, csc_matrix):
 		print_h = csc_matrix.todense(H)

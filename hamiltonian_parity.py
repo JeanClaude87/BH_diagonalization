@@ -128,7 +128,7 @@ def vectors_parity_symmetrize(V1,**args):
 	V   = np.matlib.zeros(np.shape(V0), dtype=np.float)
 	
 	b_p = np.asarray(b_p_inp)	
-	DX  = len(b_p)
+	DX  = args.get("sim_sec_len")
 
 
 	for i in range(len(b_p)):
@@ -183,92 +183,89 @@ def bose_Hamiltonian_parity_fast(**args):
 		if b_p[i,0] < 0:
 			continue
 
-		if b_p[i,1] == b_p[i,2]:
+		X_1,Y_1,A_1 = ham.evaluate_ham( b_p[i,1] ,**args)
+		X_2,Y_2,A_2 = ham.evaluate_ham( b_p[i,2] ,**args)
 
-			X,Y,A = ham.evaluate_ham( b_p[i,1] ,**args)
+		X = [item for sublist in [X_1,X_2] for item in sublist]
+		Y = [item for sublist in [Y_1,Y_2] for item in sublist]
+		A = [item for sublist in [A_1,A_2] for item in sublist]
 
-			for j in range(len(A)):
+		for j in range(len(A)):
 
-				if A[j] == 0:
-					continue
+			state_X_0    = BASE_bin[X[j]]
+			state_Y_0    = BASE_bin[Y[j]]
+
+			state_X_rev  = state_X_0[::-1]
+			state_Y_rev  = state_Y_0[::-1]
+
+
+			ind_X 		 = X[j]
+			ind_X_rev    = ff.get_index(state_X_rev,**args)
+			
+			ind_Y 		 = Y[j]
+			ind_Y_rev    = ff.get_index(state_Y_rev,**args)	
+
+
+			ind_col_X	 = b_p[min(ind_X,ind_X_rev),0]
+			ind_col_Y	 = b_p[min(ind_Y,ind_Y_rev),0]
+		
 				
-				state_0    = BASE_bin[Y[j]]
-				state_rev  = state_0[::-1]
+			coef_s = 2
 
-				ind_rev = ff.get_index(state_rev,**args)
-	
-				
-				if Y[j] == ind_rev:
+		##.... SYM SEC
 
-					X0_s.append( b_p[i,0])
-					Y0_s.append( b_p[Y[j],0])
-					A0_s.append( A[j])
+			if ind_X == ind_X_rev:
 
-				else:
+				ind_col_X = b_p[ind_X,0]
+				coef_s 	  = 2*np.sqrt(2)
 
-					X0_s.append( b_p[i,0])
-					Y0_s.append( b_p[min(Y[j],ind_rev),0])
-					A0_s.append( A[j]/np.sqrt(2))
+			X0_s.append(ind_col_X)	
 
-		else:
+			if ind_Y == ind_Y_rev:
 
-			X_1,Y_1,A_1 = ham.evaluate_ham( b_p[i,1] ,**args)
-			X_2,Y_2,A_2 = ham.evaluate_ham( b_p[i,2] ,**args)
+				ind_col_Y = b_p[ind_Y,0]
+				coef_s 	  = 2/np.sqrt(2)
 
-			X = [item for sublist in [X_1,X_2] for item in sublist]
-			Y = [item for sublist in [Y_1,Y_2] for item in sublist]
-			A = [item for sublist in [A_1,A_2] for item in sublist]
+				if ind_X == ind_X_rev:		
 
-			for j in range(len(A)):
+					coef_s = 2
 
-				if A[j] == 0:
-					continue
+			Y0_s.append(ind_col_Y) 
+			A0_s.append(A[j]/coef_s)
 
-				state_X_0    = BASE_bin[X[j]]
-				state_X_rev  = state_X_0[::-1]
-				ind_X_rev    = ff.get_index(state_X_rev,**args)
-				
-				state_Y_0    = BASE_bin[Y[j]]
-				state_Y_rev  = state_Y_0[::-1]
-				ind_Y_rev    = ff.get_index(state_Y_rev,**args)
-					
-				X0_s.append(    min(X[j],ind_X_rev)   )
+		##.... A_SYM SEC
+		
+		for j in range(len(A_1)):
 
-			##.... SYM SEC
+			state_X_0    = BASE_bin[X[j]]
+			state_Y_0    = BASE_bin[Y[j]]
 
-				if Y[j] == ind_Y_rev:
-					Y0_s.append( b_p[min(Y[j],ind_Y_rev),0])
-					A0_s.append( A[j]/np.sqrt(2))
+			state_X_rev  = state_X_0[::-1]
+			state_Y_rev  = state_Y_0[::-1]
 
-				else:
-					
-					Y0_s.append( b_p[min(Y[j],ind_Y_rev),0])
-					A0_s.append( A[j]/2)
-					
-			##.... A_SYM SEC
 
-			for j in range(len(A_1)):
+			ind_X 		 = X[j]
+			ind_X_rev    = ff.get_index(state_X_rev,**args)
+			
+			ind_Y 		 = Y[j]
+			ind_Y_rev    = ff.get_index(state_Y_rev,**args)	
 
-				state_X_0    = BASE_bin[X[j]]
-				state_X_rev  = state_X_0[::-1]
-				ind_X_rev    = ff.get_index(state_X_rev,**args)
-				
-				state_Y_0    = BASE_bin[Y[j]]
-				state_Y_rev  = state_Y_0[::-1]
-				ind_Y_rev    = ff.get_index(state_Y_rev,**args)	
 
-				if   Y[j] < ind_Y_rev:
+			ind_col_X	 = b_p[min(ind_X,ind_X_rev),3]
+			ind_col_Y	 = b_p[min(ind_Y,ind_Y_rev),3]
 
-					#print('X', X[j], ind_X_rev ,'Y', Y[j], ind_Y_rev, 'X', b_p[min(X[j],ind_X_rev),3] ,'Y', b_p[min(Y[j],ind_Y_rev),3])
+			if Y[j] > ind_Y_rev:	
+				coef_a = -1
 
-					X0_a.append(b_p[min(X[j],ind_X_rev),3]+len_sym)					
-					Y0_a.append(b_p[min(Y[j],ind_Y_rev),3]+len_sym) 
-					A0_a.append(A[j])
-				
-				elif Y[j] > ind_Y_rev:
-					X0_a.append(b_p[min(X[j],ind_X_rev),3]+len_sym)					
-					Y0_a.append(b_p[min(Y[j],ind_Y_rev),3]+len_sym) 
-					A0_a.append(-A[j])
+			elif Y[j] < ind_Y_rev:
+				coef_a = 1
+			
+			else:
+				continue
+
+			X0_a.append(ind_col_X+len_sym)					
+			Y0_a.append(ind_col_Y+len_sym) 
+			A0_a.append(A[j]*coef_a)
 
 
 	X = [item for sublist in [X0_a,X0_s] for item in sublist]

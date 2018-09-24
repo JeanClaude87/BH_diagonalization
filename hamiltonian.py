@@ -122,10 +122,12 @@ def evaluate_ham(i,**args):
 
 	int_val = action_interactions(state,**args)
 
-	#---- INTERACTION = we store i,i,int_val !!!!
-	ham_ind1.append( i )
-	ham_ind2.append( i )
-	ham_val.append( int_val )
+	if int_val != 0.0:
+	
+		#---- INTERACTION = we store i,i,int_val !!!!
+		ham_ind1.append( i )
+		ham_ind2.append( i )
+		ham_val.append( int_val )
 
 ##----- KINETIC
 	for hop in HOP_list:
@@ -138,12 +140,15 @@ def evaluate_ham(i,**args):
 			hop_state     = ff.TO_con(hop_state_bin,ll+nn-1)
 
 			j = ff.get_index(hop_state,**args)	
+
 			kin_val = t*action_hopping(i,j,**args)
 
+			if kin_val != 0.0:
+
 	#---- KINETIC = we store i,j,kin_val !!!!
-			ham_ind1.append( i )
-			ham_ind2.append( j )
-			ham_val.append( kin_val )
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
 
 	# here we put the PERIODIC
 	#...................BC=0 periodic, BC=1 open
@@ -156,10 +161,12 @@ def evaluate_ham(i,**args):
 
 			kin_val = t*action_hopping(i,j,**args)
 			
+			if kin_val != 0.0:
+
 	#---- KINETIC = we store i,j,kin_val !!!!
-			ham_ind1.append( i )
-			ham_ind2.append( j )
-			ham_val.append( kin_val )
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
 
 		if state[-1] == '1':
 
@@ -168,10 +175,12 @@ def evaluate_ham(i,**args):
 
 			kin_val = t*action_hopping(i,j,**args)
 			
+			if kin_val != 0.0:
+
 	#---- KINETIC = we store i,j,kin_val !!!!
-			ham_ind1.append( i )
-			ham_ind2.append( j )
-			ham_val.append( kin_val )
+				ham_ind1.append( i )
+				ham_ind2.append( j )
+				ham_val.append( kin_val )
 
 	return ham_ind1, ham_ind2, ham_val
 
