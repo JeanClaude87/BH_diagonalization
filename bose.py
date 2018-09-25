@@ -3,6 +3,7 @@ import profile
 import numpy as np
 import scipy as sp
 from scipy.sparse import csc_matrix
+from scipy.sparse import linalg
 import time
 
 import hamiltonian        as ham
@@ -11,17 +12,16 @@ import function           as ff
 import observables        as ob
 
 
-np.set_printoptions(precision=4)
+np.set_printoptions(precision=3)
 
-ll_inp = 10
-nn_inp = 6
-BC_inp = 0
+ll_inp = 12
+nn_inp = 3
+BC_inp = 1
 t_inp  = -1
 U_inp  = -1
-mat_type_inp = 'Sparse' #.... deafault Dense
+mat_type_inp = 'Dense' #'Sparse' #.... deafault Dense
 parity_inp   = 'True'	#.... deafault False
-n_diag_state_inp = 1
-
+n_diag_state_inp = 3
 cores_num_inp = 1
 
 
@@ -43,11 +43,12 @@ Constants_dictionary = {
 	"parity"   : parity_inp,
 	}
 
-n_diag_state=Constants_dictionary.get("n_diag_state")
-
+n_diag_state 	= Constants_dictionary.get("n_diag_state")
 
 Constants_dictionary["tab_fact"]     = ff.fact_creation(**Constants_dictionary)
-Constants_dictionary["DIM_H"]        = ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+
+DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+Constants_dictionary["DIM_H"]        = DIM_H 
 Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
 print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
@@ -73,12 +74,12 @@ if Constants_dictionary.get("parity") == 'True':
 
 	Hamiltonian = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 
+
 else:
 
 	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
 
-
-E,V = ham.diagonalization(Hamiltonian, **Global_dictionary)
+E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
 for i in range(n_diag_state):
@@ -87,6 +88,9 @@ for i in range(n_diag_state):
 
 	print(dens)
 
+psi0 = np.array(V[:,0])
+
+psit = linalg.expm_multiply(1.0J*Hamiltonian, psi0) #, start=0, stop=5, num=5, endpoint=True)
 
 
 
