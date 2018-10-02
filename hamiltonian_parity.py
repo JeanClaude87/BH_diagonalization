@@ -55,7 +55,6 @@ def base_parity(**args):
 			base_par.append((j,i,index_p_state,p))
 
 	j += 1
-	print(j)
 
 	return base_par, j
 
@@ -118,18 +117,15 @@ def bose_Hamiltonian_parity(H_tmp,**args):
 	return H_par
 
 
-def vectors_parity_symmetrize(V1,**args):
+def vectors_parity_symmetrize(V0,**args):
 
 	b_p_inp	 = args.get("parity_index")
 	DIM_H 	 = np.int(args.get("DIM_H"))
-	
-	V0=np.transpose(V1)
 
 	V   = np.matlib.zeros(np.shape(V0), dtype=np.float)
 	
 	b_p = np.asarray(b_p_inp)	
-	DX  = args.get("sim_sec_len")
-
+	DX  = args.get("sim_sec_len")	
 
 	for i in range(len(b_p)):
 
@@ -137,21 +133,19 @@ def vectors_parity_symmetrize(V1,**args):
 			continue
 
 		if b_p[i,1] == b_p[i,2]:
-			V[:,int(b_p[i,1])] += V0[:,i]
+
+			V[b_p[i,1],:] += V0[b_p[i,0],:]
 
 		else:
+
+			V[b_p[i,1],:]  += np.sqrt(2)/2*V0[b_p[i,0],:]
+			V[b_p[i,2],:]  += np.sqrt(2)/2*V0[b_p[i,0],:]
 			
-			V[:,int(b_p[i,1])]  += np.sqrt(2)/2*V0[:,i]
-			V[:,int(b_p[i,2])]  += np.sqrt(2)/2*V0[:,i]
-			
-			V[:,int(b_p[i,1])]  += np.sqrt(2)/2*V0[:,DX]
-			V[:,int(b_p[i,2])]  -= np.sqrt(2)/2*V0[:,DX]
+			V[b_p[i,1],:]  += np.sqrt(2)/2*V0[DX+b_p[i,3],:]
+			V[b_p[i,2],:]  -= np.sqrt(2)/2*V0[DX+b_p[i,3],:]
 
-			DX += 1
 
-	Vf = np.asarray(np.transpose(V))
-
-	return Vf
+	return V
 
 
 def bose_Hamiltonian_parity_fast(**args):
@@ -268,26 +262,39 @@ def bose_Hamiltonian_parity_fast(**args):
 			A0_a.append(A[j]*coef_a)
 
 
-	#X = [item for sublist in [X0_a,X0_s] for item in sublist]
-	#Y = [item for sublist in [Y0_a,Y0_s] for item in sublist]
-	#A = [item for sublist in [A0_a,A0_s] for item in sublist]
+	X = [item for sublist in [X0_a,X0_s] for item in sublist]
+	Y = [item for sublist in [Y0_a,Y0_s] for item in sublist]
+	A = [item for sublist in [A0_a,A0_s] for item in sublist]
 
-	#Hamiltonian = csc_matrix((A, (X,Y)), shape=(DIM_H,DIM_H), dtype=np.double)
+	Hamiltonian = csc_matrix((A, (X,Y)), shape=(DIM_H,DIM_H), dtype=np.double)
 
-	Hamiltonian_sym  = csc_matrix((A0_s, (X0_s,Y0_s)), shape=(len_sym,len_sym), dtype=np.double)
-	Hamiltonian_asym = csc_matrix((A0_a, (X0_a,Y0_a)), shape=(len_asym,len_asym), dtype=np.double)
+	#Hamiltonian_sym  = csc_matrix((A0_s, (X0_s,Y0_s)), shape=(len_sym,len_sym), dtype=np.double)
+	#Hamiltonian_asym = csc_matrix((A0_a, (X0_a,Y0_a)), shape=(len_asym,len_asym), dtype=np.double)
 
 
 	if mat_type == 'Dense':
 
-		#Hamiltonian  = csc_matrix.todense(Hamiltonian)
+		Hamiltonian  = csc_matrix.todense(Hamiltonian)
 
-		Hamiltonian_sym  = csc_matrix.todense(Hamiltonian_sym)
-		Hamiltonian_asym = csc_matrix.todense(Hamiltonian_asym)
+		#Hamiltonian_sym  = csc_matrix.todense(Hamiltonian_sym)
+		#Hamiltonian_asym = csc_matrix.todense(Hamiltonian_asym)
 
 	#ff.print_matrix(Hamiltonian)
 
 	#ff.print_matrix(Hamiltonian_sym)
 	#ff.print_matrix(Hamiltonian_asym)
 
-	return Hamiltonian_sym, Hamiltonian_asym
+	return Hamiltonian#_sym, Hamiltonian_asym
+
+
+
+
+
+
+
+
+
+
+
+
+

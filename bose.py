@@ -16,12 +16,12 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-ll_inp = 3
-nn_inp = 2
-BC_inp = 1
+ll_inp = 20
+nn_inp = 4
+BC_inp = 0
 t_inp  = -1
 U_inp  = -1
-mat_type_inp = 'Dense' #'Sparse' #.... deafault Dense
+mat_type_inp = 'Sparse' #'Sparse' #.... deafault Dense
 parity_inp   = 'True'	#.... deafault False
 n_diag_state_inp = 3
 cores_num_inp = 1
@@ -84,6 +84,15 @@ else:
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
+
+for i in range(3):
+	dens   = ob.density( V[:,i],       **Global_dictionary)
+
+	print(dens)
+
+quit()
+
+
 A=Hamiltonian
 
 B    = V[0]
@@ -94,7 +103,6 @@ for t in np.arange(0,4,0.01):
 	A    = 1.0J*Hamiltonian
 	psit = linalg.expm_multiply(A, B, start=dt, stop=dt)[0]
 	B    = psit
-	
 
 
 	dens   = ob.density( psit,       **Global_dictionary)
