@@ -214,3 +214,17 @@ def print_matrix(H):
 		print(H)
 
 	return 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+

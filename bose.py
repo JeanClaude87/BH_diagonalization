@@ -6,6 +6,8 @@ from scipy.sparse import csc_matrix
 from scipy.sparse import linalg
 import time
 
+import spectral
+
 import hamiltonian        as ham
 import hamiltonian_parity as ham_par
 import function           as ff
@@ -14,8 +16,8 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-ll_inp = 12
-nn_inp = 3
+ll_inp = 3
+nn_inp = 2
 BC_inp = 1
 t_inp  = -1
 U_inp  = -1
@@ -82,15 +84,28 @@ else:
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
-for i in range(n_diag_state):
+A=Hamiltonian
 
-	dens   = ob.density( V[:,i],       **Global_dictionary)
+B    = V[0]
 
+for t in np.arange(0,4,0.01):
+
+	dt   = 0.01
+	A    = 1.0J*Hamiltonian
+	psit = linalg.expm_multiply(A, B, start=dt, stop=dt)[0]
+	B    = psit
+	
+
+
+	dens   = ob.density( psit,       **Global_dictionary)
+
+	print(np.absolute(psit)**2)
 	print(dens)
 
-psi0 = np.array(V[:,0])
 
-psit = linalg.expm_multiply(1.0J*Hamiltonian, psi0) #, start=0, stop=5, num=5, endpoint=True)
+
+
+
 
 
 

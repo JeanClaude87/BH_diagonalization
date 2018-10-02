@@ -268,26 +268,26 @@ def bose_Hamiltonian_parity_fast(**args):
 			A0_a.append(A[j]*coef_a)
 
 
-	X = [item for sublist in [X0_a,X0_s] for item in sublist]
-	Y = [item for sublist in [Y0_a,Y0_s] for item in sublist]
-	A = [item for sublist in [A0_a,A0_s] for item in sublist]
+	#X = [item for sublist in [X0_a,X0_s] for item in sublist]
+	#Y = [item for sublist in [Y0_a,Y0_s] for item in sublist]
+	#A = [item for sublist in [A0_a,A0_s] for item in sublist]
 
-	Hamiltonian = csc_matrix((A, (X,Y)), shape=(DIM_H,DIM_H), dtype=np.double)
+	#Hamiltonian = csc_matrix((A, (X,Y)), shape=(DIM_H,DIM_H), dtype=np.double)
 
-	#Hamiltonian_sym  = csc_matrix((A0_s, (X0_s,Y0_s)), shape=(len_sym,len_sym), dtype=np.double)
-	#Hamiltonian_asym = csc_matrix((A0_a, (X0_a,Y0_a)), shape=(len_asym,len_asym), dtype=np.double)
+	Hamiltonian_sym  = csc_matrix((A0_s, (X0_s,Y0_s)), shape=(len_sym,len_sym), dtype=np.double)
+	Hamiltonian_asym = csc_matrix((A0_a, (X0_a,Y0_a)), shape=(len_asym,len_asym), dtype=np.double)
 
 
 	if mat_type == 'Dense':
 
-		Hamiltonian  = csc_matrix.todense(Hamiltonian)
+		#Hamiltonian  = csc_matrix.todense(Hamiltonian)
 
-		#Hamiltonian_sym  = csc_matrix.todense(Hamiltonian_sym)
-		#Hamiltonian_asym = csc_matrix.todense(Hamiltonian_asym)
+		Hamiltonian_sym  = csc_matrix.todense(Hamiltonian_sym)
+		Hamiltonian_asym = csc_matrix.todense(Hamiltonian_asym)
 
 	#ff.print_matrix(Hamiltonian)
 
 	#ff.print_matrix(Hamiltonian_sym)
 	#ff.print_matrix(Hamiltonian_asym)
 
-	return Hamiltonian
+	return Hamiltonian_sym, Hamiltonian_asym

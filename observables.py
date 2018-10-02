@@ -12,7 +12,7 @@ def density(V,**args):
 	
 	BASE_bose = args.get("BASE_bose")
 
-	den   = np.dot(np.transpose(V**2),BASE_bose)
+	den   = np.dot(np.transpose(np.square(V)),BASE_bose)
 
 	return den
 
