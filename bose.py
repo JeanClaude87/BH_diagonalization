@@ -13,11 +13,12 @@ import hamiltonian        as ham
 import hamiltonian_parity as ham_par
 import function           as ff
 import observables        as ob
+import time_evolution	  as t_ev
 
 
 np.set_printoptions(precision=3)
 
-ll_inp = 10
+ll_inp = 6
 nn_inp = 3
 BC_inp = 0				# 0 is periodic
 t_inp  = -1
@@ -94,45 +95,16 @@ for i in range(3):
 
 
 
-part_ind = [3,3,3]#,3,3]
-state    = np.zeros(ll_inp, dtype=np.int)
+part_ind = [1,3,3]#,3,3]
 
-b_p_inp	 = Global_dictionary.get("parity_index")
-b_p      = np.asarray(b_p_inp)	
-DX       = Global_dictionary.get("sim_sec_len")	
+psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
 
-for x in range(nn_inp):
-	state[part_ind[x]] += int(1)
+dens   = ob.density( psi_0,       **Global_dictionary)
+print(dens)
 
-print(state)
 
-state_con      = ff.FROM_bose_TO_bin (state,     **Global_dictionary)
-state_ind      = ff.get_index        (state_con, **Global_dictionary)
 
-state_rev_ind  = ham_par.parity      (state_con, **Global_dictionary)[1]
-
-ind      = min(state_ind,state_rev_ind)
-par_ind  = b_p[ind]
-
-i_s = par_ind[0]
-i_a = par_ind[3]+DX
-
-B    = np.zeros(DIM_H, dtype=np.double)
-
-if   state_ind == state_rev_ind:
-
-	B[i_s] = 1
-
-elif state_ind <  state_rev_ind:
-
-	B[i_s] = +np.sqrt(2)/2
-	B[i_a] = +np.sqrt(2)/2
-
-else:
-
-	B[i_s] = +np.sqrt(2)/2
-	B[i_a] = -np.sqrt(2)/2
-
+quit()
 
 dt       = 1
 step_num = 5000
@@ -155,7 +127,7 @@ prova = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
 
 
-for i in range(len(psit)):
+#for i in range(len(psit)):
 
 #	dens   = ob.density( prova[:,i],       **Global_dictionary)
 	#print('t', dt*i)
