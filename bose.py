@@ -18,8 +18,8 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp = 6
-nn_inp = 3
+ll_inp = 3
+nn_inp = 2
 BC_inp = 0				# 0 is periodic
 t_inp  = -1
 U_inp  = -5
@@ -95,11 +95,12 @@ for i in range(3):
 
 
 
-part_ind = [1,3,3]#,3,3]
+part_ind = [1,2]#,3,3]
 
 psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
 
 dens   = ob.density( psi_0,       **Global_dictionary)
+
 print(dens)
 
 
