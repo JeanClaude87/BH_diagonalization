@@ -4,6 +4,7 @@ import numpy as np
 import scipy as sp
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg
+from numpy import linalg as LA
 import time
 
 import spectral
@@ -16,14 +17,14 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-ll_inp = 20
-nn_inp = 4
-BC_inp = 0
+ll_inp = 6
+nn_inp = 6
+BC_inp = 0				# 0 is periodic
 t_inp  = -1
 U_inp  = -1
 mat_type_inp = 'Sparse' #'Sparse' #.... deafault Dense
 parity_inp   = 'True'	#.... deafault False
-n_diag_state_inp = 3
+n_diag_state_inp = 1
 cores_num_inp = 1
 
 
@@ -84,31 +85,77 @@ else:
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
-
+'''
 for i in range(3):
 	dens   = ob.density( V[:,i],       **Global_dictionary)
 
 	print(dens)
-
-quit()
-
-
-A=Hamiltonian
-
-B    = V[0]
-
-for t in np.arange(0,4,0.01):
-
-	dt   = 0.01
-	A    = 1.0J*Hamiltonian
-	psit = linalg.expm_multiply(A, B, start=dt, stop=dt)[0]
-	B    = psit
+'''
 
 
-	dens   = ob.density( psit,       **Global_dictionary)
 
-	print(np.absolute(psit)**2)
+xx = 9
+
+B    = np.zeros(DIM_H, dtype=np.double)
+B[xx] = 1
+
+print(BASE_bose[xx])
+
+b_p_inp	 = Global_dictionary.get("parity_index")
+b_p = np.asarray(b_p_inp)	
+
+
+DX  = Global_dictionary.get("sim_sec_len")	
+
+ind_norm = ff.get_index(BASE_bin[xx],**Global_dictionary)
+ind_rev  = ham_par.parity(BASE_bin[xx],**Global_dictionary)[1]
+
+#print(ind_norm,ind_rev)
+
+ind      = min(ind_norm,ind_rev)
+par_ind  = b_p[ind]
+
+#print(b_p)
+
+i_s = par_ind[0]
+i_a = par_ind[3]+DX
+
+B    = np.zeros(DIM_H, dtype=np.double)
+
+if ind_norm == ind_rev:
+
+	B[i_s] = 1
+
+elif ind_norm < ind_rev:
+
+	B[i_s] = +np.sqrt(2)/2
+	B[i_a] = +np.sqrt(2)/2
+
+else:
+
+	B[i_s] = +np.sqrt(2)/2
+	B[i_a] = -np.sqrt(2)/2
+
+
+dt       = 1
+step_num = 3
+
+t_i 	 = 0
+t_f 	 = dt*step_num
+
+A        = -1.0J*Hamiltonian
+
+psit  = linalg.expm_multiply(A, B, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+
+prova = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
+
+
+for i in range(len(psit)):
+
+	dens   = ob.density( prova[:,i],       **Global_dictionary)
 	print(dens)
+
+
 
 
 

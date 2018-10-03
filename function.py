@@ -108,6 +108,7 @@ def get_index(state,**args):
 
 	return DIM_H-result
 
+
 #..................................from BOSE configuration to bin number
 def FROM_bose_TO_bin(state,**args):
 
@@ -125,8 +126,6 @@ def FROM_bose_TO_bin(state,**args):
 	uga = ''.join(i)
 
 	return uga
-
-
 
 
 #..................................from configuration to bin number

@@ -119,10 +119,12 @@ def bose_Hamiltonian_parity(H_tmp,**args):
 
 def vectors_parity_symmetrize(V0,**args):
 
+	#print(np.shape(V0))
+
 	b_p_inp	 = args.get("parity_index")
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
-	V   = np.matlib.zeros(np.shape(V0), dtype=np.float)
+	V   = np.matlib.zeros(np.shape(V0), dtype=np.complex128)
 	
 	b_p = np.asarray(b_p_inp)	
 	DX  = args.get("sim_sec_len")	
@@ -143,7 +145,6 @@ def vectors_parity_symmetrize(V0,**args):
 			
 			V[b_p[i,1],:]  += np.sqrt(2)/2*V0[DX+b_p[i,3],:]
 			V[b_p[i,2],:]  -= np.sqrt(2)/2*V0[DX+b_p[i,3],:]
-
 
 	return V
 
