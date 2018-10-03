@@ -17,11 +17,11 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-ll_inp = 20
+ll_inp = 10
 nn_inp = 3
 BC_inp = 0				# 0 is periodic
 t_inp  = -1
-U_inp  = -1
+U_inp  = -5
 mat_type_inp = 'Sparse' #'Sparse' #.... deafault Dense
 parity_inp   = 'True'	#.... deafault False
 n_diag_state_inp = 1
@@ -134,23 +134,32 @@ else:
 	B[i_a] = -np.sqrt(2)/2
 
 
-dt       = 0.1
-step_num = 50
+dt       = 1
+step_num = 5000
 
 t_i 	 = 0
 t_f 	 = dt*step_num
 
 A        = -1.0J*Hamiltonian
 
+t0=time.time()
+
 psit  = linalg.expm_multiply(A, B, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+
+t1=time.time()
+
+print('tot', t1-t0)
+
 
 prova = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
 
+
 for i in range(len(psit)):
 
-	dens   = ob.density( prova[:,i],       **Global_dictionary)
-	print(dens)
+#	dens   = ob.density( prova[:,i],       **Global_dictionary)
+	#print('t', dt*i)
+	#print(dens)
 
 
 
