@@ -17,8 +17,8 @@ import observables        as ob
 
 np.set_printoptions(precision=3)
 
-ll_inp = 6
-nn_inp = 6
+ll_inp = 20
+nn_inp = 3
 BC_inp = 0				# 0 is periodic
 t_inp  = -1
 U_inp  = -1
@@ -94,39 +94,36 @@ for i in range(3):
 
 
 
-xx = 9
-
-B    = np.zeros(DIM_H, dtype=np.double)
-B[xx] = 1
-
-print(BASE_bose[xx])
+part_ind = [3,3,3]#,3,3]
+state    = np.zeros(ll_inp, dtype=np.int)
 
 b_p_inp	 = Global_dictionary.get("parity_index")
-b_p = np.asarray(b_p_inp)	
+b_p      = np.asarray(b_p_inp)	
+DX       = Global_dictionary.get("sim_sec_len")	
 
+for x in range(nn_inp):
+	state[part_ind[x]] += int(1)
 
-DX  = Global_dictionary.get("sim_sec_len")	
+print(state)
 
-ind_norm = ff.get_index(BASE_bin[xx],**Global_dictionary)
-ind_rev  = ham_par.parity(BASE_bin[xx],**Global_dictionary)[1]
+state_con      = ff.FROM_bose_TO_bin (state,     **Global_dictionary)
+state_ind      = ff.get_index        (state_con, **Global_dictionary)
 
-#print(ind_norm,ind_rev)
+state_rev_ind  = ham_par.parity      (state_con, **Global_dictionary)[1]
 
-ind      = min(ind_norm,ind_rev)
+ind      = min(state_ind,state_rev_ind)
 par_ind  = b_p[ind]
-
-#print(b_p)
 
 i_s = par_ind[0]
 i_a = par_ind[3]+DX
 
 B    = np.zeros(DIM_H, dtype=np.double)
 
-if ind_norm == ind_rev:
+if   state_ind == state_rev_ind:
 
 	B[i_s] = 1
 
-elif ind_norm < ind_rev:
+elif state_ind <  state_rev_ind:
 
 	B[i_s] = +np.sqrt(2)/2
 	B[i_a] = +np.sqrt(2)/2
@@ -137,8 +134,8 @@ else:
 	B[i_a] = -np.sqrt(2)/2
 
 
-dt       = 1
-step_num = 3
+dt       = 0.1
+step_num = 50
 
 t_i 	 = 0
 t_f 	 = dt*step_num
