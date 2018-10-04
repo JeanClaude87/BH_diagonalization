@@ -1,5 +1,5 @@
 import numpy as np
-
+import os
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
@@ -70,8 +70,76 @@ def CdiCj(V, dens, **args):
 	return CdiCj
 
 
+def Export_Observable():
+
+	a = 0
+
+	return 0
 
 
+def Export_Observable_time(psi_t,dt,name,**args):
+
+	ll    = args.get("ll")
+	nn    = args.get("nn")
+	LOCAL = args.get("LOCAL")
+	U  	  = args.get("U")
+	
+	nstep = len(psi_t.T)
+	DEN   = []
+
+	print(nstep)
+
+	for i in range(nstep):
+
+		dens = density( psi_t[:,i], **args)
+
+		for j in range(ll):
+
+			DEN.append([i*dt,j,dens[0,j]])
+
+#		DEN.append(["","",""])		
+
+	directory = '/dati/L_'+str(ll)+'-N_'+str(nn)+os.sep+'U_'+str(U)
+	
+	if not os.path.exists(LOCAL+os.sep+directory):
+		os.makedirs(LOCAL+os.sep+directory)
+
+	PATH_now = LOCAL+os.sep+directory+os.sep
+
+	name_dens = PATH_now+str(name)
+	np.savetxt(name_dens, DEN , fmt='%.9f')
+
+	return 0
+
+
+def Export_Fidelity(psi_t,dt,name,**args):
+
+	ll    = args.get("ll")
+	nn    = args.get("nn")
+	LOCAL = args.get("LOCAL")
+	U  	  = args.get("U")
+	
+	nstep = len(psi_t.T)
+	FID   = []
+
+	A = np.squeeze(np.asarray(psi_t[:,0]))
+
+	for i in range(nstep):
+
+		B = np.squeeze(np.asarray(psi_t[:,i]))
+		FID.append([i*dt,np.square(np.absolute(np.dot(A,B)))])
+
+	directory = '/dati/L_'+str(ll)+'-N_'+str(nn)+os.sep+'U_'+str(U)
+	
+	if not os.path.exists(LOCAL+os.sep+directory):
+		os.makedirs(LOCAL+os.sep+directory)
+
+	PATH_now = LOCAL+os.sep+directory+os.sep
+
+	name_fide = PATH_now+str(name)
+	np.savetxt(name_fide, FID , fmt='%.9f')
+
+	return 0
 
 
 

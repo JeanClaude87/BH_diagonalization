@@ -18,15 +18,15 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp = 3
-nn_inp = 2
-BC_inp = 0				# 0 is periodic
-t_inp  = -1
-U_inp  = -5
-mat_type_inp = 'Sparse' #'Sparse' #.... deafault Dense
-parity_inp   = 'True'	#.... deafault False
+ll_inp 			 = 14
+nn_inp 			 = 2
+BC_inp 			 = 0			# 0 is periodic
+t_inp  			 = -1
+U_inp  			 = -5
+mat_type_inp     = 'Sparse' 	#'Sparse' #.... deafault Dense
+parity_inp       = 'True'		#.... deafault False
 n_diag_state_inp = 1
-cores_num_inp = 1
+cores_num_inp    = 1
 
 
 ######............PREPARATION OF DICTIONARSS
@@ -43,7 +43,7 @@ Constants_dictionary = {
 	"n_diag_state"  : n_diag_state_inp,
 	"cores_num" : cores_num_inp,
 	"mat_type" : mat_type_inp,
-	"PATH_now" : os.path.abspath('.'),
+	"LOCAL" : os.path.abspath('.'),
 	"parity"   : parity_inp,
 	}
 
@@ -86,53 +86,29 @@ else:
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
-'''
-for i in range(3):
-	dens   = ob.density( V[:,i],       **Global_dictionary)
 
-	print(dens)
-'''
-
-
-
-part_ind = [1,2]#,3,3]
-
-psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
-
-dens   = ob.density( psi_0,       **Global_dictionary)
-
-print(dens)
-
-
-
-quit()
-
-dt       = 1
-step_num = 5000
-
+dt       = 0.5
+step_num = 500
 t_i 	 = 0
 t_f 	 = dt*step_num
 
 A        = -1.0J*Hamiltonian
 
-t0=time.time()
 
-psit  = linalg.expm_multiply(A, B, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+part_ind = [4,4] 		# say in which site you want a particle
+psi_4 = t_ev.inital_state(part_ind, **Global_dictionary)
 
-t1=time.time()
+part_ind = [9,9]
+psi_9 = t_ev.inital_state(part_ind, **Global_dictionary)
 
-print('tot', t1-t0)
+psi_0 = 1/np.sqrt(2)*psi_4+1/np.sqrt(2)*psi_9
 
+psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
-prova = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
+#ob.Export_Observable_time(psit_par,dt,'2+2_dens_t.dat',**Global_dictionary)
 
-
-
-#for i in range(len(psit)):
-
-#	dens   = ob.density( prova[:,i],       **Global_dictionary)
-	#print('t', dt*i)
-	#print(dens)
+ob.Export_Fidelity(psit_par,dt,'fidelity.dat',**Global_dictionary)
 
 
 
@@ -140,7 +116,13 @@ prova = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
 
 
+quit()
 
 
+part_ind = [4,4,4,4,9,9,9,9] 		# say in which site you want a particle
+psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
 
+psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
+ob.Export_Observable_time(psit_par,dt,'22_dens_t.dat',**Global_dictionary)
