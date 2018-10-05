@@ -87,14 +87,14 @@ E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
 
-dt       = 0.5
-step_num = 500
+dt       = 0.1
+step_num = 2500
 t_i 	 = 0
 t_f 	 = dt*step_num
 
 A        = -1.0J*Hamiltonian
 
-
+#'''
 part_ind = [4,4] 		# say in which site you want a particle
 psi_4 = t_ev.inital_state(part_ind, **Global_dictionary)
 
@@ -102,6 +102,10 @@ part_ind = [9,9]
 psi_9 = t_ev.inital_state(part_ind, **Global_dictionary)
 
 psi_0 = 1/np.sqrt(2)*psi_4+1/np.sqrt(2)*psi_9
+#'''
+
+#part_ind = [4,4,9,9] 		# say in which site you want a particle
+#psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
 
 psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
 psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)

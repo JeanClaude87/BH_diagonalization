@@ -87,17 +87,13 @@ def Export_Observable_time(psi_t,dt,name,**args):
 	nstep = len(psi_t.T)
 	DEN   = []
 
-	print(nstep)
-
 	for i in range(nstep):
 
 		dens = density( psi_t[:,i], **args)
 
 		for j in range(ll):
 
-			DEN.append([i*dt,j,dens[0,j]])
-
-#		DEN.append(["","",""])		
+			DEN.append([i*dt,j,dens[0,j]])	
 
 	directory = '/dati/L_'+str(ll)+'-N_'+str(nn)+os.sep+'U_'+str(U)
 	
