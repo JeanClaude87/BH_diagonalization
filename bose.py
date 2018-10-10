@@ -17,14 +17,14 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 3
-nn_inp 			 = 2
+ll_inp 			 = 10
+nn_inp 			 = 6
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -5
-mat_type_inp     = 'Sparse' 	#'Sparse' #.... deafault Dense
+mat_type_inp     = 'Dense' 	#'Sparse' #.... deafault Dense
 parity_inp       = 'False'		#.... deafault False
-n_diag_state_inp = 1
+n_diag_state_inp = 10
 cores_num_inp    = 1
 
 
