@@ -7,7 +7,6 @@ from scipy.sparse import linalg
 from numpy import linalg as LA
 import time
 
-import spectral
 
 import hamiltonian        as ham
 import hamiltonian_parity as ham_par
