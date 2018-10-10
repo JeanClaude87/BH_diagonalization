@@ -46,7 +46,6 @@ def bose_Hamiltonian (**args):
 		Y0 = []
 		A0 = []
 
-
 		for i in range(DIM_H):
 
 			A, B, C = evaluate_ham(i, **args)
@@ -85,10 +84,7 @@ def parallel_evaluate_ham (a,b,**args):
 
 
 
-def evaluate_ham(uu,**args):
-
-	i=uu[0]
-	print(i)
+def evaluate_ham(i,**args):
 
 #...... Parameter: BC, t, U, DIM_H, nn, ll
 
