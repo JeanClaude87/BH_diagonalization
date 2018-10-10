@@ -82,6 +82,8 @@ else:
 
 	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
 
+print('uga')
+
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 quit()
