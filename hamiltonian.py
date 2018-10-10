@@ -2,7 +2,7 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 from numpy import linalg as lin
-
+import time
 import function as ff
 import hamiltonian_parity as ham_par
 from joblib import Parallel, delayed
@@ -16,6 +16,8 @@ def bose_Hamiltonian (**args):
 #...... Parameter: DIM_H
 
 	DIM_H 	 = np.int(args.get("DIM_H"))
+	ll 		 = args.get("ll")	
+	nn 		 = args.get("nn")		
 
 #Hamiltonian returns:
 #...... Sparse or Dense matrix. By default is SPARSE
@@ -42,14 +44,34 @@ def bose_Hamiltonian (**args):
 
 	else:
 
+		t1=time.time()
+
+		#...... 2*nn is possibly the max dimension
+
+		vec = np.zeros((DIM_H,2*nn,3))
+
+		for i in range(DIM_H):
+
+			if i%10000 == 0:
+				print(i)
+
+			A,B,C = evaluate_ham(i, **args)
+
+			for j in range(len(A)):
+
+				vec[i,j] = [A[j],B[j],C[j]]
+
+		np.concatenate(vec)
+
+		t2=time.time()
+
 		X0 = []
 		Y0 = []
 		A0 = []
 
-
 		for i in range(DIM_H):
 
-			if i%1000 == 0:
+			if i%10000 == 0:
 				print(i)
 
 			A, B, C = evaluate_ham(i, **args)
@@ -63,13 +85,16 @@ def bose_Hamiltonian (**args):
 		Y1 = [item for sublist in Y0 for item in sublist]
 		A1 = [item for sublist in A0 for item in sublist]
 
+		t3=time.time()
+
 		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
 
+		print('TT1', t2-t1)
+		print('TT2', t3-t2)
 
 	if mat_type == 'Dense':
 
 		Hamiltonian = csc_matrix.todense(Hamiltonian)
-
 
 	return Hamiltonian
 

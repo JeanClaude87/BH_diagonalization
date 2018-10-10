@@ -17,13 +17,13 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 40
-nn_inp 			 = 6
+ll_inp 			 = 9
+nn_inp 			 = 9
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -5
 mat_type_inp     = 'Sparse' 	#'Sparse' #.... deafault Dense
-parity_inp       = 'False'		#.... deafault False
+parity_inp       = 'True'		#.... deafault False
 n_diag_state_inp = 1
 cores_num_inp    = 1
 
@@ -55,6 +55,7 @@ Constants_dictionary["DIM_H"]        = DIM_H
 Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
 print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
+print('ll', ll_inp, 'nn', nn_inp)
 
 Global_dictionary.update(Constants_dictionary)
 
@@ -68,7 +69,6 @@ HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
 
-print('uga_1')
 
 if Constants_dictionary.get("parity") == 'True':
 
@@ -84,7 +84,7 @@ else:
 
 	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
 
-print('uga_2')
+quit()
 
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
@@ -97,7 +97,7 @@ E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 
 
-quit()
+
 
 
 
