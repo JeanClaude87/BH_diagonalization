@@ -46,7 +46,11 @@ def bose_Hamiltonian (**args):
 		Y0 = []
 		A0 = []
 
+
 		for i in range(DIM_H):
+
+			if i%1000 == 0:
+				print(i)
 
 			A, B, C = evaluate_ham(i, **args)
 			
