@@ -46,9 +46,10 @@ def bose_Hamiltonian (**args):
 		Y0 = []
 		A0 = []
 
+
 		for i in range(DIM_H):
 
-			A, B, C = evaluate_ham(i,**args)
+			A, B, C = evaluate_ham(i, **args)
 			
 			X0.append(A)
 			Y0.append(B)
@@ -67,12 +68,7 @@ def bose_Hamiltonian (**args):
 		Hamiltonian = csc_matrix.todense(Hamiltonian)
 
 
-	#ff.print_matrix(Hamiltonian)
-
-
 	return Hamiltonian
-
-
 
 
 def parallel_evaluate_ham (a,b,**args):
@@ -89,7 +85,10 @@ def parallel_evaluate_ham (a,b,**args):
 
 
 
-def evaluate_ham(i,**args):
+def evaluate_ham(uu,**args):
+
+	i=uu[0]
+	print(i)
 
 #...... Parameter: BC, t, U, DIM_H, nn, ll
 
@@ -182,7 +181,7 @@ def evaluate_ham(i,**args):
 				ham_ind2.append( j )
 				ham_val.append( kin_val )
 
-	return ham_ind1, ham_ind2, ham_val
+	return [ham_ind1, ham_ind2, ham_val]
 
 
 
