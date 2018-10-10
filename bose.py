@@ -68,6 +68,8 @@ HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
 
+print('uga_1')
+
 if Constants_dictionary.get("parity") == 'True':
 
 	Global_dictionary["parity_index"], Constants_dictionary["sim_sec_len"] = ham_par.base_parity(**Global_dictionary)
@@ -82,7 +84,7 @@ else:
 
 	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
 
-print('uga')
+print('uga_2')
 
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
