@@ -8,6 +8,7 @@ import hamiltonian_parity as ham_par
 from joblib import Parallel, delayed
 
 import multiprocessing
+import functools
 
 def bose_Hamiltonian (**args):
 
@@ -43,6 +44,7 @@ def bose_Hamiltonian (**args):
 			Hamiltonian += split[i]
 
 	else:
+		print('HOLA')
 
 		X0 = [0]*DIM_H
 		Y0 = [0]*DIM_H
@@ -51,16 +53,31 @@ def bose_Hamiltonian (**args):
 #............	
 #............	JOAN PARALLELIZZA il LOOOOOOP a tope
 #............
+		
+		t0= time.time()
+		
+		pool = multiprocessing.Pool(4)
+		b = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
+		
 
-		pool = multiprocessing.Pool(20)
-		X1,Y1,A1 = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
+		
+		for i  in range(len(b)):
+			X0[i] , Y0[i], A0[i] = b[i]
 
-		'''
+		
+		t1= time.time()
+
+		#~ '''
 		for i in range(DIM_H):
 
 			X0[i],Y0[i],A0[i] = evaluate_ham(i, **args)
-		'''
+		#~ '''
 
+		t2= time.time()
+
+		print(t1-t0)	
+		print(t2-t1)	
+		
 		#here we flatten the arrays
 		X1 = [item for sublist in X0 for item in sublist]
 		Y1 = [item for sublist in Y0 for item in sublist]
