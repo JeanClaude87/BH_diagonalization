@@ -17,15 +17,15 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 15
-nn_inp 			 = 6
+ll_inp 			 = 5
+nn_inp 			 = 5
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
 mat_type_inp     = 'Sparse' 	#'Sparse' #.... deafault Dense
 parity_inp       = 'False'		#.... deafault False
 n_diag_state_inp = 1
-cores_num_inp    = 1
+cores_num_inp    = 2
 
 
 ######............PREPARATION OF DICTIONARSS
@@ -89,7 +89,6 @@ else:
 
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
-ff.print_matrix(Hamiltonian)
 quit()
 
 

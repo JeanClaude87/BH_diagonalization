@@ -32,58 +32,46 @@ def bose_Hamiltonian (**args):
 
 	cores_num = np.int(args.get("cores_num"))
 
-	if cores_num > 1:
-		
-		Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
-		
-		step = DIM_H // cores_num
-		split = Parallel(n_jobs=cores_num)(delayed(parallel_evaluate_ham)(step*k, step*(k+1),**args) for k in range(cores_num))
 
-		for i in range(cores_num):
-			
-			Hamiltonian += split[i]
-
-	else:
-		print('HOLA')
-
-		X0 = [0]*DIM_H
-		Y0 = [0]*DIM_H
-		A0 = [0]*DIM_H
+	X0 = [0]*DIM_H
+	Y0 = [0]*DIM_H
+	A0 = [0]*DIM_H
 
 #............	
 #............	JOAN PARALLELIZZA il LOOOOOOP a tope
 #............
-		
-		t0= time.time()
-		
-		pool = multiprocessing.Pool(4)
-		b = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
-		
+	
+	t0= time.time()
+	
+	pool = multiprocessing.Pool(cores_num)
+	b = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
+	
 
-		
-		for i  in range(len(b)):
-			X0[i] , Y0[i], A0[i] = b[i]
+	
+	for i  in range(len(b)):
+		X0[i] , Y0[i], A0[i] = b[i]
 
-		
-		t1= time.time()
+	
+	t1= time.time()
 
-		#~ '''
-		for i in range(DIM_H):
 
-			X0[i],Y0[i],A0[i] = evaluate_ham(i, **args)
-		#~ '''
+	for i in range(DIM_H):
 
-		t2= time.time()
+		X0[i],Y0[i],A0[i] = evaluate_ham(i, **args)
 
-		print(t1-t0)	
-		print(t2-t1)	
-		
-		#here we flatten the arrays
-		X1 = [item for sublist in X0 for item in sublist]
-		Y1 = [item for sublist in Y0 for item in sublist]
-		A1 = [item for sublist in A0 for item in sublist]
 
-		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
+	t2= time.time()
+
+	print(t1-t0)	
+	print(t2-t1)
+	print((t2-t1)/(t1-t0))	
+	
+	#here we flatten the arrays
+	X1 = [item for sublist in X0 for item in sublist]
+	Y1 = [item for sublist in Y0 for item in sublist]
+	A1 = [item for sublist in A0 for item in sublist]
+
+	Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
 
 	if mat_type == 'Dense':
 
