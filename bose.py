@@ -17,11 +17,11 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 9
-nn_inp 			 = 9
+ll_inp 			 = 4
+nn_inp 			 = 2
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
-U_inp  			 = -5
+U_inp  			 = -1
 mat_type_inp     = 'Sparse' 	#'Sparse' #.... deafault Dense
 parity_inp       = 'True'		#.... deafault False
 n_diag_state_inp = 1
@@ -70,6 +70,7 @@ HOP_list     = ff.Hop_prep(**Constants_dictionary)
 Global_dictionary["HOP_list"]  = HOP_list
 
 
+
 if Constants_dictionary.get("parity") == 'True':
 
 	Global_dictionary["parity_index"], Constants_dictionary["sim_sec_len"] = ham_par.base_parity(**Global_dictionary)
@@ -84,12 +85,12 @@ else:
 
 	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
 
-quit()
+
 
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
-
-
+ff.print_matrix(Hamiltonian)
+quit()
 
 
 

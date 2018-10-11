@@ -33,6 +33,7 @@ def hilb_dim(x,y,tab_fact):
 
 def hilb_dim_tab(**args):
 
+
 	ll = args.get("ll")
 	nn = args.get("nn")	
 	tab_fact = args.get("tab_fact")
@@ -47,31 +48,35 @@ def Base_prep(**args):
 
 	ll = args.get("ll")
 	nn = args.get("nn")
+	DIM_H        = args.get("DIM_H")
 
-	base_bin = []
-	base_num = []
-	base_ind = []
+	cores_num = np.int(args.get("cores_num"))
 
-#	Max = int(sum([2**(ll+nn-2-x) for x in range(nn)]))
-#	TO_con_tab = [None] * Max
+	base_bin  = [0]*DIM_H
+	base_bose = np.zeros((DIM_H,ll), dtype=np.int8)
+	base_ind  = [0]*DIM_H
+	
+	base_combinations = [bits for bits in itertools.combinations(range(nn+ll-1), nn)]
 
-	for bits in itertools.combinations(range(nn+ll-1), nn):
+#............	
+#............	JOAN PARALLELIZZA il LOOOOOOP
+#............	
+
+	for x in range(DIM_H):
+
 		s = ['0'] * (nn+ll-1)	
+		bits = base_combinations[x]
+
 		for bit in bits:
 			s[bit] = '1'	
 		bi = ''.join(s)	
-		base_bin.append(bi)
 
 		bose = TO_bose_conf(s,ll)
-
-		base_num.append(bose)
-
 		in_bi=int(bi,2)
-		base_ind.append(in_bi)
 
-		#TO_con_tab[in_bi] = bi
-
-	base_bose = np.asarray(base_num, dtype=np.int8)
+		base_bin[x]  = bi
+		base_bose[x] = bose
+		base_ind[x]  = in_bi
 
 	return base_bin, base_bose, base_ind
 

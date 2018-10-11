@@ -7,7 +7,7 @@ import function as ff
 import hamiltonian_parity as ham_par
 from joblib import Parallel, delayed
 
-
+import multiprocessing
 
 def bose_Hamiltonian (**args):
 
@@ -44,53 +44,29 @@ def bose_Hamiltonian (**args):
 
 	else:
 
-		t1=time.time()
+		X0 = [0]*DIM_H
+		Y0 = [0]*DIM_H
+		A0 = [0]*DIM_H
 
-		#...... 2*nn is possibly the max dimension
+#............	
+#............	JOAN PARALLELIZZA il LOOOOOOP a tope
+#............
 
-		vec = np.zeros((DIM_H,2*nn,3))
+		pool = multiprocessing.Pool(2)
+		X1,Y1,A1 = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
 
+		'''
 		for i in range(DIM_H):
 
-			if i%10000 == 0:
-				print(i)
-
-			A,B,C = evaluate_ham(i, **args)
-
-			for j in range(len(A)):
-
-				vec[i,j] = [A[j],B[j],C[j]]
-
-		np.concatenate(vec)
-
-		t2=time.time()
-
-		X0 = []
-		Y0 = []
-		A0 = []
-
-		for i in range(DIM_H):
-
-			if i%10000 == 0:
-				print(i)
-
-			A, B, C = evaluate_ham(i, **args)
-			
-			X0.append(A)
-			Y0.append(B)
-			A0.append(C)
+			X0[i],Y0[i],A0[i] = evaluate_ham(i, **args)
+		'''
 
 		#here we flatten the arrays
 		X1 = [item for sublist in X0 for item in sublist]
 		Y1 = [item for sublist in Y0 for item in sublist]
 		A1 = [item for sublist in A0 for item in sublist]
 
-		t3=time.time()
-
 		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
-
-		print('TT1', t2-t1)
-		print('TT2', t3-t2)
 
 	if mat_type == 'Dense':
 
