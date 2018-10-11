@@ -52,7 +52,7 @@ def bose_Hamiltonian (**args):
 #............	JOAN PARALLELIZZA il LOOOOOOP a tope
 #............
 
-		pool = multiprocessing.Pool(2)
+		pool = multiprocessing.Pool(20)
 		X1,Y1,A1 = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
 
 		'''
@@ -73,6 +73,7 @@ def bose_Hamiltonian (**args):
 		Hamiltonian = csc_matrix.todense(Hamiltonian)
 
 	return Hamiltonian
+
 
 
 def parallel_evaluate_ham (a,b,**args):
