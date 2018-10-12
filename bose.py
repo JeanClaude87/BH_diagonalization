@@ -17,8 +17,8 @@ import time_evolution	  as t_ev
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 5
-nn_inp 			 = 5
+ll_inp 			 = 3
+nn_inp 			 = 2
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
