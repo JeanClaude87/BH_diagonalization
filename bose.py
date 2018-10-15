@@ -33,6 +33,9 @@ parity_inp       = 'False'		#.... deafault False
 n_diag_state_inp = 1
 cores_num_inp    = 2
 
+if mat_type == None:
+	mat_type = 'Sparse'
+
 
 ######............PREPARATION OF DICTIONARSS
 
@@ -112,17 +115,9 @@ if Constants_dictionary.get("parity") == 'True':
 
 else:
 
-	print('rank', COMM.rank)
-
-	#Hamiltonian = ham_MPI.bose_Hamiltonian(**Global_dictionary)
-
 	if COMM.rank == 0:
 
 		mat_type = Global_dictionary.get("mat_type")
-
-		if mat_type == None:
-			mat_type = 'Sparse'
-
 		jobs = list(range(DIM_H))
 		jobs = ham_MPI.split(jobs, COMM.size)
 
@@ -172,7 +167,7 @@ if COMM.rank == 0:
 	t2 = time.time()
 	print(t2-t1)
 
-	ff.print_matrix(Hamiltonian)
+	#ff.print_matrix(Hamiltonian)
 
 
 quit()
