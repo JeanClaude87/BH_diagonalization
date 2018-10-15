@@ -7,18 +7,24 @@ from scipy.sparse import linalg
 from numpy import linalg as LA
 import time
 
+from mpi4py import MPI
 
 import hamiltonian        as ham
 import hamiltonian_parity as ham_par
 import function           as ff
 import observables        as ob
 import time_evolution	  as t_ev
-
+import Hamiltonian_MPI	  as ham_MPI
 
 np.set_printoptions(precision=3)
 
-ll_inp 			 = 3
-nn_inp 			 = 2
+COMM = MPI.COMM_WORLD
+
+if COMM.rank == 0:
+	t1 = time.time()
+
+ll_inp 			 = 10
+nn_inp 			 = 5
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
@@ -54,22 +60,44 @@ DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
 Constants_dictionary["DIM_H"]        = DIM_H 
 Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
-print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
-print('ll', ll_inp, 'nn', nn_inp)
+if COMM.rank == 0:
+
+	print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
+	print('ll', ll_inp, 'nn', nn_inp)
 
 Global_dictionary.update(Constants_dictionary)
 
-BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+
+
+if COMM.rank == 0:
+
+	BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+
+	Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
+	Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
+	Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
+
+else:
+
+	BASE_bin 		= None
+	BASE_bose 		= None
+	CONF_tab		= None
+
+
+BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
+BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
+CONF_tab		= COMM.bcast(CONF_tab,	root=0)
+
+
 
 Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
 Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
 Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
 
+
 HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
 Global_dictionary["HOP_list"]  = HOP_list
-
-
 
 if Constants_dictionary.get("parity") == 'True':
 
@@ -80,16 +108,76 @@ if Constants_dictionary.get("parity") == 'True':
 
 	Hamiltonian = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 
-
 else:
 
-	Hamiltonian = ham.bose_Hamiltonian(**Global_dictionary)
+	print('rank', COMM.rank)
+
+	#Hamiltonian = ham_MPI.bose_Hamiltonian(**Global_dictionary)
+
+	if COMM.rank == 0:
+
+		DIM_H 	 = np.int(Global_dictionary.get("DIM_H"))
+		ll 		 = Global_dictionary.get("ll")	
+		nn 		 = Global_dictionary.get("nn")				
+		mat_type = Global_dictionary.get("mat_type")
+
+		if mat_type == None:
+			mat_type = 'Sparse'
+
+		jobs = list(range(DIM_H))
+		jobs = ham_MPI.split(jobs, COMM.size)
+
+	else:
+		jobs = None
+
+	jobs = COMM.scatter(jobs, root=0)
+
+	XX = []
+	YY = []
+	AA = []
+
+	for i in jobs:
+		res = ham.evaluate_ham(i, **Global_dictionary)
+		XX.append(res[0])
+		YY.append(res[1])
+		AA.append(res[2])
+
+	XX0 = MPI.COMM_WORLD.gather( XX, root=0)
+	YY0 = MPI.COMM_WORLD.gather( YY, root=0)
+	AA0 = MPI.COMM_WORLD.gather( AA, root=0)
+
+	if COMM.rank == 0:
+
+		X0 = [item for sublist in XX0 for item in sublist]
+		Y0 = [item for sublist in YY0 for item in sublist]
+		A0 = [item for sublist in AA0 for item in sublist]
+
+		X1 = [item for sublist in X0 for item in sublist]
+		Y1 = [item for sublist in Y0 for item in sublist]
+		A1 = [item for sublist in A0 for item in sublist]
+
+
+		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
+		#ff.print_matrix(Hamiltonian)
+
+		if mat_type == 'Dense':
+
+			Hamiltonian = csc_matrix.todense(Hamiltonian)
+
+if COMM.rank == 0:
+	t2 = time.time()
+	print(t2-t1)
+
+quit()
+
 
 
 
 E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
-quit()
+
+
+
 
 
 
