@@ -23,8 +23,8 @@ COMM = MPI.COMM_WORLD
 if COMM.rank == 0:
 	t1 = time.time()
 
-ll_inp 			 = 10
-nn_inp 			 = 6
+ll_inp 			 = 20
+nn_inp 			 = 8
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
@@ -170,16 +170,12 @@ if COMM.rank == 0:
 	#ff.print_matrix(Hamiltonian)
 
 
+	E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
+
+	print(E)
+
+
 quit()
-
-
-
-
-E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
-
-
-
-
 
 
 
