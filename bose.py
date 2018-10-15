@@ -23,8 +23,8 @@ COMM = MPI.COMM_WORLD
 if COMM.rank == 0:
 	t1 = time.time()
 
-ll_inp 			 = 35
-nn_inp 			 = 5
+ll_inp 			 = 40
+nn_inp 			 = 6
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
