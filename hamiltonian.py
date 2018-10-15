@@ -5,9 +5,7 @@ from numpy import linalg as lin
 import time
 import function as ff
 import hamiltonian_parity as ham_par
-from joblib import Parallel, delayed
 
-import multiprocessing
 import functools
 
 def bose_Hamiltonian (**args):
