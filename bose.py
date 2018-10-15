@@ -23,8 +23,8 @@ COMM = MPI.COMM_WORLD
 if COMM.rank == 0:
 	t1 = time.time()
 
-ll_inp 			 = 10
-nn_inp 			 = 5
+ll_inp 			 = 7
+nn_inp 			 = 7
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
@@ -67,6 +67,7 @@ if COMM.rank == 0:
 
 Global_dictionary.update(Constants_dictionary)
 
+COMM.Barrier()
 
 
 if COMM.rank == 0:
@@ -83,6 +84,7 @@ else:
 	BASE_bose 		= None
 	CONF_tab		= None
 
+COMM.Barrier()
 
 BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
 BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
@@ -116,9 +118,6 @@ else:
 
 	if COMM.rank == 0:
 
-		DIM_H 	 = np.int(Global_dictionary.get("DIM_H"))
-		ll 		 = Global_dictionary.get("ll")	
-		nn 		 = Global_dictionary.get("nn")				
 		mat_type = Global_dictionary.get("mat_type")
 
 		if mat_type == None:
@@ -129,6 +128,8 @@ else:
 
 	else:
 		jobs = None
+
+	COMM.Barrier()
 
 	jobs = COMM.scatter(jobs, root=0)
 
@@ -142,9 +143,13 @@ else:
 		YY.append(res[1])
 		AA.append(res[2])
 
+	COMM.Barrier()
+
 	XX0 = MPI.COMM_WORLD.gather( XX, root=0)
 	YY0 = MPI.COMM_WORLD.gather( YY, root=0)
 	AA0 = MPI.COMM_WORLD.gather( AA, root=0)
+
+	COMM.Barrier()
 
 	if COMM.rank == 0:
 
@@ -158,8 +163,7 @@ else:
 
 
 		Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
-		#ff.print_matrix(Hamiltonian)
-
+		
 		if mat_type == 'Dense':
 
 			Hamiltonian = csc_matrix.todense(Hamiltonian)
@@ -167,6 +171,9 @@ else:
 if COMM.rank == 0:
 	t2 = time.time()
 	print(t2-t1)
+
+	ff.print_matrix(Hamiltonian)
+
 
 quit()
 
