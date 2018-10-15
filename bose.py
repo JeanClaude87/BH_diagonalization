@@ -24,7 +24,7 @@ if COMM.rank == 0:
 	t1 = time.time()
 
 ll_inp 			 = 30
-nn_inp 			 = 10
+nn_inp 			 = 5
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
 U_inp  			 = -1
