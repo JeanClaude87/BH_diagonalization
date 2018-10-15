@@ -33,8 +33,8 @@ parity_inp       = 'False'		#.... deafault False
 n_diag_state_inp = 1
 cores_num_inp    = 2
 
-if mat_type == None:
-	mat_type = 'Sparse'
+if mat_type_inp == None:
+	mat_type_inp = 'Sparse'
 
 
 ######............PREPARATION OF DICTIONARSS
