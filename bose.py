@@ -23,7 +23,7 @@ COMM = MPI.COMM_WORLD
 if COMM.rank == 0:
 	t1 = time.time()
 
-ll_inp 			 = 18
+ll_inp 			 = 16
 nn_inp 			 = 8
 BC_inp 			 = 0			# 0 is periodic
 t_inp  			 = -1
