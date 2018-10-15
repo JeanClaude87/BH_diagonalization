@@ -7,7 +7,7 @@ import function as ff
 import hamiltonian_parity as ham_par
 
 import functools
-
+'''
 def bose_Hamiltonian (**args):
 
 #Hamiltonian needs as input:
@@ -90,7 +90,7 @@ def parallel_evaluate_ham (a,b,**args):
 
 	return Hamiltonian
 
-
+'''
 
 
 def evaluate_ham(i,**args):
