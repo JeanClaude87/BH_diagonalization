@@ -9,18 +9,18 @@ import hamiltonian        as ham
 import hamiltonian_parity as ham_par
 import function           as ff
 import observables        as ob
-import function_P        as ffp
+#~ import function_P        as ffp
 
 
 np.set_printoptions(precision=4)
 
-ll_inp = 11
-nn_inp = 4
+ll_inp = 3
+nn_inp = 2
 BC_inp = 1
 t_inp  = -1
 U_inp  = -1
 mat_type_inp = 'Sparse' #.... deafault Dense
-parity_inp   = 'True'	#.... deafault False
+parity_inp   = 'False'	#.... deafault False
 n_diag_state_inp = 2
 
 cores_num_inp = 1
@@ -118,13 +118,16 @@ else:
 E,V = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
 #~ print(E)
-print(V)
+#~ print(V)
+print('')
 
-for i in range(n_diag_state):
+ff.print_matrix(Hamiltonian)
 
-	dens   = ob.density( V[:,i],       **Global_dictionary)
+#~ for i in range(n_diag_state):
 
-	print(dens)
+	#~ dens   = ob.density( V[:,i],       **Global_dictionary)
+
+	#~ print(dens)
 
 
 

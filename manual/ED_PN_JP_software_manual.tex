@@ -11,13 +11,13 @@
 %Rux: no word splitting
 %~ \usepackage[none]{hyphenat}
 
-\usepackage{booktabs} % Rux: \small, \tiny
+%~ \usepackage{booktabs} % Rux: \small, \tiny
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
-\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+%~ \usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage[english]{babel} % English language/hyphenation
-% Rux: added bm for vectors
+%~ % Rux: added bm for vectors
 \usepackage{amsmath,amsfonts,amsthm, bm} % Math packages
-% Rux: more math symbols
+%~ % Rux: more math symbols
 \usepackage{amssymb}
 
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
@@ -141,7 +141,7 @@ tabsize=2, % Number of spaces per tab in the code
 \renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
 \renewcommand\abstractname{SWaRP}
 
-\title{\line(1,0){250}\\Exact diagonalization\\User Manual\\\line(1,0){250}}
+\title{\line(1,0){250}\\Exact diagonalization\\User Manual\\PNJPG\\\line(1,0){250}}
 \author{Juan Polo (\url{joanpologomez@gmail.com}) \\ 
 Piero Naldesi (\url{piero.naldesi@lpmmc.cnrs.fr})}
 \affil{LPMMC, Grenoble, France}
@@ -161,7 +161,7 @@ Exact diagonalization of interacting Bose gases
 
 \section{Quick User Guide}
 
-The SWaRP software package is a pure python code, consisting of two main scripts (\textit{detectorDistortion.py} and \textit{waveFront.py}) and several libraries (\textit{func.py} - containing the main functions of the code, \textit{EdfFile.py} - dedicated to handling the EDF file format, \textit{norm\textunderscore xcorr.py} - computes subset displacements using cross-correlation in the real-space, \textit{g2s.py} - performs \textit{grad2surf} integration). Being mainly a number-crunching code, it is currently designed to be ran directly from a terminal without a graphical user interface.
+The PNJPG software package is a pure python code, consisting of two main scripts (\textit{bose.py} and \textit{Hamiltonian.py}) and several libraries (\textit{function.py} - containing the main functions of the code. Being mainly a number-crunching code, it is currently designed to be ran directly from a terminal without a graphical user interface.
 
 \subsection{Installation}
 
@@ -179,13 +179,49 @@ The SWaRP software package is a pure python code, consisting of two main scripts
 \section{Exact diagonalization principle}
 
 
-The first element to implement an Exact diagonalization algorithm is to find the best way to write the basis. In particular we need to index each state of the basis in a way that we can easily distinctly identify them. We will use the following table as an example:
+The first key element for implementing an Exact diagonalization algorithm is to find the best way to write the basis. In particular we need to index each state of the basis in a way that we can easily and distinctly identify each of the states of the basis. We will use the following table as an example:
+
+\begin{table}[h!]
+  \begin{center}
+    \label{tab:table1}
+    \begin{tabular}{c|c|c} % <-- Alignments
+      \textbf{Bose config.} & \textbf{Configuration} & \textbf{Index}\\
+      \hline
+      (2,0,0) 		& 	(1,1,0,0)		& 		0	\\
+      (1,1,0) 		& 	(1,0,1,0)		& 		1	\\
+      (1,0,1) 		& 	(1,0,0,1)		& 		2	\\
+      (0,2,0) 		& 	(0,1,1,0)		& 		3	\\
+      (0,1,1) 		& 	(0,1,0,1)		& 		4	\\
+      (0,0,2) 		& 	(0,0,1,1) 		& 		5	\\
+    \end{tabular}
+    \caption{Table showing different representations of the states in the basis for $N=2$ and $L=3$.}    
+  \end{center}
+\end{table}
+
+Note that in Table \ref{tab:table1} we use the following idea to write the states from the Bose-Hubbard configuration to the Configuration space of our code: (i) whenever we find a number of consecutive ones $n\ge1$ in the list it means that there are $n$ particles in that position, (ii) a zero means that we need to go to the next position. Thus, a $(1,1,0,0)$ means two particles in the first position and 0 in the rest, whereas (0,1,0,1) means zero particles in the first position, one in the second, and 1 in the last.
 
 
+However we have not still mention how to obtain the full bases. In order to do so more easily we will build all possible combinations of zeros and ones in the so called configuration space. Note that the dimension of our tupple will be $N+L-1$. 
+
+\lstinputlisting[style=Style1,firstline=46, lastline=77]{scripts/function.py}
+
+In this function we first we use ``itertools.combinations(range(nn+ll-1),nn)'' which gives all possible combinations with no repetitions in the following way: combinations(range(4),2) will give all possible combinations of the elements $(0,1,2,3)$ in chunks of $2$, thus $(0,1)$, $(0,2)$, $(0,3)$, $(1,2)$, $(1,3)$, $(2,3)$. 
+The second for puts one in the positions that are chosen in the previous intertools functions. Example $(0,1)$ will put a $1$ in the position $0$ and $1$ of the list $s$ of dimension $N+L-1$. Finally .join  put the list together in a single set of numbers like $1100$. Finally we create ``base\_bose'' and ``base\_bin''. Note that our states are already in base\_bin form, while for base\_bose we need to use the ``TO\_bose\_conf'' function. In this same function we also save the indexes using ``in\_bi=int(bi,2)'' that basically finds the decimal number of the binary form of $1100$.
 
 
+Next step is to prepare the possible hoppings that can occur in our system to then be able to write the Hamiltonian with its corresponding nondiagonal terms. This is done in a single line calculation. The dimensions of the hopping are $N+L-2$ and for each one of this values we calculate how can we jump to other states in binary and then we write that in configuration form. So for example we get $1100$, $0110$ and $0011$. This will be the ``states'' that we will use to perform an XOR and calculate the hopping. For instance from $1100$ we apply $1100$ and leds to the same state, but $1100$ with $0110$ leads to $1010$ which is the action of $a_{i+1}^{\dagger}a_{i}$.
+\lstinputlisting[style=Style1,firstline=157, lastline=164]{scripts/function.py}
 
-\lstinputlisting[style=Style1,firstline=37, lastline=45]{scripts/bose.py}
+
+Finally we create the Hamiltonian, ideally in a sparse form. The function to create the Hamiltonian relies on evaluate\_ham. In this function we start by taking each element of the base and the calculate the hopping with respect to that element. As it is an element of the base, we can calculate directly the effect of the interactions by easily applying TO\_bose\_conf in the state and then getting the onsite interaction for the population in each site. 
+Note that in all this process we append the values and indexes in three vectors in such a way that we never save positions with zero weight in the Hamiltonian. Next we apply the hopping in each state for all the list of possible hoppings obtained before using the XOR operation (this calculation is done in decimal base). It is necessary to check that we have not increased or decreased the number of particles. We transform the state in binary form and calculate its positon in the base.
+
+Note that the index is obtained by calculating the binary value in reverse form. We take the Hilbert dimensions and subtract the value of the Hilbert dimensions that we would have if we were in a corresponding state. As an example for state $0011$ we calculate the Hilbert dimension of $n=2,\,L=5$ that is $D(N,M)=(N+M-1)!/(N!(M-1)!)$. So for the first zero its $3$ and the second 0 in the state is gives dim $2$. The total result is $6-(3-2)=5$ which is the index corresponding to state $0011=(0,0,2)$.
+\lstinputlisting[style=Style1,firstline=80, lastline=110]{scripts/function.py}
+
+We also need to calculate the action of the hopping, which is done in the usual way in the Bose configuration using the formula $a^{\dagger}_{1}a^{\dagger}_{0}|n,m\rangle = \sqrt{n(m+1)}|n-1,m+1\rangle$.
+
+If periodic boundary conditions are considered $(BC=0)$ we need to calculate some extra hoppings
 
 
 
