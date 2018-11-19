@@ -5,6 +5,7 @@ from numpy import linalg as lin
 import time
 import function as ff
 import hamiltonian_parity as ham_par
+import random 
 
 import functools
 '''
@@ -143,8 +144,7 @@ def evaluate_ham(i,**args):
 			hop_state     = ff.TO_con(hop_state_bin,ll+nn-1)
 
 			j = ff.get_index(hop_state,**args)	
-
-			kin_val = t*action_hopping(i,j,**args)
+			kin_val = action_hopping(i,j,**args)
 
 			if kin_val != 0.0:
 
@@ -161,8 +161,7 @@ def evaluate_ham(i,**args):
 
 			PBC_newstate1 = state[1:]+state[0]				
 			j = ff.get_index(PBC_newstate1,**args)	
-
-			kin_val = t*action_hopping(i,j,**args)
+			kin_val = action_hopping(i,j,**args)
 			
 			if kin_val != 0.0:
 
@@ -175,8 +174,7 @@ def evaluate_ham(i,**args):
 
 			PBC_newstate2 = state[-1]+state[:-1]
 			j = ff.get_index(PBC_newstate2,**args)	
-
-			kin_val = t*action_hopping(i,j,**args)
+			kin_val = action_hopping(i,j,**args)
 			
 			if kin_val != 0.0:
 
@@ -193,7 +191,7 @@ def action_hopping(x,y,**args):
 
 	ll 		 = args.get("ll")	
 	BASE_bin = args.get("BASE_bin")
-
+	t 		 = args.get("t")
 
 	state_x   = BASE_bin[x]
 	bosecon_x = ff.TO_bose_conf(state_x,ll)
@@ -201,12 +199,26 @@ def action_hopping(x,y,**args):
 	state_y   = BASE_bin[y]
 	bosecon_y = ff.TO_bose_conf(state_y,ll)
 
-	jump_c  =	np.argmax(bosecon_x-bosecon_y)
+
 	jump_cd  =	np.argmin(bosecon_x-bosecon_y)
+	jump_c  =	np.argmax(bosecon_x-bosecon_y)
+
+	rem = (jump_c+1)%ll
+
+	if   rem == jump_cd:
+		direction = 'right'
+		hop       = np.conjugate(t) 
+	elif jump_c == jump_cd:
+		direction = 'stand'
+	else:
+		direction = 'left'
+		hop       = t		
+
+#	print(bosecon_x,bosecon_y,direction)
 
 	result	  = np.sqrt((bosecon_x[jump_cd]+1)*(bosecon_x[jump_c])) 
-	
-	return result
+
+	return hop*result
 
 
 def action_interactions(state,**args):
@@ -215,7 +227,7 @@ def action_interactions(state,**args):
 	U 		 = args.get("U")
 
 	bosecon = ff.TO_bose_conf(state,ll)
-	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)
+	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)#*0.0000001*(random.randint(0,2)-1)
 
 	return int_val
 

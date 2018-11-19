@@ -223,7 +223,23 @@ def print_matrix(H):
 
 
 
+def levstat(E):
 
+	Dim  = np.size(E)
+
+	gap  = E[1:]-E[:-1]
+	B    = []
+	
+	for i in range(Dim-2):
+		if np.maximum(gap[i+1],gap[i])==0:
+			continue
+		else:	
+			xx = np.minimum(gap[i+1],gap[i])/np.maximum(gap[i+1],gap[i])	
+			B.append(xx)
+
+	B = np.asarray(B)
+
+	return B
 
 
 
