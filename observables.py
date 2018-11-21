@@ -49,7 +49,7 @@ def CdiCj(V, dens, **args):
 	C   = np.power(states,1/4)
 	V_c = np.conj(V)
 
-	CdiCj = np.zeros((ll,ll), dtype=np.float)
+	CdiCj = np.zeros((ll,ll), dtype=np.complex)
 
 	for i in range(ll):
 		for j in range(i+1,ll):
@@ -63,7 +63,6 @@ def CdiCj(V, dens, **args):
 				CdiCj[i,j] = np.dot(A[A!=0],B[B!=0])
 
 				
-
 	CdiCj += CdiCj.T
 	CdiCj += np.diag(dens)
 
