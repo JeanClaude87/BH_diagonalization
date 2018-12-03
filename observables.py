@@ -26,17 +26,21 @@ def OUTER_creation(A):
 		B[i] = np.outer(A[i],A[i])
 	return B
 
-def NiNj(V,CORR_BASE):
+def NiNj(V,**args):
 
-	NN = np.einsum('n,nij -> ij', V**2, CORR_BASE)
+	states   = args.get("BASE_bose")
+	ll  	 = args.get("ll")
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	Cor_B = np.zeros((DIM_H,ll,ll), dtype=np.float)
+	
+	for i in range(DIM_H):
+		Cor_B[i] = np.outer(states[i],states[i])
+
+	aa = (V.T)[0].T
+	NN = np.einsum('n,nij -> ij', np.abs(aa)**2, Cor_B)
 
 	return NN
-
-def NfixNr(V,i,CORR_BASE):
-
-	NiN = np.einsum('n,nj -> j', V**2, CORR_BASE[:,i])
-
-	return NiN
 
 
 def CdiCj(V, dens, **args):
@@ -54,8 +58,8 @@ def CdiCj(V, dens, **args):
 	for i in range(ll):
 		for j in range(i+1,ll):
 
-				Cd_C = Cd[:,i] * C[:,j]		# V
-				C_Cd = C[:,i]  * Cd[:,j] 	# V*
+				Cd_C = Cd[:,i] * C [:,j]	# V
+				C_Cd = C [:,i] * Cd[:,j] 	# V*
 
 				A = V   * Cd_C
 				B = V_c * C_Cd

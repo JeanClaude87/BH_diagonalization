@@ -246,7 +246,3 @@ def levstat(E):
 
 
 
-
-
-
-
