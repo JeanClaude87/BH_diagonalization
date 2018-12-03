@@ -37,7 +37,7 @@ t_inp  			 = 1*np.exp(2*np.pi*1j*flux_inp/ll_inp)
 
 
 for nn_inp in [2, 3, 4, 5]:
-	for ll_inp in [5, 10, 15, 20]:
+	for ll_inp in [5, 10, 15, 20, 25]:
 		for U_inp in np.arange(0.1,3,0.1):
 			for flux_inp in np.arange(0.00,0.5,0.02):
 
@@ -177,6 +177,8 @@ for nn_inp in [2, 3, 4, 5]:
 
 				if COMM.rank == 0:
 
+					
+				#	ff.print_matrix(Hamiltonian)
 
 					E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
@@ -185,20 +187,21 @@ for nn_inp in [2, 3, 4, 5]:
 
 					nn_cor = ob.NiNj(V,**Global_dictionary)
 
+					print(E)
+					#print(nn_cor[0])
+
 					directory = 'DATA'+os.sep+'N_'+str(nn_inp)+os.sep+'L_'+str(ll_inp)+os.sep+'U_'+str(U_inp)+os.sep+'Om_'+str(flux_inp)
 					LOCAL 	  = Constants_dictionary.get("LOCAL")
 					PATH_now  = LOCAL+os.sep+directory+os.sep
-					
+
 					if not os.path.exists(PATH_now):
 						os.makedirs(PATH_now)
 
-					name_fide = PATH_now+str('energy.dat')
-					np.savetxt(name_fide, E , fmt='%.9f')
+					name_energy = PATH_now+str('energy.dat')
+					np.savetxt(name_energy, E , fmt='%.9f')
 
-					name_fide = PATH_now+str('corr.dat')
-					np.savetxt(name_fide, nn_cor[0] , fmt='%.9f')
-
-					t2 = time.time()
+					name_corr = PATH_now+str('corr.dat')
+					np.savetxt(name_corr, nn_cor[0] , fmt='%.9f')
 
 quit()
 
