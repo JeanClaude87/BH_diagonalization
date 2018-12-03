@@ -177,8 +177,6 @@ for nn_inp in [2, 3, 4, 5]:
 
 				if COMM.rank == 0:
 
-					
-				#	ff.print_matrix(Hamiltonian)
 
 					E,V   = ham.diagonalization(Hamiltonian, **Global_dictionary)
 
@@ -187,9 +185,6 @@ for nn_inp in [2, 3, 4, 5]:
 
 					nn_cor = ob.NiNj(V,**Global_dictionary)
 
-					print(E)
-					#print(nn_cor[0])
-
 					directory = 'DATA'+os.sep+'N_'+str(nn_inp)+os.sep+'L_'+str(ll_inp)+os.sep+'U_'+str(U_inp)+os.sep+'Om_'+str(flux_inp)
 					LOCAL 	  = Constants_dictionary.get("LOCAL")
 					PATH_now  = LOCAL+os.sep+directory+os.sep
@@ -197,8 +192,13 @@ for nn_inp in [2, 3, 4, 5]:
 					if not os.path.exists(PATH_now):
 						os.makedirs(PATH_now)
 
+					name_fide = PATH_now+str('energy.dat')
+					np.savetxt(name_fide, E , fmt='%.9f')
+
+					name_fide = PATH_now+str('corr.dat')
+					np.savetxt(name_fide, nn_cor[0] , fmt='%.9f')
+
 					t2 = time.time()
-					print(t2-t1)
 
 quit()
 
