@@ -41,6 +41,8 @@ for nn_inp in [2, 3, 4, 5]:
 		for U_inp in np.arange(0.1,3,0.1):
 			for flux_inp in np.arange(0.00,0.5,0.02):
 
+				t_inp  = 1*np.exp(2*np.pi*1j*flux_inp/ll_inp)
+
 				if mat_type_inp == None:
 					mat_type_inp = 'Sparse'
 
