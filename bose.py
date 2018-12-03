@@ -186,11 +186,8 @@ for nn_inp in [2, 3, 4, 5]:
 
 					#dens  = ob.density(V, **Global_dictionary)
 					#CC    = ob.CdiCj  (V, dens, **Global_dictionary)
-
+					
 					nn_cor = ob.NiNj(V,**Global_dictionary)
-
-					print(E)
-					#print(nn_cor[0])
 
 					directory = 'DATA'+os.sep+'N_'+str(nn_inp)+os.sep+'L_'+str(ll_inp)+os.sep+'U_'+str(U_inp)+os.sep+'Om_'+str(flux_inp)
 					LOCAL 	  = Constants_dictionary.get("LOCAL")
