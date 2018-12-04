@@ -18,7 +18,7 @@ for NN in 2 3 4 5
                     sed -e "s/N1N/$NN/g" -e "s/L1L/$LL/g" -e "s/U1U/$UU/g" -e "s/O1O/$OO/g" < lancio.sh > temp.tmp
 
                     mv temp.tmp uga-N_$NN-L_$LL-U_$UU-O_$OO.inp        
-                    printf  "%s\n" "uga-N_$NN-L_$LL-U_$UU-O_$OO.inp" >> script_wait.sh
+                    printf  "%s\n" "qsub uga-N_$NN-L_$LL-U_$UU-O_$OO.inp" >> script_wait.sh
                     
                     wait                
 
