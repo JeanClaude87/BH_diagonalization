@@ -23,19 +23,8 @@ cd ${WORKDIR}
 
 echo $SHELL
 
-for NN in 2 3 4 5
-	do
-	for LL in 10 15 20 25
-		do
-		for UU in $(seq -w 0.0 0.2 1.0)
-			do
-			for OO in $(seq -w 0.0 0.02 0.5)
-				do
+mpirun -np 30 python3 bose.py N1N L1L U1U O1O
 
-					mpirun -np 36 python3 bose.py $NN $LL $UU $OO
+wait
 
-			done
-		done
-	done
-done
-
+rm -f uga-N_N1N-L_L1L-U_U1U-O_O1O.inp
