@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### nom du job (a changer)
-#$ -N L_LLL-D_DDD-nr_nnn
+#$ -N N_N1N-L_L1L-U_U1U-O_O1O
 
 ### parallel environment & nb cpu (NSLOTS)
 
