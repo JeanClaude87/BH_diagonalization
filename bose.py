@@ -27,7 +27,7 @@ if COMM.rank == 0:
 
 nn_inp   = int(sys.argv[1])
 ll_inp   = int(sys.argv[2])
-U_inp    = float(sys.argv[3])
+U_inp    = -1.0*float(sys.argv[3])
 flux_inp = float(sys.argv[4])
 
 #nn_inp 		= 2
@@ -41,15 +41,13 @@ mat_type_inp     = 'Sparse' 	#.... deafault Dense
 parity_inp       = 'False'		#.... deafault False
 n_diag_state_inp = 1
 cores_num_inp    = 2
-t_inp  			 = 1*np.exp(2*np.pi*1j*flux_inp/ll_inp)
+t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 
 #for nn_inp in [2, 3, 4, 5]:
 #	for ll_inp in [5, 10, 15, 20, 25]:
 #		for U_inp in np.arange(0.1,3,0.1):
 #			for flux_inp in np.arange(0.00,0.5,0.02):
-
-t_inp  = 1*np.exp(2*np.pi*1j*flux_inp/ll_inp)
 
 if mat_type_inp == None:
 	mat_type_inp = 'Sparse'
