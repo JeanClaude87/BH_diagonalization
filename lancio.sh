@@ -6,7 +6,8 @@
 ### parallel environment & nb cpu (NSLOTS)
 
 #$ -pe mpi16_debian 16
-#$ -q   "h48-E5-2667v2deb128,h6-E5-2667v4deb128,E5-2667v2deb128nl,E5-2667v4deb256A,E5-2670deb128A,E5-2670deb128B,E5-2670deb128nl"
+#$ -q   "h48-E5-2667v2deb128,h6-E5-2667v4deb128,E5-2667v2deb128nl,E5-2667v4deb256A,
+E5-2670deb128A,E5-2670deb128B,E5-2670deb128nl"
 
 
 module load Python/3.6.1
