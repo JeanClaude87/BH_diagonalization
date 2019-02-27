@@ -1,5 +1,8 @@
 #!/bin/bash
 
+
+mpirun -np 1 python3 bose.py 2 25 3.0 0.5
+
 for NN in 4 5
 	do
 	for LL in 10 15 20 25

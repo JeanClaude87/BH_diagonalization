@@ -116,6 +116,7 @@ def get_index(state,**args):
 #..................................from BOSE configuration to bin number
 def FROM_bose_TO_bin(state,**args):
 
+
 	if isinstance(state,np.ndarray):
 		state = state.tolist()
 
@@ -148,15 +149,6 @@ def TO_con(x,L):
 #	print(x1,bi)
 
 	return  bi
-
-#def TO_con_1(x,L):
-	
-#	ind = CONF_tab_sp[x]
-
-	#ind0 = CONF_tab_sp[x].toarray()
-	#ind  = ind0[0,0]
-
-#	return BASE_bin[ind]
 
 #..................................hop. preparation
 #............. ......BC=0 periodic, BC=1 open

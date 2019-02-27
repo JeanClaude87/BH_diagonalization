@@ -6,93 +6,7 @@ import time
 import function as ff
 import hamiltonian_parity as ham_par
 import random 
-
 import functools
-'''
-def bose_Hamiltonian (**args):
-
-#Hamiltonian needs as input:
-
-#...... Parameter: DIM_H
-
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	ll 		 = args.get("ll")	
-	nn 		 = args.get("nn")		
-
-#Hamiltonian returns:
-#...... Sparse or Dense matrix. By default is SPARSE
-	
-	mat_type = args.get("mat_type")
-	if mat_type == None:
-		mat_type = 'Sparse'
-
-
-#...... Creates i,j,H[i,j]
-
-	cores_num = np.int(args.get("cores_num"))
-
-
-	X0 = [0]*DIM_H
-	Y0 = [0]*DIM_H
-	A0 = [0]*DIM_H
-
-#............	
-#............	JOAN PARALLELIZZA il LOOOOOOP a tope
-#............
-	
-	t0= time.time()
-	
-	pool = multiprocessing.Pool(cores_num)
-	b = pool.map(functools.partial(evaluate_ham, **args), range(DIM_H))
-	
-
-	
-	for i  in range(len(b)):
-		X0[i] , Y0[i], A0[i] = b[i]
-
-	
-	t1= time.time()
-
-
-	for i in range(DIM_H):
-
-		X0[i],Y0[i],A0[i] = evaluate_ham(i, **args)
-
-
-	t2= time.time()
-
-	print(t1-t0)	
-	print(t2-t1)
-	print((t2-t1)/(t1-t0))	
-	
-	#here we flatten the arrays
-	X1 = [item for sublist in X0 for item in sublist]
-	Y1 = [item for sublist in Y0 for item in sublist]
-	A1 = [item for sublist in A0 for item in sublist]
-
-	Hamiltonian = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.double)
-
-	if mat_type == 'Dense':
-
-		Hamiltonian = csc_matrix.todense(Hamiltonian)
-
-	return Hamiltonian
-
-
-
-def parallel_evaluate_ham (a,b,**args):
-	
-	DIM_H      = args.get("DIM_H")
-	Hamiltonian = csc_matrix(([], ([], [])), shape=(DIM_H,DIM_H), dtype=np.double)
-	
-	for i in range(DIM_H):
-		A, B, C = evaluate_ham(i,**args)
-		Hamiltonian += csc_matrix((C, (A,B)), shape=(DIM_H,DIM_H), dtype=np.double)
-
-	return Hamiltonian
-
-'''
-
 
 def evaluate_ham(i,**args):
 
@@ -102,6 +16,7 @@ def evaluate_ham(i,**args):
 	ll 		 = args.get("ll")	
 	BC 		 = args.get("BC")
 	t 		 = args.get("t")	
+	bar		 = args.get("bar")
 
 #...... Functions in ham.py: action_hopping, action_interactions
 #...... Fundamental tables:  BASE_bin, HOP_list
@@ -133,6 +48,17 @@ def evaluate_ham(i,**args):
 		ham_ind1.append( i )
 		ham_ind2.append( i )
 		ham_val.append( int_val )
+
+##----- Barrier
+
+	int_bar = action_barrier(state,**args)
+
+	if int_bar != 0.0:
+	
+		#---- INTERACTION = we store i,i,int_val !!!!
+		ham_ind1.append( i )
+		ham_ind2.append( i )
+		ham_val.append( int_bar )
 
 ##----- KINETIC
 	for hop in HOP_list:
@@ -227,9 +153,29 @@ def action_interactions(state,**args):
 	U 		 = args.get("U")
 
 	bosecon = ff.TO_bose_conf(state,ll)
-	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)#*0.0000001*(random.randint(0,2)-1)
+	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)
 
 	return int_val
+
+def action_disorder(state,**args):
+
+	ll 		 = args.get("ll")
+	bar		 = args.get("bar")	
+
+	bosecon = ff.TO_bose_conf(state,ll)
+	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)
+
+	return int_val
+
+def action_barrier(state,**args):
+
+	ll 		 = args.get("ll")
+	bar		 = args.get("bar")	
+
+	bosecon = ff.TO_bose_conf(state,ll)
+	bar_val = bar*bosecon[0]
+
+	return bar_val
 
 def diagonalization(Hamiltonian,**args):
 
@@ -244,6 +190,7 @@ def diagonalization(Hamiltonian,**args):
 	if mat_type == 'Sparse':
 
 		A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+		#print(A)
 
 	else:
 
