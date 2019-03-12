@@ -39,7 +39,7 @@ if COMM.rank == 0:
 
 for nn_inp in [4]:
 
-	for ll_inp in [20]:
+	for ll_inp in [24]:
 
 		for U_in in [1]:#np.arange(0.0,4.0,0.1):
 
