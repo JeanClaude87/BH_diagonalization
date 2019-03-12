@@ -39,15 +39,15 @@ if COMM.rank == 0:
 
 for nn_inp in [4]:
 
-	for ll_inp in [10]:
+	for ll_inp in [20]:
 
-		for U_in in np.arange(0.0,2.0,0.5):
+		for U_in in [1]:#np.arange(0.0,4.0,0.1):
 
 			U_inp = -1.0*U_in
 
-			for flux_inp in np.arange(0.00,1.0,0.05):
+			for flux_inp in [0.0]:#np.arange(0.00,0.5,0.01):
 
-				for bar_inp in np.arange(0.00,0.2,0.01):
+				for bar_inp in np.arange(0.0,1.0,0.01):
 
 
 
@@ -55,7 +55,7 @@ for nn_inp in [4]:
 
 					mat_type_inp     = 'Sparse'#Dense' 	#.... default Dense
 					parity_inp       = 'False'		#.... default False
-					n_diag_state_inp = 1#ll_inp
+					n_diag_state_inp = 1#ll_inp+4
 					cores_num_inp    = 2
 					#bar_inp			 = 0.1
 					t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
@@ -94,9 +94,8 @@ for nn_inp in [4]:
 					Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
 					#if COMM.rank == 0:
-
-					#print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
-					#print('ll', ll_inp, 'nn', nn_inp)
+					#	print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
+					#	print('ll', ll_inp, 'nn', nn_inp)
 
 					Global_dictionary.update(Constants_dictionary)
 
@@ -198,6 +197,13 @@ for nn_inp in [4]:
 					if COMM.rank == 0:
 
 						E,V  = ham.diagonalization(Hamiltonian, **Global_dictionary)
+
+						print(bar_inp, np.sum(ob.Olsh2(V, **Global_dictionary)))
+
+
+
+
+
 						#ff.print_matrix(Hamiltonian)
 						#ff.print_matrix(V)
 
@@ -211,80 +217,53 @@ for nn_inp in [4]:
 
 						#print(E)
 
-					if COMM.rank == 0:
-
-						
-
-						l1 = Global_dictionary.get("ll")
+							
+						'''
+						ll = Global_dictionary.get("ll")
 						n1 = Global_dictionary.get("nn")
 
-						base1 = int(n1)*np.identity(l1, dtype=np.int8)
+						base1 = int(n1)*np.identity(ll, dtype=np.int8)
 
-						#print(base1)
 
-						index=[]
+						index=[0 for j in range(DIM_H)]
 
-						for j in range(l1):
+						for j in range(ll):
 
 							xx  = ff.FROM_bose_TO_bin( base1[j], **Global_dictionary)
 							nxx = ff.get_index(xx,**Global_dictionary)
 
-							index.append(nxx)
+							index[nxx]=1/np.sqrt(ll)
 
-						for k in range(1):
-							ValV = sum([np.absolute( V[index[j],k])**2 for j in range(l1)])
-							#print(ob.density(V, **Global_dictionary))
+						ValV = np.dot(index,np.absolute(V))
 
-							print(nn_inp, ll_inp, U_inp, flux_inp, bar_inp, E[0], ValV)
+						Esort=np.sort(E)
+						gap=Esort[ll-1]-Esort[0]
+
+						#print(nn_inp, ll, U_inp, flux_inp, bar_inp, E[0], ValV[0])
+						print(nn_inp, ll, U_inp, gap)
+						'''
+
+
+
 quit()
 
 
 
 '''
-					nn_cor = ob.NiNj(V,**Global_dictionary)
+			nn_cor = ob.NiNj(V,**Global_dictionary)
 
-					directory = 'DATA'+os.sep+'N_'+str(nn_inp)+os.sep+'L_'+str(ll_inp)+os.sep+'U_'+str(U_inp)+os.sep+'Om_'+str(flux_inp)
-					LOCAL 	  = Constants_dictionary.get("LOCAL")
-					PATH_now  = LOCAL+os.sep+directory+os.sep
+			directory = 'DATA'+os.sep+'N_'+str(nn_inp)+os.sep+'L_'+str(ll_inp)+os.sep+'U_'+str(U_inp)+os.sep+'Om_'+str(flux_inp)
+			LOCAL 	  = Constants_dictionary.get("LOCAL")
+			PATH_now  = LOCAL+os.sep+directory+os.sep
 
-					if not os.path.exists(PATH_now):
-						os.makedirs(PATH_now)
+			if not os.path.exists(PATH_now):
+				os.makedirs(PATH_now)
 
-					name_energy = PATH_now+str('energy.dat')
-					np.savetxt(name_energy, E , fmt='%.9f')
+			name_energy = PATH_now+str('energy.dat')
+			np.savetxt(name_energy, E , fmt='%.9f')
 
-					name_corr = PATH_now+str('corr.dat')
-					np.savetxt(name_corr, nn_cor[0] , fmt='%.9f')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				directory = ''
-				LOCAL = Constants_dictionary.get("LOCAL")
-
-				if not os.path.exists(LOCAL+os.sep+directory):
-					os.makedirs(LOCAL+os.sep+directory)
-
-				PATH_now = LOCAL+os.sep+directory+os.sep
-
-				name_fide = PATH_now+str('gap.dat')
-				np.savetxt(name_fide, lev , fmt='%.9f')
-
-				name_fide = PATH_now+str('energy.dat')
-				np.savetxt(name_fide, E , fmt='%.9f')
+			name_corr = PATH_now+str('corr.dat')
+			np.savetxt(name_corr, nn_cor[0] , fmt='%.9f')
 
 
 
@@ -301,46 +280,76 @@ quit()
 
 
 
-				dt       = 0.1
-				step_num = 2500
-				t_i 	 = 0
-				t_f 	 = dt*step_num
 
-				#
-				part_ind = [4,4] 		# say in which site you want a particle
-				psi_4 = t_ev.inital_state(part_ind, **Global_dictionary)
+		directory = ''
+		LOCAL = Constants_dictionary.get("LOCAL")
 
-				part_ind = [9,9]
-				psi_9 = t_ev.inital_state(part_ind, **Global_dictionary)
+		if not os.path.exists(LOCAL+os.sep+directory):
+			os.makedirs(LOCAL+os.sep+directory)
 
-				psi_0 = 1/np.sqrt(2)*psi_4+1/np.sqrt(2)*psi_9
-				#
+		PATH_now = LOCAL+os.sep+directory+os.sep
 
-				#part_ind = [4,4,9,9] 		# say in which site you want a particle
-				#psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
+		name_fide = PATH_now+str('gap.dat')
+		np.savetxt(name_fide, lev , fmt='%.9f')
 
-				A        = -1.0J*Hamiltonian
-
-				psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
-				psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
-
-				#ob.Export_Observable_time(psit_par,dt,'2+2_dens_t.dat',**Global_dictionary)
-
-				ob.Export_Fidelity(psit_par,dt,'fidelity.dat',**Global_dictionary)
+		name_fide = PATH_now+str('energy.dat')
+		np.savetxt(name_fide, E , fmt='%.9f')
 
 
 
 
-				quit()
 
 
-				part_ind = [4,4,4,4,9,9,9,9] 		# say in which site you want a particle
-				psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
 
-				psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
-				psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
 
-				ob.Export_Observable_time(psit_par,dt,'22_dens_t.dat',**Global_dictionary)
+
+
+
+
+
+
+
+
+		dt       = 0.1
+		step_num = 2500
+		t_i 	 = 0
+		t_f 	 = dt*step_num
+
+		#
+		part_ind = [4,4] 		# say in which site you want a particle
+		psi_4 = t_ev.inital_state(part_ind, **Global_dictionary)
+
+		part_ind = [9,9]
+		psi_9 = t_ev.inital_state(part_ind, **Global_dictionary)
+
+		psi_0 = 1/np.sqrt(2)*psi_4+1/np.sqrt(2)*psi_9
+		#
+
+		#part_ind = [4,4,9,9] 		# say in which site you want a particle
+		#psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
+
+		A        = -1.0J*Hamiltonian
+
+		psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+		psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
+
+		#ob.Export_Observable_time(psit_par,dt,'2+2_dens_t.dat',**Global_dictionary)
+
+		ob.Export_Fidelity(psit_par,dt,'fidelity.dat',**Global_dictionary)
+
+
+
+
+		quit()
+
+
+		part_ind = [4,4,4,4,9,9,9,9] 		# say in which site you want a particle
+		psi_0 = t_ev.inital_state(part_ind, **Global_dictionary)
+
+		psit     = linalg.expm_multiply(A, psi_0, start=t_i, stop=t_f, num=step_num+1, endpoint=True)
+		psit_par = ham_par.vectors_parity_symmetrize( psit.T, **Global_dictionary)
+
+		ob.Export_Observable_time(psit_par,dt,'22_dens_t.dat',**Global_dictionary)
 
 
 

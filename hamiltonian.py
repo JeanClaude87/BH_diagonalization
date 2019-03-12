@@ -51,7 +51,7 @@ def evaluate_ham(i,**args):
 
 ##----- Barrier
 
-	int_bar = action_barrier(state,**args)
+	int_bar = action_potential(state,**args)
 
 	if int_bar != 0.0:
 	
@@ -157,23 +157,18 @@ def action_interactions(state,**args):
 
 	return int_val
 
-def action_disorder(state,**args):
+def action_potential(state,**args):
 
-	ll 		 = args.get("ll")
-	bar		 = args.get("bar")	
+	ll 		= args.get("ll")
+	bar		= args.get("bar")	
 
-	bosecon = ff.TO_bose_conf(state,ll)
-	int_val = 0.5*U*np.dot(bosecon,bosecon-1.)
-
-	return int_val
-
-def action_barrier(state,**args):
-
-	ll 		 = args.get("ll")
-	bar		 = args.get("bar")	
+	pot 	= [bar*np.sin(2*np.pi*x/ll) for x in range(ll)]
 
 	bosecon = ff.TO_bose_conf(state,ll)
-	bar_val = bar*bosecon[0]
+	bar_val = np.dot(pot,bosecon)
+#	print(pot)
+#	print(bosecon)
+#	print(bar_val)
 
 	return bar_val
 
