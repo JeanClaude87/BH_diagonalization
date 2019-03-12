@@ -47,7 +47,7 @@ for nn_inp in [4]:
 
 			for flux_inp in [0.0]:#np.arange(0.00,0.5,0.01):
 
-				for bar_inp in np.arange(0.0,1.0,0.01):
+				for bar_inp in np.arange(0.0,1.0,0.001):
 
 
 
