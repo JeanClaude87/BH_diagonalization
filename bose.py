@@ -197,7 +197,7 @@ for nn_inp in [4]:
 					if COMM.rank == 0:
 
 						E,V  = ham.diagonalization(Hamiltonian, **Global_dictionary)
-						ol1	 = np.sum(ob.Olsh1(V, **Global_dictionary))
+						ol1	 = ob.Olsh1(V, **Global_dictionary)
 						ol2	 = np.sum(ob.Olsh2(V, **Global_dictionary))
 						print(bar_inp, ol1,ol2)
 

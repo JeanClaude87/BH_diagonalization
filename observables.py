@@ -107,7 +107,7 @@ def Olsh1(V, **args):
 	coeff 	= [ (i-3*ll/4)**2 for i in range(ll)]
 	coeff	= np.asmatrix(coeff)
 
-	ol1 = np.einsum('i,i -> i', coeff, den)/(nn)
+	ol1 = np.dot(coeff, den)/(nn)
 
 	return ol1
 
