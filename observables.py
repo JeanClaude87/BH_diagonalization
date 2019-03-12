@@ -95,16 +95,14 @@ def Olsh2(V, **args):
 
 def Olsh1(V, **args):
 
-	states   = args.get("BASE_bose")
 	ll  	 = args.get("ll")
 	nn  	 = args.get("nn")
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
 	BASE_bose = args.get("BASE_bose")
 
 	den   = np.dot(np.transpose(np.square(np.absolute(V))),BASE_bose)
+	#print(den[0])
 
-	coeff 	= [ den[1,i]*(i-3*ll/4)**2 for i in range(ll)]
+	coeff 	= [ den[0,i]*(i-3*ll/4)**2 for i in range(ll)]
 
 	ol1 = np.sum(coeff)/(nn)
 
