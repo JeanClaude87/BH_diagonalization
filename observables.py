@@ -72,11 +72,6 @@ def CdiCj(V, dens, **args):
 
 	return CdiCj
 
-def Olsh1(V, **args):
-
-	ol1 = 1
-
-	return ol1
 
 def Olsh2(V, **args):
 
@@ -94,7 +89,25 @@ def Olsh2(V, **args):
 		Cor_B[i] = np.outer(states[i],states[i])
 
 	aa = (V.T)[0].T
-	ol1 = np.einsum('n,nij,ij -> ij', np.abs(aa)**2, Cor_B, coeff)/(nn**2)
+	ol2 = np.einsum('n,nij,ij -> ij', np.abs(aa)**2, Cor_B, coeff)/(nn**2)
+
+	return ol2
+
+def Olsh1(V, **args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = args.get("ll")
+	nn  	 = args.get("nn")
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	BASE_bose = args.get("BASE_bose")
+
+	den   = np.dot(np.transpose(np.square(np.absolute(V))),BASE_bose)
+
+	coeff 	= [ (i-3*ll/4)**2 for i in range(ll)]
+	coeff	= np.asmatrix(coeff)
+
+	ol1 = np.einsum('i,i -> i', coeff, den)/(nn)
 
 	return ol1
 
