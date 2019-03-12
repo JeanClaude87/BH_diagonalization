@@ -104,10 +104,9 @@ def Olsh1(V, **args):
 
 	den   = np.dot(np.transpose(np.square(np.absolute(V))),BASE_bose)
 
-	coeff 	= [ (i-3*ll/4)**2 for i in range(ll)]
-	coeff	= np.asmatrix(coeff)
+	coeff 	= [ (i-3*ll/4)**2 den[i] for i in range(ll)]
 
-	ol1 = np.dot(coeff, den)/(nn)
+	ol1 = np.sum(coeff)/(nn)
 
 	return ol1
 
