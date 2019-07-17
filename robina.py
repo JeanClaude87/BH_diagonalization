@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for ll_inp in [4,6,8,10,12,14,16,18,20]:
+for ll_inp in [14,16,18,20]:
 
 	nn_inp 	=	4
 	#ll_inp 	=	12
@@ -48,7 +48,7 @@ for ll_inp in [4,6,8,10,12,14,16,18,20]:
 
 	mat_type_inp     = 'Sparse'#Dense' 	#.... default Dense
 	parity_inp       = 'False'		#.... default False
-	n_diag_state_inp = 20
+	n_diag_state_inp = 1
 	cores_num_inp    = 2
 
 		# term    coeff	t*exp(+2*pi*iu*omegai/Sites)
