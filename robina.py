@@ -210,7 +210,7 @@ for ll_inp in [16,18,20]:
 
 				E0,V_cat_0  = ham.diagonalization(Hamiltonian_0, **Global_dictionary)
 
-				cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
+				#cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
 				
 				print(ll_inp, U_inp, flux_inp, E0[0])
 
