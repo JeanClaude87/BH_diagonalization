@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for ll_inp in [29]:
+for ll_inp in [32]:
 
 	nn_inp 	=	4
 	#ll_inp 	=	12
