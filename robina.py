@@ -121,8 +121,8 @@ for ll_inp in [14,16,18,20]:
 
 	Global_dictionary["HOP_list"]  = HOP_list
 
-	#CDC 			= ob.CdiCj_creation(**Global_dictionary)
-	#Global_dictionary["CDC_matrix"]   = CDC
+	CDC 			= ob.CdiCj_creation(**Global_dictionary)
+	Global_dictionary["CDC_matrix"]   = CDC
 
 
 	for U_0 in [0.5]: #np.arange(0.,0.5,0.01):
@@ -212,7 +212,7 @@ for ll_inp in [14,16,18,20]:
 
 				cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
 				
-				print(U_inp, flux_inp, E0[0])
+				print(ll_inp, U_inp, flux_inp, E0[0])
 
 quit()
 
