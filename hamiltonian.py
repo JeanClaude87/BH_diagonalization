@@ -162,7 +162,8 @@ def action_potential(state,**args):
 	ll 		= args.get("ll")
 	bar		= args.get("bar")	
 
-	pot 	= [bar*np.sin(2*np.pi*x/ll) for x in range(ll)]
+	pot 	= np.zeros(ll, dtype=np.float)
+	pot[0]  = bar
 
 	bosecon = ff.TO_bose_conf(state,ll)
 	bar_val = np.dot(pot,bosecon)
@@ -181,10 +182,16 @@ def diagonalization(Hamiltonian,**args):
 
 	if num_eig >= DIM_H:
 		num_eig = DIM_H-2
+	if num_eig <= 0:
+		num_eig = 1
+
 
 	if mat_type == 'Sparse':
 
-		A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+
+		kk = num_eig+20
+		if kk >=DIM_H: kk = DIM_H-2
+		A,B = linalgS.eigsh(Hamiltonian, k=kk, which='SA', return_eigenvectors=True)
 		#print(A)
 
 	else:
@@ -195,7 +202,15 @@ def diagonalization(Hamiltonian,**args):
 		
 		B = ham_par.vectors_parity_symmetrize(B,**args)
 
-	return A,B
+
+	A_s = np.sort(A)
+	B_s = B[:, A.argsort()]
+
+	if 		num_eig > 1:
+		if A_s[0] == A_s[1]:
+			print('degenerate ground state')
+
+	return A_s[:num_eig],B_s[:,:num_eig]
 
 
 

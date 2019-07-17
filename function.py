@@ -116,7 +116,6 @@ def get_index(state,**args):
 #..................................from BOSE configuration to bin number
 def FROM_bose_TO_bin(state,**args):
 
-
 	if isinstance(state,np.ndarray):
 		state = state.tolist()
 
@@ -232,6 +231,10 @@ def levstat(E):
 	B = np.asarray(B)
 
 	return B
+
+
+
+
 
 
 
