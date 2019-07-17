@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for ll_inp in [14,16,18,20]:
+for ll_inp in [16,18,20]:
 
 	nn_inp 	=	4
 	#ll_inp 	=	12
@@ -129,7 +129,7 @@ for ll_inp in [14,16,18,20]:
 
 		U_inp = -1.0*U_0
 
-		for flux_inp in np.arange(0.,1.0,0.02):
+		for flux_inp in np.arange(0.,0.52,0.02):
 			
 			t_inp = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 			
