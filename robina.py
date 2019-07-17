@@ -39,180 +39,180 @@ if COMM.rank == 0:
 
 for ll_inp in [14,16,18,20]:
 
-nn_inp 	=	4
-#ll_inp 	=	12
-bar_inp =	0.00
+	nn_inp 	=	4
+	#ll_inp 	=	12
+	bar_inp =	0.00
 
 
-BC_inp 			 = 0			# 0 is periodic
+	BC_inp 			 = 0			# 0 is periodic
 
-mat_type_inp     = 'Sparse'#Dense' 	#.... default Dense
-parity_inp       = 'False'		#.... default False
-n_diag_state_inp = 20
-cores_num_inp    = 2
+	mat_type_inp     = 'Sparse'#Dense' 	#.... default Dense
+	parity_inp       = 'False'		#.... default False
+	n_diag_state_inp = 20
+	cores_num_inp    = 2
 
-	# term    coeff	t*exp(+2*pi*iu*omegai/Sites)
+		# term    coeff	t*exp(+2*pi*iu*omegai/Sites)
 
-if mat_type_inp == None:
-	mat_type_inp = 'Sparse'
+	if mat_type_inp == None:
+		mat_type_inp = 'Sparse'
 
-######............PREPARATION OF DICTIONARSS
+	######............PREPARATION OF DICTIONARSS
 
-Constants_dictionary = {}
-Global_dictionary    = {}
+	Constants_dictionary = {}
+	Global_dictionary    = {}
 
-Constants_dictionary = {
-	"ll" : ll_inp, 
-	"nn" : nn_inp,
-	"BC" : BC_inp, 
-	"bar": bar_inp ,
-	"n_diag_state"  : n_diag_state_inp,
-	"cores_num" : cores_num_inp,
-	"mat_type" 	: mat_type_inp,
-	"LOCAL" 	: os.path.abspath('.'),
-	"parity"   	: parity_inp,
-	}
+	Constants_dictionary = {
+		"ll" : ll_inp, 
+		"nn" : nn_inp,
+		"BC" : BC_inp, 
+		"bar": bar_inp ,
+		"n_diag_state"  : n_diag_state_inp,
+		"cores_num" : cores_num_inp,
+		"mat_type" 	: mat_type_inp,
+		"LOCAL" 	: os.path.abspath('.'),
+		"parity"   	: parity_inp,
+		}
 
-n_diag_state 	= Constants_dictionary.get("n_diag_state")
+	n_diag_state 	= Constants_dictionary.get("n_diag_state")
 
-Constants_dictionary["tab_fact"]     = ff.fact_creation(**Constants_dictionary)
+	Constants_dictionary["tab_fact"]     = ff.fact_creation(**Constants_dictionary)
 
-DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
+	DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Constants_dictionary.get("tab_fact"))
 
-Constants_dictionary["DIM_H"]        = DIM_H 
-Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
+	Constants_dictionary["DIM_H"]        = DIM_H 
+	Constants_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Constants_dictionary)
 
-#if COMM.rank == 0:
-#	print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
-#	print('ll', ll_inp, 'nn', nn_inp)
+	#if COMM.rank == 0:
+	#	print('Hilbert space Dimension:', Constants_dictionary.get("DIM_H"))
+	#	print('ll', ll_inp, 'nn', nn_inp)
 
-Global_dictionary.update(Constants_dictionary)
+	Global_dictionary.update(Constants_dictionary)
 
-COMM.Barrier()
-#print(Global_dictionary.get("t"))
+	COMM.Barrier()
+	#print(Global_dictionary.get("t"))
 
-if COMM.rank == 0:
+	if COMM.rank == 0:
 
-	BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+		BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Constants_dictionary)
+
+		Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
+		Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
+		Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
+		#print(BASE_bose)
+
+	else:
+
+		BASE_bin 		= None
+		BASE_bose 		= None
+		CONF_tab		= None
+
+
+	COMM.Barrier()
+	BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
+	BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
+	CONF_tab		= COMM.bcast(CONF_tab,	root=0)
 
 	Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
 	Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
 	Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
-	#print(BASE_bose)
-
-else:
-
-	BASE_bin 		= None
-	BASE_bose 		= None
-	CONF_tab		= None
 
 
-COMM.Barrier()
-BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
-BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
-CONF_tab		= COMM.bcast(CONF_tab,	root=0)
+	HOP_list     = ff.Hop_prep(**Constants_dictionary)
 
-Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
-Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
-Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
+	Global_dictionary["HOP_list"]  = HOP_list
+
+	CDC 			= ob.CdiCj_creation(**Global_dictionary)
+	Global_dictionary["CDC_matrix"]   = CDC
 
 
-HOP_list     = ff.Hop_prep(**Constants_dictionary)
+	for U_0 in [0.5]: #np.arange(0.,0.5,0.01):
 
-Global_dictionary["HOP_list"]  = HOP_list
+		U_inp = -1.0*U_0
 
-CDC 			= ob.CdiCj_creation(**Global_dictionary)
-Global_dictionary["CDC_matrix"]   = CDC
+		for flux_inp in np.arange(0.,1.0,0.02):
+			
+			t_inp = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
+			
+			Constants_dictionary = {
+				"U"  : U_inp ,
+				"flux": flux_inp,
+				"t"  : t_inp
+				}
 
-
-for U_0 in [0.5]: #np.arange(0.,0.5,0.01):
-
-	U_inp = -1.0*U_0
-
-	for flux_inp in np.arange(0.,1.0,0.02):
-		
-		t_inp = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
-		
-		Constants_dictionary = {
-			"U"  : U_inp ,
-			"flux": flux_inp,
-			"t"  : t_inp
-			}
-
-		Global_dictionary.update(Constants_dictionary)
-
-		#################### HAMILTONIAN 1  CREATION OMEGA = 0
-
-		#print("V_cat_0", flux_inp , Global_dictionary.get("U"), Global_dictionary.get("bar"))
-
-		if Constants_dictionary.get("parity") == 'True':
-
-			Global_dictionary["parity_index"], Constants_dictionary["sim_sec_len"] = ham_par.base_parity(**Global_dictionary)
 			Global_dictionary.update(Constants_dictionary)
 
-			#print('I do parity!! ')
-			if COMM.rank == 0:
-			
-				Hamiltonian = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
+			#################### HAMILTONIAN 1  CREATION OMEGA = 0
 
-		else:
+			#print("V_cat_0", flux_inp , Global_dictionary.get("U"), Global_dictionary.get("bar"))
 
-			if COMM.rank == 0:
+			if Constants_dictionary.get("parity") == 'True':
 
-				mat_type = Global_dictionary.get("mat_type")
-				jobs = list(range(DIM_H))
-				jobs = ham_MPI.split(jobs, COMM.size)
+				Global_dictionary["parity_index"], Constants_dictionary["sim_sec_len"] = ham_par.base_parity(**Global_dictionary)
+				Global_dictionary.update(Constants_dictionary)
+
+				#print('I do parity!! ')
+				if COMM.rank == 0:
+				
+					Hamiltonian = ham_par.bose_Hamiltonian_parity_fast(**Global_dictionary)
 
 			else:
-				jobs = None
 
-			COMM.Barrier()
+				if COMM.rank == 0:
 
-			jobs = COMM.scatter(jobs, root=0)
+					mat_type = Global_dictionary.get("mat_type")
+					jobs = list(range(DIM_H))
+					jobs = ham_MPI.split(jobs, COMM.size)
 
-			XX = []
-			YY = []
-			AA = []
+				else:
+					jobs = None
 
-			for i in jobs:
-				res = ham.evaluate_ham(i, **Global_dictionary)
+				COMM.Barrier()
 
-				XX.append(res[0])
-				YY.append(res[1])
-				AA.append(res[2])
+				jobs = COMM.scatter(jobs, root=0)
 
-			COMM.Barrier()
+				XX = []
+				YY = []
+				AA = []
 
-			XX0 = MPI.COMM_WORLD.gather( XX, root=0)
-			YY0 = MPI.COMM_WORLD.gather( YY, root=0)
-			AA0 = MPI.COMM_WORLD.gather( AA, root=0)
+				for i in jobs:
+					res = ham.evaluate_ham(i, **Global_dictionary)
 
-			COMM.Barrier()
+					XX.append(res[0])
+					YY.append(res[1])
+					AA.append(res[2])
+
+				COMM.Barrier()
+
+				XX0 = MPI.COMM_WORLD.gather( XX, root=0)
+				YY0 = MPI.COMM_WORLD.gather( YY, root=0)
+				AA0 = MPI.COMM_WORLD.gather( AA, root=0)
+
+				COMM.Barrier()
+
+				if COMM.rank == 0:
+
+					X0 = [item for sublist in XX0 for item in sublist]
+					Y0 = [item for sublist in YY0 for item in sublist]
+					A0 = [item for sublist in AA0 for item in sublist]
+
+					X1 = [item for sublist in X0 for item in sublist]
+					Y1 = [item for sublist in Y0 for item in sublist]
+					A1 = [item for sublist in A0 for item in sublist]
+
+
+					Hamiltonian_0 = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.complex)
+					
+					if mat_type == 'Dense':
+
+						Hamiltonian = csc_matrix.todense(Hamiltonian_0)
 
 			if COMM.rank == 0:
 
-				X0 = [item for sublist in XX0 for item in sublist]
-				Y0 = [item for sublist in YY0 for item in sublist]
-				A0 = [item for sublist in AA0 for item in sublist]
+				E0,V_cat_0  = ham.diagonalization(Hamiltonian_0, **Global_dictionary)
 
-				X1 = [item for sublist in X0 for item in sublist]
-				Y1 = [item for sublist in Y0 for item in sublist]
-				A1 = [item for sublist in A0 for item in sublist]
-
-
-				Hamiltonian_0 = csc_matrix((A1, (X1,Y1)), shape=(DIM_H,DIM_H), dtype=np.complex)
+				cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
 				
-				if mat_type == 'Dense':
-
-					Hamiltonian = csc_matrix.todense(Hamiltonian_0)
-
-		if COMM.rank == 0:
-
-			E0,V_cat_0  = ham.diagonalization(Hamiltonian_0, **Global_dictionary)
-
-			cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
-			
-			print(U_inp, flux_inp, E0[0])
+				print(U_inp, flux_inp, E0[0])
 
 quit()
 
