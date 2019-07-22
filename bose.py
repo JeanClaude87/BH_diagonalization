@@ -449,7 +449,7 @@ for nn_inp in [3]:
 						directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 						
 						value 	  = []
-						for t in range(step_num):
+						for t in range(1, step_num, 100):
 							CdC       = ob.CdiCj(psit[t,:,0], **Global_dictionary)
 							for i in range(ll_inp):
 								for j in range(ll_inp):
