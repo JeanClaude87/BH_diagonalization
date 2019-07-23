@@ -18,7 +18,7 @@ import observables        as ob
 import time_evolution	  as t_ev
 import Hamiltonian_MPI	  as ham_MPI
 
-np.set_printoptions(precision=6,suppress=True)
+np.set_printoptions(precision=2,suppress=True)
 
 COMM = MPI.COMM_WORLD
 
@@ -285,7 +285,7 @@ for nn_inp in [3]:
 
 					COMM.Barrier()	
 
-					flux_inp_psi0 	= 0.0
+					flux_inp_psi0 	= 0.1
 					t_inp_t_psi0  	= -1.0*np.exp(-2*np.pi*1j*flux_inp_psi0/ll_inp)
 					
 					Constants_dictionary = { 
@@ -369,8 +369,7 @@ for nn_inp in [3]:
 						if not os.path.exists(directory):
 							os.makedirs(directory)
 					
-					Constants_dictionary = { 
-					#"U"  : -10 ,
+					Constants_dictionary = {
 					"t"  : t_inp_t,
 					"bar": bar_inp 
 					}
@@ -441,20 +440,26 @@ for nn_inp in [3]:
 						#psi_0	 = np.zeros(DIM_H)
 						#psi_0[5] = 1
 						psi_0 = V0
-						print('norm', np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0)))
+						print('dens', ob.density(V0, **Global_dictionary))
+						#print('norm', np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0)))
 						
 						psit     = linalg.expm_multiply(HT, psi_0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
-
 						
 						directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 						
 						value 	  = []
-						for t in range(1, step_num, 100):
+						for t in range(1,step_num,50):
+
 							CdC       = ob.CdiCj(psit[t,:,0], **Global_dictionary)
+							
 							for i in range(ll_inp):
 								for j in range(ll_inp):
-									value.append([t,i,j,np.real(CdC[i,j]*1.0),np.imag(CdC[i,j]*1.0)])
-							
+									value.append([t*dt,i,j,np.real(CdC[i,j]*1.0),np.imag(CdC[i,j]*1.0)])
+
+							#print('t', t, 3, 1, CdC[3,1])
+							#print(CdC)
+
+
 						ob.Export_Observable(np.array(value), directory, 'moment.dat', **Global_dictionary)
 
 

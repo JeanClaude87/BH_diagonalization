@@ -76,31 +76,34 @@ def CdiCj_creation(**args):
 					
 					CDC[i,j,st,ind] = weight
 
-			CDC[i,j] += CDC[i,j].T
+			CDC[i,j] = CDC[i,j].T
 
 	return CDC
 
 def CdiCj(V, **args):
 
-	CDC   = args.get("CDC_matrix")
+	CDC      = args.get("CDC_matrix")
 	flux 	 = np.int(args.get("U"))
 	ll  	 = np.int(args.get("ll"))
 	
-	V_c = np.conj(V)
+	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
+
 
 	#CdiCj
 
 	CdiCj = np.einsum('xylj,l,j -> xy', CDC, V_c, V)
 
-	CdiCj += CdiCj.T
-	CdiCj *= 0.5
+	#print(CdiCj)
+
+	CdiCj += np.conj(CdiCj.T)
 	CdiCj += np.diag(dens)
+
+	#print(CdiCj)
 
 	for ii in range(ll):
 		for jj in range(ll):
-			CdiCj *= np.exp(2*np.pi*1j*ii*flux/ll)*np.exp(-2*np.pi*1j*jj*flux/ll)
-
+			CdiCj[ii,jj] *= 1#np.exp(2*np.pi*1j*(ii-jj)*flux/ll)
 
 	return CdiCj
 
