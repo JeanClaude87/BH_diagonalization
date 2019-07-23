@@ -453,7 +453,7 @@ for nn_inp in [3]:
 						print('observables')
 
 						value 	  = []
-						for t in range(1,step_num,50):
+						for t in range(1,step_num,5):
 
 							CdC       = ob.CdiCj(psit[t,:,0], **Global_dictionary)
 							
