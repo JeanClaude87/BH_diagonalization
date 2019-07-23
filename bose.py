@@ -434,7 +434,7 @@ for nn_inp in [3]:
 						Eev,Vev  = ham.diagonalization(Hamiltonian_ev, **Global_dictionary)
 
 						dt 		 = 0.05
-						step_num = 20000
+						step_num = 25000
 
 						HT        = -1.0J*Hamiltonian_ev
 						#psi_0	 = np.zeros(DIM_H)
