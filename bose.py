@@ -285,7 +285,7 @@ for nn_inp in [3]:
 
 					COMM.Barrier()	
 
-					flux_inp_psi0 	= 0.1
+					flux_inp_psi0 	= 0.0
 					t_inp_t_psi0  	= -1.0*np.exp(-2*np.pi*1j*flux_inp_psi0/ll_inp)
 					
 					Constants_dictionary = { 
@@ -433,8 +433,8 @@ for nn_inp in [3]:
 
 						Eev,Vev  = ham.diagonalization(Hamiltonian_ev, **Global_dictionary)
 
-						dt 		 = 0.01
-						step_num = 700000
+						dt 		 = 0.05
+						step_num = 20000
 
 						HT        = -1.0J*Hamiltonian_ev
 						#psi_0	 = np.zeros(DIM_H)
@@ -444,6 +444,7 @@ for nn_inp in [3]:
 						#print('norm', np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0)))
 						
 						print('time_evolution')
+
 
 						psit     = linalg.expm_multiply(HT, psi_0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
 						
