@@ -443,8 +443,8 @@ for nn_inp in [2,4,5,6]:
 
 ####################	TIME EVOLUTION -->>
 
-				dt 		 = 0.2
-				step_num = 5500
+				dt 		 = 0.5
+				step_num = 10000
 
 				Constants_dictionary = { 
 				"dt"      : dt,
