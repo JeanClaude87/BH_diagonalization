@@ -53,7 +53,7 @@ for nn_inp in [4]:
 		
 		for bar_inp in [0.1, 0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
 		#for bar_inp in np.arange(0.,0.5,0.01)::
-		#for bar_inp in [0.01]:	
+		#for bar_inp in [0.003]:	
 
 			#for flux_inp in np.arange(0.,0.5,0.01):
 
@@ -474,7 +474,7 @@ for nn_inp in [4]:
 
 					value = []
 
-					Dstep = 50
+					Dstep = 5
 
 					for t in range(0,step_num,Dstep):
 
