@@ -42,6 +42,7 @@ for nn_inp in [3]:
 	for ll_inp in [10]:
 
 		if nn_inp == 2:	U_in = 5.0
+		if nn_inp == 3:	U_in = 3.0	
 		if nn_inp == 4:	U_in = 2.0	
 		if nn_inp == 5:	U_in = 1.5	
 		if nn_inp == 6:	U_in = 1.0						
