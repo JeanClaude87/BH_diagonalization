@@ -474,7 +474,7 @@ for nn_inp in [4]:
 
 					value = []
 
-					Dstep = 10
+					Dstep = 50
 
 					for t in range(0,step_num,Dstep):
 
