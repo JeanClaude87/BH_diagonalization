@@ -27,10 +27,8 @@ def time_evolution(psi_0, H_ev, **args):
 	psi0 = psi_0[:,0]
 	
 	if isinstance( H_ev, sp.sparse.csc.csc_matrix):	
-
-		print('sparso')
 	
-		HT      = -1j*dt*H_ev
+		HT      = np.squeeze(np.asarray(-1j*dt*H_ev))
 		psit    = linalgS.expm_multiply(HT, psi0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
 
 	else:
@@ -39,8 +37,13 @@ def time_evolution(psi_0, H_ev, **args):
 
 		E_ev, V_ev = ham.diagonalization(H_ev, **args)
 		
+
+		#print(type(H_ev))
+	
+		HT      = np.asarray(-1j*dt*H_ev)
 		psit    = np.zeros((step_num, DIM_H), dtype=np.complex)
-		mat_exp = sp.linalg.expm(-1j*dt*H_ev)
+
+		mat_exp = sp.linalg.expm(HT)
 
 		start = time.time()
 
@@ -49,8 +52,14 @@ def time_evolution(psi_0, H_ev, **args):
 
 			#aa = np.einsum('n, nl, l, ml -> m', psi0, np.conj(V_ev), np.exp(-1j*E_ev*tt*dt), V_ev)
 
+			phi  = phi.dot(mat_exp.T)
+			#phi = np.einsum('n, jn -> j', phi, mat_exp, optimize=True)			
+
+			#print('1', uu)
+			#print('2', phi)
+
 			psit[tt] = phi
-			phi = np.einsum('n, jn -> j', phi, mat_exp, optimize=True)			
+
 
 		end = time.time()
 		print('time', end - start)
