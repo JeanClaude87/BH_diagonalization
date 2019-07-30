@@ -39,7 +39,7 @@ def NiNj(V,**args):
 		Cor_B[i] = np.outer(states[i],states[i])
 
 	aa = (V.T)[0].T
-	NN = np.einsum('n,nij -> ij', np.abs(aa)**2, Cor_B)
+	NN = np.einsum('n,nij -> ij', np.abs(aa)**2, Cor_B, optimize=True)
 
 	return NN
 
@@ -89,21 +89,18 @@ def CdiCj(V, **args):
 	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
 
+	CdiCj = np.einsum('xylj,l,j -> xy', CDC, V_c, V, optimize=True)
 
-	#CdiCj
-
-	CdiCj = np.einsum('xylj,l,j -> xy', CDC, V_c, V)
-
-	#print(CdiCj)
-
-	CdiCj += np.conj(CdiCj.T)
+	CdiCj += np.conj(CdiCj.T) 
 	CdiCj += np.diag(dens)
 
-	#print(CdiCj)
+#	uu = np.zeros((ll,ll), dtype=np.float)
 
-	for ii in range(ll):
-		for jj in range(ll):
-			CdiCj[ii,jj] *= 1#np.exp(2*np.pi*1j*(ii-jj)*flux/ll)
+#	OuterSum = np.einsum('lpk, lkm, lp -> lm', a, b, c,optimize=optimize)
+
+#	out = np.empty((N,M))
+#	for i in range(N):
+#		out[i] = c[i].dot(a[i]).dot(b[i])
 
 	return CdiCj
 
@@ -126,7 +123,7 @@ def Olsh2(V, **args):
 		Cor_B[i] = np.outer(states[i],states[i])
 
 	aa = (V.T)[0].T
-	ol2 = np.einsum('n,nij,ij -> ij', np.abs(aa)**2, Cor_B, coeff)/(nn**2)
+	ol2 = np.einsum('n,nij,ij -> ij', np.abs(aa)**2, Cor_B, coeff, optimize=True)/(nn**2)
 
 	return ol2
 
@@ -192,24 +189,29 @@ def Export_Observable_time(psi_t,dt,name,**args):
 	return 0
 
 
-def Export_Fidelity(psi_t,state_B,dt,name,**args):
+def Export_Fidelity(psi_t, state_B, directory, name,**args):
 
 	ll    = args.get("ll")
 	nn    = args.get("nn")
 	LOCAL = args.get("LOCAL")
 	U  	  = args.get("U")
 	bar   = args.get("bar")
-	
+		
+	dt       = args.get("dt")
+
 	nstep = len(psi_t)
 
 	FID   = []
 
 	for i in range(nstep):
+		#print('ps', psi_t[i].shape)
+		#print(psi_t[i])
+		#print('0',  state_B.shape)
+		#print(state_B)
 		FID_t = np.square(np.absolute(np.vdot(psi_t[i],state_B)))
 		FID.append([i*dt,FID_t])
 
-	directory = os.sep+'dati'+os.sep+'L_'+str(ll)+os.sep+'N_'+str(nn)+os.sep+'U_'+str(U)+os.sep+'bb_'+str(bar)
-#	directory = '/dati/L_'+str(ll)+'/N_'+str(nn)+os.sep+'U_'+str(U)
+#	directory = os.sep+'dati'+os.sep+'L_'+str(ll)+os.sep+'N_'+str(nn)+os.sep+'U_'+str(U)+os.sep+'bb_'+str(bar)
 	
 	if not os.path.exists(LOCAL+os.sep+directory):
 		os.makedirs(LOCAL+os.sep+directory)
@@ -218,32 +220,10 @@ def Export_Fidelity(psi_t,state_B,dt,name,**args):
 
 	name_fide = PATH_now+str(name)
 	np.savetxt(name_fide, FID , fmt='%.9f')
-
-	'''
-	FID   = []
-
-	A = np.squeeze(np.asarray(psi_t[:,0]))
-
-
-		B = np.squeeze(np.asarray(psi_t[:,i]))
-		FID.append([i*dt,np.square(np.absolute(np.dot(A,B)))])
-
-		print(i*dt)
-
-	directory = '/dati/L_'+str(ll)+'/N_'+str(nn)+os.sep+'U_'+str(U)
-	
-	if not os.path.exists(LOCAL+os.sep+directory):
-		os.makedirs(LOCAL+os.sep+directory)
-
-	PATH_now = LOCAL+os.sep+directory+os.sep
-
-	name_fide = PATH_now+str(name)
-	np.savetxt(name_fide, FID , fmt='%.9f')
-	'''
 
 	return 0
 
-def Export_Fidelity_time(psi_t,dt,name,**args):
+def Export_Fidelity_time(psi_t,name,**args):
 
 	ll    = args.get("ll")
 	nn    = args.get("nn")
@@ -251,6 +231,8 @@ def Export_Fidelity_time(psi_t,dt,name,**args):
 	U  	  = args.get("U")
 	bar   = args.get("bar")
 	
+	dt       = args.get("dt")
+
 	nstep = len(psi_t.T)
 	FID   = []
 

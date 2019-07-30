@@ -1,7 +1,8 @@
 import numpy as np
+import scipy as sp
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
-from numpy import linalg as lin
+from scipy import linalg as lin
 import time
 import function as ff
 import hamiltonian_parity as ham_par
@@ -180,37 +181,50 @@ def diagonalization(Hamiltonian,**args):
 	parity	 = args.get("parity")
 	num_eig	 = args.get("n_diag_state")
 
-	if num_eig >= DIM_H:
-		num_eig = DIM_H-2
 	if num_eig <= 0:
 		num_eig = 1
 
+	
+	if isinstance( Hamiltonian, sp.sparse.csc.csc_matrix):	
+		if num_eig >= DIM_H-1:
+			
+			k0 = int(DIM_H/2)
+			k1 = DIM_H - k0
 
-	if mat_type == 'Sparse':
+			A0,B0   =  linalgS.eigsh( Hamiltonian, k=k0, which='SA', return_eigenvectors=True)
+			A1m,B1m =  linalgS.eigsh(-Hamiltonian, k=k1, which='SA', return_eigenvectors=True)
 
+			A1=-A1m
+			B1=-B1m
 
-		kk = num_eig+20
-		if kk >=DIM_H: kk = DIM_H-2
-		A,B = linalgS.eigsh(Hamiltonian, k=kk, which='SA', return_eigenvectors=True)
-		#print(A)
+			A = np.concatenate((A0,A1))
+			B = np.concatenate((B0.T,B1.T)).T
+
+			B = B[:, A.argsort()]
+			A = np.sort(A)
+
+		else:
+
+			A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
+
+			B = B[:, A.argsort()]
+			A = np.sort(A)
 
 	else:
 
+		num_eig = DIM_H
+
 		A,B   = lin.eigh(Hamiltonian)
+
+		B = B[:, A.argsort()]
+		A = np.sort(A)		
 
 	if parity == 'True':
 		
 		B = ham_par.vectors_parity_symmetrize(B,**args)
 
 
-	A_s = np.sort(A)
-	B_s = B[:, A.argsort()]
-
-	if 		num_eig > 1:
-		if A_s[0] == A_s[1]:
-			print('degenerate ground state')
-
-	return A_s[:num_eig],B_s[:,:num_eig]
+	return A[:num_eig],B[:,:num_eig]
 
 
 

@@ -112,7 +112,7 @@ def bose_Hamiltonian_parity(H_tmp,**args):
 			DX += 1
 
 	if mat_type == 'Sparse':
-		H_par = csc_matrix(H_par, shape=(DIM_H,DIM_H), dtype=np.double)
+		H_par = csc_matrix(H_par, shape=(DIM_H,DIM_H), dtype=np.complex128)
 
 	return H_par
 
