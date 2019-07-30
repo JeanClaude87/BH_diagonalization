@@ -50,7 +50,7 @@ for nn_inp in [2]:
 
 		U_inp = -1.0*U_in
 		
-		#for bar_inp in [0.1, 0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
+		for bar_inp in [0.1, 0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
 		#for bar_inp in np.arange(0.,0.5,0.01)::
 		for bar_inp in [0.01]:	
 
