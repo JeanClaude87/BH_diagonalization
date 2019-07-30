@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [5]:
+for nn_inp in [5,6]:
 
 	for ll_inp in [10]:
 
@@ -444,8 +444,8 @@ for nn_inp in [5]:
 
 ####################	TIME EVOLUTION -->>
 
-				dt 		 = 0.5
-				step_num = 10000
+				dt 		 = 0.05
+				step_num = 200000
 
 				Constants_dictionary = { 
 				"dt"      : dt,
@@ -474,7 +474,7 @@ for nn_inp in [5]:
 
 					value = []
 
-					Dstep = 100
+					Dstep = 50
 
 					for t in range(0,step_num,Dstep):
 
