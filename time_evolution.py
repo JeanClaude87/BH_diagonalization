@@ -1,7 +1,6 @@
 import numpy as np
 import scipy as sp
 
-from scipy.linalg import expm
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 
@@ -28,17 +27,20 @@ def time_evolution(psi_0, H_ev, **args):
 	psi0 = psi_0[:,0]
 	
 	if isinstance( H_ev, sp.sparse.csc.csc_matrix):	
+
+		print('sparso')
 	
 		HT      = -1j*dt*H_ev
-
 		psit    = linalgS.expm_multiply(HT, psi0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
 
 	else:
 
+		print('denso')
+
 		E_ev, V_ev = ham.diagonalization(H_ev, **args)
 		
 		psit    = np.zeros((step_num, DIM_H), dtype=np.complex)
-		mat_exp = expm(-1j*dt*H_ev)
+		mat_exp = sp.linalg.expm(-1j*dt*H_ev)
 
 		start = time.time()
 
