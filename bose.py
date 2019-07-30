@@ -143,8 +143,8 @@ for nn_inp in [4,2]:
 				
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
-
-				print("V_cat_0", flux_inp , Constants_dictionary.get("bar"))
+				if COMM.rank == 0:
+					print("V_cat_0", flux_inp , Constants_dictionary.get("bar"))
 
 				if Constants_dictionary.get("parity") == 'True':
 
@@ -228,8 +228,8 @@ for nn_inp in [4,2]:
 				Global_dictionary.update(Constants_dictionary)
 				
 				COMM.Barrier()
-
-				print("V_cat_1", flux_inp_1, Global_dictionary.get("bar"))
+				if COMM.rank == 0:
+					print("V_cat_1", flux_inp_1, Global_dictionary.get("bar"))
 
 				if COMM.rank == 0:
 
@@ -302,8 +302,8 @@ for nn_inp in [4,2]:
 				Global_dictionary.update(Constants_dictionary)
 				
 				COMM.Barrier()
-
-				print("V0", flux_inp_psi0, Global_dictionary.get("bar"))
+				if COMM.rank == 0:
+					print("V0", flux_inp_psi0, Global_dictionary.get("bar"))
 
 				if COMM.rank == 0:
 
