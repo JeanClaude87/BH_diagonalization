@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [2,3,4,5,6]:
+for nn_inp in [4,5,6]:
 
 	for ll_inp in [10]:
 
@@ -467,7 +467,7 @@ for nn_inp in [2,3,4,5,6]:
 
 					value = []
 
-					Dstep = 1
+					Dstep = 100
 
 					for t in range(0,step_num,Dstep):
 
