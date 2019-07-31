@@ -467,7 +467,7 @@ for nn_inp in [4,5,6]:
 
 					value = []
 
-					Dstep = 100
+					Dstep = 20
 
 					for t in range(0,step_num,Dstep):
 
