@@ -45,6 +45,9 @@ def NiNj(V,**args):
 
 def CdiCj_creation(**args):
 
+# THIS WORKS
+
+
 	states   = args.get("BASE_bose")
 	ll  	 = np.int(args.get("ll"))
 	nn  	 = np.int(args.get("nn"))	
@@ -58,25 +61,28 @@ def CdiCj_creation(**args):
 	CDC = np.zeros((ll,ll,DIM_H,DIM_H), dtype=np.float)
 	
 	for i in range(ll):
-		for j in range(i+1,ll):
+		for j in range(ll):
 
-			hop = np.zeros(ll, dtype=np.int)
+			if i!=j:
+				for st in range(DIM_H):		
 
-			hop[i] = int(1)
-			hop[j] = -1*int(1)
+					if(Cd[st,i]*C[st,j] > 0):
 
-			for st in range(DIM_H):		
+						uga    = B_bose[st]*1
+						uga[i] += 1
+						uga[j] -= 1
 
-				if(Cd[st,i]*C[st,j] > 0):
+						#state_hop = B_bose[st]+hops
+						ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
 
-					state_hop = B_bose[st]+hop
-					ind = ff.get_index(ff.FROM_bose_TO_bin(state_hop,**args), **args)	
+						weight = np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
+								 #np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
+						
+						CDC[i,j,st,ind] = weight
 
-					weight = np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
-					
-					CDC[i,j,st,ind] = weight
-
-			CDC[i,j] = CDC[i,j].T
+						#print('robina', 'create', i+1, 'destroy', j+1, B_bose[st], uga, weight)
+				#if B_bose[st,j] <= 0: print('non puoi distruggere')
+				#if B_bose[st,i] >= 4: print('non puoi creare')
 
 	return CDC
 
@@ -89,18 +95,11 @@ def CdiCj(V, **args):
 	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
 
-	CdiCj = np.einsum('xylj,l,j -> xy', CDC, V_c, V, optimize=True)
+	CdiCj =  np.einsum('xylj,l,j -> xy', CDC, V, V_c)
 
-	CdiCj += np.conj(CdiCj.T) 
 	CdiCj += np.diag(dens)
 
-#	uu = np.zeros((ll,ll), dtype=np.float)
-
-#	OuterSum = np.einsum('lpk, lkm, lp -> lm', a, b, c,optimize=optimize)
-
-#	out = np.empty((N,M))
-#	for i in range(N):
-#		out[i] = c[i].dot(a[i]).dot(b[i])
+	#print(CdiCj)
 
 	return CdiCj
 

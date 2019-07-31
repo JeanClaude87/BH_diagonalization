@@ -36,9 +36,6 @@ def time_evolution(psi_0, H_ev, **args):
 		print('denso')
 
 		E_ev, V_ev = ham.diagonalization(H_ev, **args)
-		
-
-		#print(type(H_ev))
 	
 		HT      = np.asarray(-1j*dt*H_ev)
 		psit    = np.zeros((step_num, DIM_H), dtype=np.complex)
@@ -49,17 +46,9 @@ def time_evolution(psi_0, H_ev, **args):
 
 		phi = psi0
 		for tt in range(step_num):
-
-			#aa = np.einsum('n, nl, l, ml -> m', psi0, np.conj(V_ev), np.exp(-1j*E_ev*tt*dt), V_ev)
-
-			phi  = phi.dot(mat_exp.T)
-			#phi = np.einsum('n, jn -> j', phi, mat_exp, optimize=True)			
-
-			#print('1', uu)
-			#print('2', phi)
-
+			
 			psit[tt] = phi
-
+			phi  = phi.dot(mat_exp.T)
 
 		end = time.time()
 		print('time', end - start)

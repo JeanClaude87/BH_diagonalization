@@ -18,7 +18,7 @@ import observables        as ob
 import time_evolution	  as t_ev
 import Hamiltonian_MPI	  as ham_MPI
 
-np.set_printoptions(precision=3,suppress=True)
+np.set_printoptions(precision=12,suppress=True)
 
 COMM = MPI.COMM_WORLD
 
@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [5,6]:
+for nn_inp in [2,3,4,5,6]:
 
 	for ll_inp in [10]:
 
@@ -51,7 +51,7 @@ for nn_inp in [5,6]:
 
 		U_inp = -1.0*U_in
 		
-		for bar_inp in [0.1, 0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
+		for bar_inp in [0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
 		#for bar_inp in np.arange(0.,0.5,0.01)::
 		#for bar_inp in [0.003]:	
 
@@ -75,7 +75,7 @@ for nn_inp in [5,6]:
 				Constants_dictionary = {}
 				Global_dictionary    = {}
 
-				zero = 0
+				zero = 0.0
 
 				Constants_dictionary = {
 					"ll" : ll_inp, 
@@ -144,8 +144,6 @@ for nn_inp in [5,6]:
 				
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
-				if COMM.rank == 0:
-					print("V_cat_0", flux_inp , Constants_dictionary.get("bar"))
 
 				if Constants_dictionary.get("parity") == 'True':
 
@@ -208,7 +206,7 @@ for nn_inp in [5,6]:
 
 							Hamiltonian_1 = csc_matrix.todense(Hamiltonian_1)
 
-				if COMM.rank == 0:
+					print("B0", 'fl', flux_inp, 'ba', Global_dictionary.get("bar"), 'U', Global_dictionary.get("U"))
 
 					E0,V_cat_0  = ham.diagonalization(Hamiltonian_1, **Global_dictionary)
 
@@ -229,8 +227,6 @@ for nn_inp in [5,6]:
 				Global_dictionary.update(Constants_dictionary)
 				
 				COMM.Barrier()
-				if COMM.rank == 0:
-					print("V_cat_1", flux_inp_1, Global_dictionary.get("bar"))
 
 				if COMM.rank == 0:
 
@@ -281,7 +277,7 @@ for nn_inp in [5,6]:
 
 						Hamiltonian_2 = csc_matrix.todense(Hamiltonian_2)
 
-				if COMM.rank == 0:
+					print("B1", 'fl', flux_inp_1, 'ba', Global_dictionary.get("bar"), 'U', Global_dictionary.get("U"))
 
 					E1,V_cat_1  = ham.diagonalization(Hamiltonian_2, **Global_dictionary)
 
@@ -301,10 +297,7 @@ for nn_inp in [5,6]:
 				}
 				
 				Global_dictionary.update(Constants_dictionary)
-				
 				COMM.Barrier()
-				if COMM.rank == 0:
-					print("V0", flux_inp_psi0, Global_dictionary.get("bar"))
 
 				if COMM.rank == 0:
 
@@ -353,9 +346,9 @@ for nn_inp in [5,6]:
 					if mat_type == 'Dense':
 
 						Hamiltonian_3 = csc_matrix.todense(Hamiltonian_3)
-
-				if COMM.rank == 0:
-
+					
+					print("H0", 'fl', flux_inp_psi0, 'ba', Global_dictionary.get("bar"), 'U', Global_dictionary.get("U"))
+				
 					Egs,V0  = ham.diagonalization(Hamiltonian_3, **Global_dictionary)
 					
 
@@ -439,13 +432,13 @@ for nn_inp in [5,6]:
 
 						Hamiltonian_ev = csc_matrix.todense(Hamiltonian_ev)
 
-					print("evo", flux_inp_t, Constants_dictionary.get("bar"), Constants_dictionary.get("mat_type"))
+					print("ev", 'fl', flux_inp_t, 'ba', Global_dictionary.get("bar"), 'U', Global_dictionary.get("U"))
 
 
 ####################	TIME EVOLUTION -->>
 
-				dt 		 = 0.05
-				step_num = 200000
+				dt 		 = 1
+				step_num = 10000
 
 				Constants_dictionary = { 
 				"dt"      : dt,
@@ -474,19 +467,16 @@ for nn_inp in [5,6]:
 
 					value = []
 
-					Dstep = 50
+					Dstep = 1
 
 					for t in range(0,step_num,Dstep):
 
 						CdC = ob.CdiCj(psit[t,:], **Global_dictionary)
-						Cor=0
-
-						for i in range(ll_inp-1):
+						Cor=0+0j
 							
-							#for j in range(ll_inp):
-							#value.append([t*dt*Dstep,i,j,np.real(CdC[i,j]*1.0),np.imag(CdC[i,j]*1.0)])
-							
+						for i in range(ll_inp-1):		
 							Cor+= 1j*(CdC[i,i+1]-CdC[i+1,i])
+
 						value.append([t*dt,np.real(Cor)])
 
 					end = time.time()
