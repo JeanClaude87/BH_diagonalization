@@ -42,16 +42,13 @@ def time_evolution(psi_0, H_ev, **args):
 
 		mat_exp = sp.linalg.expm(HT)
 
-		start = time.time()
-
 		phi = psi0
 		for tt in range(step_num):
 			
 			psit[tt] = phi
 			phi  = phi.dot(mat_exp.T)
 
-		end = time.time()
-		print('time', end - start)
+
 
 	return psit
 

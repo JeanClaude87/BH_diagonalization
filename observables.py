@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import time
 import function as ff
 
 ## .................................................................
@@ -140,6 +141,58 @@ def CdCdCC_creation(**args):
 
 	return CDC
 
+def corrente(V, **args):
+
+	ll  	 = np.int(args.get("ll"))
+
+	CdC 	 = CdiCj(V, **args)
+	xx 		 = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
+	corrente = np.sum(xx)
+
+	return corrente
+
+def corrente_t(psit, Dstep, **args):
+
+	ll  	 = np.int(args.get("ll"))
+	dt       = args.get("dt")
+	step_num = args.get("step_num")
+
+
+	start = time.time()
+
+	value = []
+
+	for t in range(0,step_num,Dstep):
+
+		CdC = CdiCj(psit[t,:], **args)
+
+		xx = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
+		value.append([t*dt,np.sum(xx)])
+
+	corrente_array = np.array(value)
+
+	end = time.time()
+	print('time', end - start)
+
+	
+
+	start = time.time()
+	
+	t_vec = range(0,step_num,Dstep)
+	uga   = np.array([[t*dt, corrente(psit[t,:], **args)] for t in t_vec])
+
+	end = time.time()
+	print('time', end - start)
+	
+
+	start = time.time()
+	uu = np.apply_along_axis(corrente, 1, psit, **args)
+
+	end = time.time()
+	print('time', end - start)
+
+
+	return corrente_array
 
 
 def CdiCj(V, **args):
