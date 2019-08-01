@@ -150,7 +150,7 @@ def corrente(V, **args):
 	xx 		 = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
 	corrente = np.sum(xx)
 
-	return 0#corrente
+	return corrente
 
 def corrente_t(psit, Dstep, **args):
 
