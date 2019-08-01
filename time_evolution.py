@@ -34,8 +34,6 @@ def time_evolution(psi_0, H_ev, **args):
 	else:
 
 		print('denso')
-
-		E_ev, V_ev = ham.diagonalization(H_ev, **args)
 	
 		HT      = np.asarray(-1j*dt*H_ev)
 		psit    = np.zeros((step_num, DIM_H), dtype=np.complex)

@@ -2,6 +2,7 @@ import numpy as np
 import os
 import time
 import function as ff
+from scipy import sparse
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
@@ -149,7 +150,7 @@ def corrente(V, **args):
 	xx 		 = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
 	corrente = np.sum(xx)
 
-	return corrente
+	return 0#corrente
 
 def corrente_t(psit, Dstep, **args):
 
@@ -157,9 +158,7 @@ def corrente_t(psit, Dstep, **args):
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
 
-
-	start = time.time()
-
+	'''
 	value = []
 
 	for t in range(0,step_num,Dstep):
@@ -170,27 +169,10 @@ def corrente_t(psit, Dstep, **args):
 		value.append([t*dt,np.sum(xx)])
 
 	corrente_array = np.array(value)
-
-	end = time.time()
-	print('time', end - start)
-
+	'''
 	
-
-	start = time.time()
-	
-	t_vec = range(0,step_num,Dstep)
-	uga   = np.array([[t*dt, corrente(psit[t,:], **args)] for t in t_vec])
-
-	end = time.time()
-	print('time', end - start)
-	
-
-	start = time.time()
-	uu = np.apply_along_axis(corrente, 1, psit, **args)
-
-	end = time.time()
-	print('time', end - start)
-
+	t_vec          = range(0,step_num,Dstep)
+	corrente_array = np.array([[t*dt, corrente(psit[t,:], **args)] for t in t_vec])
 
 	return corrente_array
 
@@ -204,11 +186,8 @@ def CdiCj(V, **args):
 	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
 
-	CdiCj =  np.einsum('xylj,l,j -> xy', CDC, V, V_c)
-
+	CdiCj  = np.einsum('xylj,l,j -> xy', CDC, V, V_c, optimize=True)
 	CdiCj += np.diag(dens)
-
-	#print(CdiCj)
 
 	return CdiCj
 

@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [6]:#,3,4,5,6]:
+for nn_inp in [2,3,4,5,6]:
 
 	for ll_inp in [10]:
 
@@ -145,7 +145,7 @@ for nn_inp in [6]:#,3,4,5,6]:
 
 		Global_dictionary["HOP_list"]  = HOP_list
 
-		CDC 			= ob.CdiCj_creation(**Global_dictionary)
+		CDC 		 = ob.CdiCj_creation(**Global_dictionary)
 		Global_dictionary["CDC_matrix"]   = CDC
 		
 
@@ -443,8 +443,8 @@ for nn_inp in [6]:#,3,4,5,6]:
 
 ####################	TIME EVOLUTION -->>
 
-		dt 		 = 2
-		step_num = 2000
+		dt 		 = 10
+		step_num = 1200
 
 		Constants_dictionary = { 
 		"dt"      : dt,
@@ -472,9 +472,7 @@ for nn_inp in [6]:#,3,4,5,6]:
 			Dstep = 1
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
-
-
-
+			
 			nor  = np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0))
 			Vcat = np.add(V_cat_0,V_cat_1)*(1/nor)
 			
