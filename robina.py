@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for ll_inp in [30]:
+for ll_inp in [5]:
 
 	nn_inp 	=	4
 	#ll_inp 	=	12
@@ -121,7 +121,12 @@ for ll_inp in [30]:
 
 	Global_dictionary["HOP_list"]  = HOP_list
 
-#	CDC 			= ob.CdiCj_creation(**Global_dictionary)
+	CDC 			= ob.CdiCj_creation(**Global_dictionary)
+	CDCDCC			= ob.CdCdCC_creation(**Global_dictionary)
+
+
+quit()
+'''
 #	Global_dictionary["CDC_matrix"]   = CDC
 
 
@@ -210,10 +215,10 @@ for ll_inp in [30]:
 
 				E0,V_cat_0  = ham.diagonalization(Hamiltonian_0, **Global_dictionary)
 
-				#3cc = ob.CdiCj(V_cat_0[:,0], **Global_dictionary)
 				
-				print(ll_inp, U_inp, flux_inp, E0[0])
+				
 
 quit()
 
 
+'''

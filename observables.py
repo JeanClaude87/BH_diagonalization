@@ -45,9 +45,6 @@ def NiNj(V,**args):
 
 def CdiCj_creation(**args):
 
-# THIS WORKS
-
-
 	states   = args.get("BASE_bose")
 	ll  	 = np.int(args.get("ll"))
 	nn  	 = np.int(args.get("nn"))	
@@ -85,6 +82,65 @@ def CdiCj_creation(**args):
 				#if B_bose[st,i] >= 4: print('non puoi creare')
 
 	return CDC
+
+
+def CdCdCC_creation(**args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
+
+	Cd  = np.power(np.remainder(states+1,nn+1),1/2)
+	C   = np.power(states,1/2)
+
+	CDC = np.zeros((ll,ll,ll,ll,DIM_H,DIM_H), dtype=np.float)
+	
+	for st in range(DIM_H):			
+		for i in range(ll):
+			for j in range(ll):
+				for k in range(ll):
+					for l in range(ll):
+
+						#if i==l or i==k or j==l or j==k it must be corrected!!
+
+						if(Cd[st,i]*C[st,j]*Cd[st,k]*C[st,l] > 0):
+
+							uga    = B_bose[st]*1
+							uga[i] += 1
+							uga[j] -= 1
+							uga[k] += 1
+							uga[l] -= 1
+
+							ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
+							weight = np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
+							#print(weight)
+							CDC[i,j,k,l,st,ind] = weight
+
+
+	for i in range(ll):
+		print([i,i,i,i])
+
+		for k in range(ll):
+			for l in range(ll):		
+				print([i,i,k,l])
+			for j in range(ll):					
+				print([i,j,k,i])
+
+	for k in range(ll):
+		for i in range(ll):
+			for j in range(ll):		
+				print([i,j,k,k])
+				print([i,k,k,j])
+
+
+			#print(B_bose[st], B_bose[st,i]**2)						
+
+	return CDC
+
+
 
 def CdiCj(V, **args):
 

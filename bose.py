@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [4,5,6]:
+for nn_inp in [2,3,4,5,6]:
 
 	for ll_inp in [10]:
 
@@ -51,7 +51,7 @@ for nn_inp in [4,5,6]:
 
 		U_inp = -1.0*U_in
 		
-		for bar_inp in [0.05, 0.03, 0.01, 0.005, 0.003, 0.001]:
+		for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 		#for bar_inp in np.arange(0.,0.5,0.01)::
 		#for bar_inp in [0.003]:	
 
@@ -437,8 +437,8 @@ for nn_inp in [4,5,6]:
 
 ####################	TIME EVOLUTION -->>
 
-				dt 		 = 1
-				step_num = 10000
+				dt 		 = 2
+				step_num = 5000
 
 				Constants_dictionary = { 
 				"dt"      : dt,
@@ -467,6 +467,8 @@ for nn_inp in [4,5,6]:
 
 					value = []
 
+					'''
+
 					Dstep = 20
 
 					for t in range(0,step_num,Dstep):
@@ -483,6 +485,9 @@ for nn_inp in [4,5,6]:
 					print('time', end - start)
 
 					ob.Export_Observable(np.array(value), directory, 'corrente.dat', **Global_dictionary)
+
+					'''
+
 
 					nor  = np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0))
 					Vcat = np.add(V_cat_0,V_cat_1)*(1/nor)
