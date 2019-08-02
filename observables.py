@@ -245,14 +245,15 @@ def Export_Observable(obs, directory, name, **args):
 	return 0
 
 
-def Export_Observable_time(psi_t,dt,name,**args):
+def Export_Observable_time(psi_t,directory,name,**args):
 
 	ll    = args.get("ll")
 	nn    = args.get("nn")
 	LOCAL = args.get("LOCAL")
 	U  	  = args.get("U")
+	dt 	  = args.get("dt")
+	nstep = args.get("step_num")
 	
-	nstep = len(psi_t.T)
 	DEN   = []
 
 	for i in range(nstep):
@@ -262,16 +263,8 @@ def Export_Observable_time(psi_t,dt,name,**args):
 		for j in range(ll):
 
 			DEN.append([i*dt,j,dens[0,j]])	
-
-	directory = '/dati/L_'+str(ll)+'-N_'+str(nn)+os.sep+'U_'+str(U)
 	
-	if not os.path.exists(LOCAL+os.sep+directory):
-		os.makedirs(LOCAL+os.sep+directory)
-
-	PATH_now = LOCAL+os.sep+directory+os.sep
-
-	name_dens = PATH_now+str(name)
-	np.savetxt(name_dens, DEN , fmt='%.9f')
+	Export_Observable(FID, directory, name, **args)
 
 	return 0
 
@@ -283,68 +276,43 @@ def Export_Fidelity(psi_t, state_B, directory, name,**args):
 	LOCAL = args.get("LOCAL")
 	U  	  = args.get("U")
 	bar   = args.get("bar")
-		
-	dt       = args.get("dt")
-
-	nstep = len(psi_t)
+	dt 	  = args.get("dt")
+	nstep = args.get("step_num")
 
 	FID   = []
 
 	for i in range(nstep):
-		#print('ps', psi_t[i].shape)
-		#print(psi_t[i])
-		#print('0',  state_B.shape)
-		#print(state_B)
+
 		FID_t = np.square(np.absolute(np.vdot(psi_t[i],state_B)))
 		FID.append([i*dt,FID_t])
-
-#	directory = os.sep+'dati'+os.sep+'L_'+str(ll)+os.sep+'N_'+str(nn)+os.sep+'U_'+str(U)+os.sep+'bb_'+str(bar)
 	
-	if not os.path.exists(LOCAL+os.sep+directory):
-		os.makedirs(LOCAL+os.sep+directory)
-
-	PATH_now = LOCAL+os.sep+directory+os.sep
-
-	name_fide = PATH_now+str(name)
-	np.savetxt(name_fide, FID , fmt='%.9f')
+	Export_Observable(FID, directory, name, **args)
 
 	return 0
 
-def Export_Fidelity_time(psi_t,name,**args):
+def Export_Fidelity_CAT(psi_t, psi1, psi2, directory, name,**args):
 
 	ll    = args.get("ll")
 	nn    = args.get("nn")
 	LOCAL = args.get("LOCAL")
 	U  	  = args.get("U")
 	bar   = args.get("bar")
+	dt 	  = args.get("dt")
+	nstep = args.get("step_num")
 	
-	dt       = args.get("dt")
-
-	nstep = len(psi_t.T)
 	FID   = []
-
-	A = np.squeeze(np.asarray(psi_t[:,0]))
 
 	for i in range(nstep):
 
-		B = np.squeeze(np.asarray(psi_t[:,i]))
-		FID.append([i*dt,np.square(np.absolute(np.dot(A,B)))])
+		z1 = np.vdot(psi_t[i],psi1[:,0])
+		z2 = np.vdot(psi_t[i],psi2[:,0])
+	
+		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) + z1*np.conj(z2) + z2*np.conj(z1) ) / 2.0 )
+		FID.append([i*dt,zz])
 
-		#print(i*dt)
-
-	directory = os.sep+'dati'+os.sep+'L_'+str(ll)+os.sep+'N_'+str(nn)+os.sep+'U_'+str(U)+os.sep+'bb_'+str(bar)
-	print(directory)
-
-	if not os.path.exists(LOCAL+os.sep+directory):
-		os.makedirs(LOCAL+os.sep+directory)
-
-	PATH_now = LOCAL+os.sep+directory+os.sep
-
-	name_fide = PATH_now+str(name)
-	np.savetxt(name_fide, FID , fmt='%.9f')
+	Export_Observable(FID, directory, name, **args)
 
 	return 0
-
 
 
 

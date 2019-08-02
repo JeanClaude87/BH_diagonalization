@@ -51,15 +51,15 @@ for nn_inp in [2,3,4,5,6]:
 
 		U_inp = -1.0*U_in
 		
-	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	#for bar_inp in np.arange(0.,0.5,0.01)::
 	#for bar_inp in [0.003]:	
 
-		if nn_inp == 2:	bar_inp = 0.003
-		if nn_inp == 3:	bar_inp = 0.003
-		if nn_inp == 4:	bar_inp = 0.0007	
-		if nn_inp == 5:	bar_inp = 0.001	
-		if nn_inp == 6:	bar_inp = 0.0007	
+		#if nn_inp == 2:	bar_inp = 0.003
+		#if nn_inp == 3:	bar_inp = 0.003
+		#if nn_inp == 4:	bar_inp = 0.0007	
+		#if nn_inp == 5:	bar_inp = 0.001	
+		#if nn_inp == 6:	bar_inp = 0.0007	
 
 		#for flux_inp in np.arange(0.,0.5,0.01):
 
@@ -73,6 +73,9 @@ for nn_inp in [2,3,4,5,6]:
 		cores_num_inp    = 2
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
+		dt 		 = 10
+		step_num = 1200
+
 		if mat_type_inp == None:
 			mat_type_inp = 'Sparse'
 
@@ -84,17 +87,19 @@ for nn_inp in [2,3,4,5,6]:
 		zero = 0.0
 
 		Constants_dictionary = {
-			"ll" : ll_inp, 
-			"nn" : nn_inp,
-			"BC" : BC_inp, 
-			"t"  : t_inp ,
-			"U"  : U_inp ,
-			"bar": zero,
+			"ll" 		: ll_inp, 
+			"nn" 		: nn_inp,
+			"BC" 		: BC_inp, 
+			"t"  		: t_inp ,
+			"U"  		: U_inp ,
+			"bar"		: zero,
 			"n_diag_state"  : n_diag_state_inp,
 			"cores_num" : cores_num_inp,
 			"mat_type" 	: mat_type_inp,
 			"LOCAL" 	: os.path.abspath('.'),
 			"parity"   	: parity_inp,
+			"dt"      	: dt,
+			"step_num"	: step_num
 			}
 
 		n_diag_state 	= Constants_dictionary.get("n_diag_state")
@@ -443,24 +448,10 @@ for nn_inp in [2,3,4,5,6]:
 
 ####################	TIME EVOLUTION -->>
 
-		dt 		 = 10
-		step_num = 1200
-
-		Constants_dictionary = { 
-		"dt"      : dt,
-		"step_num": step_num,
-		}
-
-		Global_dictionary.update(Constants_dictionary)
-		
-		COMM.Barrier()
-
 		if COMM.rank == 0:
 		
 			psi_0 = V0
 			psit = t_ev.time_evolution(psi_0, Hamiltonian_ev, **Global_dictionary)
-
-
 
 
 ####################	OBSERVABLES -->> 
@@ -470,13 +461,11 @@ for nn_inp in [2,3,4,5,6]:
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
 			Dstep = 1
-			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
-			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
 			
-			nor  = np.sqrt(np.vdot(V_cat_1,V_cat_1)+np.vdot(V_cat_0,V_cat_0)+np.vdot(V_cat_0,V_cat_1)+np.vdot(V_cat_1,V_cat_0))
-			Vcat = np.add(V_cat_0,V_cat_1)*(1/nor)
-			
-			ob.Export_Fidelity(psit, Vcat,      directory, 'fidelity_cat.dat',**Global_dictionary)
+			#current = ob.corrente_t(psit, Dstep, **Global_dictionary)
+			#ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
+								
+			ob.Export_Fidelity_CAT(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat.dat',**Global_dictionary)
 			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
 			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 
