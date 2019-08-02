@@ -465,7 +465,8 @@ for nn_inp in [2,3,4,5,6]:
 			#current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 			#ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
 								
-			ob.Export_Fidelity_CAT(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat.dat',**Global_dictionary)
+			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
+			ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
 			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
 			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 

@@ -290,7 +290,7 @@ def Export_Fidelity(psi_t, state_B, directory, name,**args):
 
 	return 0
 
-def Export_Fidelity_CAT(psi_t, psi1, psi2, directory, name,**args):
+def Export_Fidelity_CAT_s(psi_t, psi1, psi2, directory, name,**args):
 
 	ll    = args.get("ll")
 	nn    = args.get("nn")
@@ -314,6 +314,29 @@ def Export_Fidelity_CAT(psi_t, psi1, psi2, directory, name,**args):
 
 	return 0
 
+def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
+
+	ll    = args.get("ll")
+	nn    = args.get("nn")
+	LOCAL = args.get("LOCAL")
+	U  	  = args.get("U")
+	bar   = args.get("bar")
+	dt 	  = args.get("dt")
+	nstep = args.get("step_num")
+	
+	FID   = []
+
+	for i in range(nstep):
+
+		z1 = np.vdot(psi_t[i],psi1[:,0])
+		z2 = np.vdot(psi_t[i],psi2[:,0])
+	
+		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) - z1*np.conj(z2) - z2*np.conj(z1) ) / 2.0 )
+		FID.append([i*dt,zz])
+
+	Export_Observable(FID, directory, name, **args)
+
+	return 0
 
 
 
