@@ -51,20 +51,23 @@ for nn_inp in [2,3,4,5,6]:
 
 		U_inp = -1.0*U_in
 		
-	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	#for bar_inp in np.arange(0.,0.5,0.01)::
 	#for bar_inp in [0.003]:	
 
-		#if nn_inp == 2:	bar_inp = 0.003
-		#if nn_inp == 3:	bar_inp = 0.003
-		#if nn_inp == 4:	bar_inp = 0.0007	
-		#if nn_inp == 5:	bar_inp = 0.001	
-		#if nn_inp == 6:	bar_inp = 0.0007	
+		if nn_inp == 2:	bar_inp = 0.007
+		if nn_inp == 3:	bar_inp = 0.003
+		if nn_inp == 4:	bar_inp = 0.0007	
+		if nn_inp == 5:	bar_inp = 0.001	
+		if nn_inp == 6:	bar_inp = 0.0007	
 
 		#for flux_inp in np.arange(0.,0.5,0.01):
 
-		flux_inp 		 = 0.0
-		BC_inp 			 = 0			# 0 is periodic
+		flux_inp 		= 0.0
+		flux_inp_1 		= 1.0
+		flux_inp_psi0 	= 0.0
+		flux_inp_t 		= 0.5		
+		BC_inp 			= 0			# 0 is periodic
 
 		#mat_type_inp     = 'Dense' 	#'Sparse' #.... default Dense
 		mat_type_inp     = 'Sparse' 	#.... default Dense
@@ -228,7 +231,6 @@ for nn_inp in [2,3,4,5,6]:
 
 		COMM.Barrier()	
 
-		flux_inp_1 	= 1/1.
 		t_inp_1  	= -1.0*np.exp(-2*np.pi*1j*flux_inp_1/ll_inp)
 		
 		Constants_dictionary = { 
@@ -298,7 +300,6 @@ for nn_inp in [2,3,4,5,6]:
 
 		COMM.Barrier()	
 
-		flux_inp_psi0 	= 0.0
 		t_inp_t_psi0  	= -1.0*np.exp(-2*np.pi*1j*flux_inp_psi0/ll_inp)
 
 		
@@ -367,7 +368,6 @@ for nn_inp in [2,3,4,5,6]:
 
 		COMM.Barrier()
 
-		flux_inp_t 	= 0.5
 		t_inp_t  	= -1.0*np.exp(-2*np.pi*1j*flux_inp_t/ll_inp)
 
 		if COMM.rank == 0:
@@ -460,15 +460,15 @@ for nn_inp in [2,3,4,5,6]:
 
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
-			Dstep = 1
+			Dstep = 2
 			
-			#current = ob.corrente_t(psit, Dstep, **Global_dictionary)
-			#ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
+			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
+			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
 								
-			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
-			ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
-			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
-			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
+			#ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
+			#ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
+			#ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
+			#ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 
 
 
