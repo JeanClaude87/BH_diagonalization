@@ -153,9 +153,11 @@ for nn_inp in [2,3,4,5,6]:
 
 		Global_dictionary["HOP_list"]  = HOP_list
 
-		CDC 		 = ob.CdiCj_creation(**Global_dictionary)
+		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
+		CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)
+
 		Global_dictionary["CDC_matrix"]   = CDC
-		
+		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
 
@@ -456,20 +458,23 @@ for nn_inp in [2,3,4,5,6]:
 
 ####################	OBSERVABLES -->> 
 			
-		
 
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
 			Dstep = 2
-			
-			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
-			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)
-								
-			#ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
-			#ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
-			#ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
-			#ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 
+			CCDD = ob.CdCdCC_t(psit, Dstep, **Global_dictionary)
+			CD   = ob.CdiCj_t (psit, Dstep, **Global_dictionary)
+			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
+
+			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
+			ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
+			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
+			
+			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
+			ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
+			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
+			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 
 
 quit()

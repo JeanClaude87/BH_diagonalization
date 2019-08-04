@@ -88,59 +88,107 @@ def CdiCj_creation(**args):
 
 def CdCdCC_creation(**args):
 
-	states   = args.get("BASE_bose")
 	ll  	 = np.int(args.get("ll"))
 	nn  	 = np.int(args.get("nn"))	
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
-	Cd  = np.power(np.remainder(states+1,nn+1),1/2)
-	C   = np.power(states,1/2)
-
 	CDC = np.zeros((ll,ll,ll,ll,DIM_H,DIM_H), dtype=np.float)
+	Cd  = np.power(np.remainder(B_bose+1,nn+1),1/2)
+	C   = np.power(B_bose,1/2)	
 	
-	for st in range(DIM_H):			
-		for i in range(ll):
-			for j in range(ll):
-				for k in range(ll):
-					for l in range(ll):
-
-						#if i==l or i==k or j==l or j==k it must be corrected!!
-
-						if(Cd[st,i]*C[st,j]*Cd[st,k]*C[st,l] > 0):
-
-							uga    = B_bose[st]*1
-							uga[i] += 1
-							uga[j] -= 1
-							uga[k] += 1
-							uga[l] -= 1
-
-							ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
-							weight = np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
-							#print(weight)
-							CDC[i,j,k,l,st,ind] = weight
-
-
 	for i in range(ll):
-		print([i,i,i,i])
+		for j in range(ll):
+			for k in range(ll):
+				for l in range(ll):
+					for st in range(DIM_H):	
 
-		for k in range(ll):
-			for l in range(ll):		
-				print([i,i,k,l])
-			for j in range(ll):					
-				print([i,j,k,i])
-
-	for k in range(ll):
-		for i in range(ll):
-			for j in range(ll):		
-				print([i,j,k,k])
-				print([i,k,k,j])
-
-
-			#print(B_bose[st], B_bose[st,i]**2)						
+						ind, weight = weight_4_ind(i,j,k,l,st,**args)
+						CDC[i,j,k,l,st,ind] = weight	
 
 	return CDC
+
+def weight_4_ind(i,j,k,l,st,**args):
+
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
+
+	peso   = 1
+
+	uga    = B_bose[st]*1
+
+	peso   *= uga[l]
+	uga[l] -= 1
+
+	peso   *= uga[k]+1
+	uga[k] += 1
+
+	peso   *= uga[j]
+	uga[j] -= 1
+
+	peso   *= uga[i]+1
+	uga[i] += 1
+
+	ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
+
+	if peso > 0:
+		return ind, np.sqrt(peso)
+	else:
+		return ind, 0
+
+def CdCdCC(V, **args):
+
+	CDCDCC 	= args.get("CDCDCC_matrix")
+	V_c  	= np.conj(V)
+
+	correl  = np.einsum('xyztlj,l,j -> xyzt', CDCDCC, V, V_c) #, optimize=True)
+
+	return correl
+
+def CdiCj(V, **args):
+
+	CDC      = args.get("CDC_matrix")
+	
+	V_c      = np.conj(V)
+	dens 	 = density(V, **args)
+
+	CdiCj  = np.einsum('xylj,l,j -> xy', CDC, V, V_c, optimize=True)
+	CdiCj += np.diag(dens)
+
+	return CdiCj
+
+def CdCdCC_t(psit, Dstep, **args):
+
+	CDCDCC 	= args.get("CDCDCC_matrix")
+
+	ll  	 = np.int(args.get("ll"))
+	dt       = args.get("dt")
+	step_num = args.get("step_num")
+
+	t_vec 	   = range(0,step_num,Dstep)
+	prop_array = np.array([[[[[[t*dt, i, j, k, l, psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t])))] for t in t_vec] for i in range(ll)] for j in range(ll)] for k in range(ll)] for l in range(ll)]).reshape((step_num*ll*ll*ll*ll,6))
+
+	print(prop_array.shape)
+
+	return prop_array
+
+
+def CdiCj_t(psit, Dstep, **args):	
+
+
+	CDC      = args.get("CDC_matrix")
+
+	ll  	 = np.int(args.get("ll"))
+	dt       = args.get("dt")
+	step_num = args.get("step_num")
+
+	t_vec 	   = range(0,step_num,Dstep)
+	prop_array = np.array([[[[t*dt, i, j, psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((step_num*ll*ll,4))
+
+	return prop_array
+
 
 def corrente(V, **args):
 
@@ -157,41 +205,11 @@ def corrente_t(psit, Dstep, **args):
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
-
-	'''
-	value = []
-
-	for t in range(0,step_num,Dstep):
-
-		CdC = CdiCj(psit[t,:], **args)
-
-		xx = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
-		value.append([t*dt,np.sum(xx)])
-
-	corrente_array = np.array(value)
-	'''
 	
 	t_vec          = range(0,step_num,Dstep)
-	corrente_array = np.array([[t*dt, corrente(psit[t,:], **args)] for t in t_vec])
+	corrente_array = np.array([[t*dt, corrente(psit[t], **args)] for t in t_vec])
 
 	return corrente_array
-
-
-def CdiCj(V, **args):
-
-	CDC      = args.get("CDC_matrix")
-	flux 	 = np.int(args.get("U"))
-	ll  	 = np.int(args.get("ll"))
-	
-	V_c      = np.conj(V)
-	dens 	 = density(V, **args)
-
-	CdiCj  = np.einsum('xylj,l,j -> xy', CDC, V, V_c, optimize=True)
-	CdiCj += np.diag(dens)
-
-	return CdiCj
-
-
 
 
 def Olsh2(V, **args):
