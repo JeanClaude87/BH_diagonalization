@@ -285,7 +285,7 @@ def Export_Observable_time(psi_t,directory,name,**args):
 
 			DEN.append([i*dt,j,dens[0,j]])	
 	
-	Export_Observable(FID, directory, name, **args)
+	Export_Observable(DEN, directory, name, **args)
 
 	return 0
 
