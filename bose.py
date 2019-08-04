@@ -76,8 +76,10 @@ for nn_inp in [2,3,4,5,6]:
 		cores_num_inp    = 2
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
-		dt 		 = 10
-		step_num = 1200
+		dt 		 = 5
+		step_num = 800
+
+		#t max 4000
 
 		if mat_type_inp == None:
 			mat_type_inp = 'Sparse'
@@ -461,10 +463,10 @@ for nn_inp in [2,3,4,5,6]:
 
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
-			Dstep = 2
+			Dstep = 20
 
-			CCDD = ob.CdCdCC_t(psit, Dstep, **Global_dictionary)
-			CD   = ob.CdiCj_t (psit, Dstep, **Global_dictionary)
+			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
 			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)

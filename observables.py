@@ -62,26 +62,10 @@ def CdiCj_creation(**args):
 	for i in range(ll):
 		for j in range(ll):
 
-			if i!=j:
-				for st in range(DIM_H):		
+			for st in range(DIM_H):	
 
-					if(Cd[st,i]*C[st,j] > 0):
-
-						uga    = B_bose[st]*1
-						uga[i] += 1
-						uga[j] -= 1
-
-						#state_hop = B_bose[st]+hops
-						ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
-
-						weight = np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
-								 #np.sqrt((B_bose[st,i]+1)*B_bose[st,j])
-						
-						CDC[i,j,st,ind] = weight
-
-						#print('robina', 'create', i+1, 'destroy', j+1, B_bose[st], uga, weight)
-				#if B_bose[st,j] <= 0: print('non puoi distruggere')
-				#if B_bose[st,i] >= 4: print('non puoi creare')
+				ind, weight = weight_2_ind(i,j,st,**args)
+				CDC[i,j,st,ind] = weight
 
 	return CDC
 
@@ -95,8 +79,6 @@ def CdCdCC_creation(**args):
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
 	CDC = np.zeros((ll,ll,ll,ll,DIM_H,DIM_H), dtype=np.float)
-	Cd  = np.power(np.remainder(B_bose+1,nn+1),1/2)
-	C   = np.power(B_bose,1/2)	
 	
 	for i in range(ll):
 		for j in range(ll):
@@ -109,6 +91,28 @@ def CdCdCC_creation(**args):
 
 	return CDC
 
+def weight_2_ind(i,j,st,**args):
+
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
+
+	peso   = 1
+	uga    = B_bose[st]*1
+
+	peso   *= uga[j]
+	uga[j] -= 1
+
+	peso   *= uga[i]+1
+	uga[i] += 1
+
+	ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
+
+	if peso > 0:
+		return ind, np.sqrt(peso)
+	else:
+		return ind, 0
+
 def weight_4_ind(i,j,k,l,st,**args):
 
 	ll  	 = np.int(args.get("ll"))
@@ -116,7 +120,6 @@ def weight_4_ind(i,j,k,l,st,**args):
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
 	peso   = 1
-
 	uga    = B_bose[st]*1
 
 	peso   *= uga[l]
@@ -143,7 +146,7 @@ def CdCdCC(V, **args):
 	CDCDCC 	= args.get("CDCDCC_matrix")
 	V_c  	= np.conj(V)
 
-	correl  = np.einsum('xyztlj,l,j -> xyzt', CDCDCC, V, V_c) #, optimize=True)
+	correl  = np.einsum('xyztlj,l,j -> xyzt', CDCDCC, V, V_c, optimize=True)
 
 	return correl
 
@@ -168,15 +171,14 @@ def CdCdCC_t(psit, Dstep, **args):
 	step_num = args.get("step_num")
 
 	t_vec 	   = range(0,step_num,Dstep)
-	prop_array = np.array([[[[[[t*dt, i, j, k, l, psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t])))] for t in t_vec] for i in range(ll)] for j in range(ll)] for k in range(ll)] for l in range(ll)]).reshape((step_num*ll*ll*ll*ll,6))
+	t_num      = len(t_vec)
 
-	print(prop_array.shape)
+	prop_array = np.array([[[[[[t*dt, i,j,k,l, np.real(psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] for k in range(ll)] for l in range(ll)]).reshape((t_num*ll*ll*ll*ll,7))
 
 	return prop_array
 
 
 def CdiCj_t(psit, Dstep, **args):	
-
 
 	CDC      = args.get("CDC_matrix")
 
@@ -185,7 +187,8 @@ def CdiCj_t(psit, Dstep, **args):
 	step_num = args.get("step_num")
 
 	t_vec 	   = range(0,step_num,Dstep)
-	prop_array = np.array([[[[t*dt, i, j, psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((step_num*ll*ll,4))
+	t_num      = len(t_vec)
+	prop_array = np.array([[[[t*dt, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((t_num*ll*ll,5))
 
 	return prop_array
 
