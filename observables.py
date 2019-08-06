@@ -1,8 +1,10 @@
 import numpy as np
+import scipy as sp
 import os
 import time
 import function as ff
 from scipy import sparse
+from scipy.sparse import csc_matrix
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
@@ -78,16 +80,23 @@ def CdCdCC_creation(**args):
 
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
-	CDC = np.zeros((ll,ll,ll,ll,DIM_H,DIM_H), dtype=np.float)
-	
-	for i in range(ll):
-		for j in range(ll):
-			for k in range(ll):
-				for l in range(ll):
+	CDC = []
+
+	for l in range(ll):
+		for k in range(ll):
+			for j in range(ll):
+				for i in range(ll):					
+					
+					CC = []										
+
 					for st in range(DIM_H):	
 
 						ind, weight = weight_4_ind(i,j,k,l,st,**args)
-						CDC[i,j,k,l,st,ind] = weight	
+						
+						if weight > 0:
+							CC.append([st,ind,weight])
+					
+					CDC.append(CC)
 
 	return CDC
 
@@ -142,13 +151,34 @@ def weight_4_ind(i,j,k,l,st,**args):
 		return ind, 0
 
 def CdCdCC(V, **args):
+	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	ll  	= np.int(args.get("ll"))
+	mat_0 	= args.get("CDCDCC_matrix")
 
-	CDCDCC 	= args.get("CDCDCC_matrix")
-	V_c  	= np.conj(V)
+	V_c     = np.conj(V)
+	CDC 	= np.zeros((ll*ll*ll*ll,6), dtype=np.float)
 
-	correl  = np.einsum('xyztlj,l,j -> xyzt', CDCDCC, V, V_c, optimize=True)
+	for l in range(ll):
+		for k in range(ll):
+			for j in range(ll):
+				for i in range(ll):		
 
-	return correl
+					cc = i+j*ll+k*ll**2+l*ll**3	
+					dat = np.asarray(mat_0[cc])
+
+					XX 	= dat[:,0]
+					YY 	= dat[:,1]
+					AA 	= dat[:,2]
+					mat = csc_matrix((AA, (XX, YY)), shape=(DIM_H, DIM_H))
+					mat = csc_matrix.todense(mat)
+
+					num = np.einsum('l,lj,j', V, mat, V_c, optimize=True)
+
+					CDC[cc] = [i,j,k,l,np.real(num),np.imag(num)]
+
+
+	return CDC
 
 def CdiCj(V, **args):
 
@@ -163,17 +193,47 @@ def CdiCj(V, **args):
 	return CdiCj
 
 def CdCdCC_t(psit, Dstep, **args):
-
-	CDCDCC 	= args.get("CDCDCC_matrix")
-
+	
+	mat_0 	 = args.get("CDCDCC_matrix")
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
+	DIM_H 	 = np.int(args.get("DIM_H"))
 
-	t_vec 	   = range(0,step_num,Dstep)
-	t_num      = len(t_vec)
+	t_vec 	= range(0,step_num,Dstep)
+	t_num 	= len(t_vec)
 
-	prop_array = np.array([[[[[[t*dt, i,j,k,l, np.real(psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDCDCC[i,j,k,l].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] for k in range(ll)] for l in range(ll)]).reshape((t_num*ll*ll*ll*ll,7))
+	prop_array 	= np.zeros((t_num*ll**4,7), dtype=np.float)
+
+	for t in range(t_num):
+
+		V 	= psit[t]
+		V_c	= np.conj(V)
+
+		for l in range(ll):
+			for k in range(ll):
+				for j in range(ll):
+					for i in range(ll):		
+
+						cc = i+j*ll+k*ll**2+l*ll**3
+
+						dat = np.asarray(mat_0[cc])
+
+						XX 	= dat[:,0]
+						YY 	= dat[:,1]
+						AA 	= dat[:,2]
+						mat = csc_matrix((AA, (XX, YY)), shape=(DIM_H, DIM_H))
+						mat = csc_matrix.todense(mat)
+
+						num = np.einsum('l,lj,j', V, mat, V_c, optimize=True)
+
+						prop_array[cc+t*ll**4] = [t_vec[t],i,j,k,l,np.real(num),np.imag(num)]
+
+	print(prop_array[0])
+	print(prop_array[1])
+	print(prop_array[2])
+	print(prop_array[3])
+
 
 	return prop_array
 

@@ -18,7 +18,7 @@ import observables        as ob
 import time_evolution	  as t_ev
 import Hamiltonian_MPI	  as ham_MPI
 
-np.set_printoptions(precision=12,suppress=True)
+np.set_printoptions(precision=3,suppress=True)
 
 COMM = MPI.COMM_WORLD
 
@@ -37,9 +37,9 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [2,3,4,5,6]:
+for nn_inp in [3]:#,3,4,5,6]:
 
-	for ll_inp in [10]:
+	for ll_inp in [4]:
 
 		if nn_inp == 2:	U_in = 5.0
 		if nn_inp == 3:	U_in = 3.0	
@@ -77,7 +77,7 @@ for nn_inp in [2,3,4,5,6]:
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 		dt 		 = 5
-		step_num = 800
+		step_num = 10
 
 		#t max 4000
 
@@ -160,6 +160,10 @@ for nn_inp in [2,3,4,5,6]:
 
 		Global_dictionary["CDC_matrix"]   = CDC
 		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
+
+		#print(CDCDCC[0])
+
+
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
 
@@ -463,7 +467,7 @@ for nn_inp in [2,3,4,5,6]:
 
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
-			Dstep = 20
+			Dstep = 5
 
 			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
 			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
