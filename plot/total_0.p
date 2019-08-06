@@ -44,36 +44,36 @@ set autoscale
 
 
 	set title 'N=2 L=10 U/J=-5 V_0=0.007'
-	plot 	'../dati_0/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
-			'../dati_0/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			w l ls 6 t 'cur',\
+	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+			'../dati/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 
 	set title 'N=3 L=10 U/J=-3 V_0=0.003'
-	plot 	'../dati_0/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
-			'../dati_0/L_10/N_3/U_-3.0/bb_0.003/corrente.dat'			w l ls 6 t 'cur',\
+	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+			'../dati/L_10/N_3/U_-3.0/bb_0.003/corrente.dat'			w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 
 	set title 'N=4 L=10 U/J=-2 V_0=0.001'
-	plot 	'../dati_0/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
-			'../dati_0/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat'		w l ls 6 t 'cur',\
+	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+			'../dati/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat'		w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 
 	set title 'N=5 L=10 U/J=-1.5 V_0=0.001'
-	plot 	'../dati_0/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
-			'../dati_0/L_10/N_5/U_-1.5/bb_0.001/corrente.dat'			w l ls 6 t 'cur',\
+	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+			'../dati/L_10/N_5/U_-1.5/bb_0.001/corrente.dat'			w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 
 	set title 'N=6 L=10 U/J=-1.5 V_0=0.0007'
-	plot 	'../dati_0/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
-			'../dati_0/L_10/N_6/U_-1.0/bb_0.0007/corrente.dat'		w l ls 6 t 'cur',\
+	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+			'../dati/L_10/N_6/U_-1.0/bb_0.0007/corrente.dat'		w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
