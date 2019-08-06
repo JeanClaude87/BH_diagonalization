@@ -51,7 +51,7 @@ for nn_inp in [2]:#,3,4,5,6]:
 
 		U_inp = -1.0*U_in
 		
-	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	#for bar_inp in np.arange(0.,0.5,0.01)::
 	#for bar_inp in [0.003]:	
 
@@ -76,8 +76,8 @@ for nn_inp in [2]:#,3,4,5,6]:
 		cores_num_inp    = 2
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
-		dt 		 = 5
-		step_num = 10
+		dt 		 = 10
+		step_num = 1000
 
 		#t max 4000
 
@@ -157,19 +157,17 @@ for nn_inp in [2]:#,3,4,5,6]:
 
 		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
 
-		print(ob.C_d(1,**Global_dictionary))
+#		print(ob.C_d(1,**Global_dictionary))
 
-#		profile.run('CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)')	
-		
+#		profile.run('CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)')			
 #		print("mat", 'll', ll_inp, 'nn', nn_inp)
 
-#		Global_dictionary["CDC_matrix"]   = CDC
+		Global_dictionary["CDC_matrix"]   = CDC
 #		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
 
-		#print(CDCDCC[0])
 
-quit()
-'''
+
+
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
 
@@ -473,14 +471,14 @@ quit()
 
 			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
-			Dstep = 5
+			Dstep = 1
 
-			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
-			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
+	#		CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+	#		CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
-			ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
+	#		ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
+	#		ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
 			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
 			
 			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
@@ -492,5 +490,3 @@ quit()
 quit()
 
 
-
-'''
