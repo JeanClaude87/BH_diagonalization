@@ -86,10 +86,12 @@ def C_d(x,**args):
 		vec 	= B_bose[st]*1
 		vec[x] += 1
 
+		print(B_bose[st])
+
 		if sum(vec) == nn:
 			ind = ff.get_index(ff.FROM_bose_TO_bin(vec,**args), **args)
 
-			print(B_bose[st],vec,ind)
+			#print(B_bose[st],vec,ind)
 
 	return 0
 

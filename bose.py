@@ -39,7 +39,7 @@ if COMM.rank == 0:
 
 for nn_inp in [2,3,4,5,6]:
 
-	for ll_inp in [10]:
+	for ll_inp in [5]:
 
 		if nn_inp == 2:	U_in = 5.0
 		if nn_inp == 3:	U_in = 3.0	
@@ -47,22 +47,17 @@ for nn_inp in [2,3,4,5,6]:
 		if nn_inp == 5:	U_in = 1.5	
 		if nn_inp == 6:	U_in = 1.0						
 
-#			for U_in in [0.5,1.0,3.0]:
-
 		U_inp = -1.0*U_in
 		
-	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
-	#for bar_inp in np.arange(0.,0.5,0.01)::
-	#for bar_inp in [0.003]:	
-
+	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	
+	'''
 		if nn_inp == 2:	bar_inp = 0.007
 		if nn_inp == 3:	bar_inp = 0.003
 		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
-		if nn_inp == 6:	bar_inp = 0.0007	
-
-		#for flux_inp in np.arange(0.,0.5,0.01):
-
+		if nn_inp == 6:	bar_inp = 0.0007			
+	'''
 		flux_inp 		= 0.0
 		flux_inp_1 		= 1.0
 		flux_inp_psi0 	= 0.0
@@ -156,15 +151,9 @@ for nn_inp in [2,3,4,5,6]:
 		Global_dictionary["HOP_list"]  = HOP_list
 
 		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
-
-#		print(ob.C_d(1,**Global_dictionary))
-
-#		profile.run('CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)')			
-#		print("mat", 'll', ll_inp, 'nn', nn_inp)
-
 		Global_dictionary["CDC_matrix"]   = CDC
-#		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
 
+#		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
 
 
 
@@ -488,5 +477,4 @@ for nn_inp in [2,3,4,5,6]:
 
 
 quit()
-
 
