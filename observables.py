@@ -49,6 +49,14 @@ def NiNj(V,**args):
 
 	return NN
 
+
+
+
+
+
+#############      CdCdCd    CORRELATIONS
+
+
 def CdiCj_creation(**args):
 
 	states   = args.get("BASE_bose")
@@ -70,56 +78,6 @@ def CdiCj_creation(**args):
 
 				ind, weight = weight_2_ind(i,j,st,**args)
 				CDC[i,j,st,ind] = weight
-
-	return CDC
-
-
-def C_d(x,**args):
-	
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))		
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
-	
-	for st in range(DIM_H):	
-
-		vec 	= B_bose[st]*1
-		vec[x] += 1
-
-		print(B_bose[st])
-
-		if sum(vec) == nn:
-			ind = ff.get_index(ff.FROM_bose_TO_bin(vec,**args), **args)
-
-			#print(B_bose[st],vec,ind)
-
-	return 0
-
-def CdCdCC_creation(**args):
-
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
-
-	CDC = []
-
-	for l in range(ll):
-		for k in range(ll):
-			for j in range(ll):
-				for i in range(ll):					
-					
-					CC = []										
-
-					for st in range(DIM_H):	
-
-						ind, weight = weight_4_ind(i,j,k,l,st,**args)
-						
-						if weight > 0:
-							CC.append([st,ind,weight])
-					
-					CDC.append(CC)
 
 	return CDC
 
@@ -145,65 +103,6 @@ def weight_2_ind(i,j,st,**args):
 	else:
 		return ind, 0
 
-def weight_4_ind(i,j,k,l,st,**args):
-
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
-	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
-
-	peso   = int(1)
-	uga    = B_bose[st]*1
-
-	peso   *= uga[l]
-	uga[l] -= int(1)
-
-	peso   *= uga[k]+1
-	uga[k] += int(1)
-
-	peso   *= uga[j]
-	uga[j] -= int(1)
-
-	peso   *= uga[i]+1
-	uga[i] += int(1)
-
-	if peso > 0:
-
-		ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
-		return ind, np.sqrt(peso)
-	
-	else:
-		return 0, 0
-
-def CdCdCC(V, **args):
-	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	ll  	= np.int(args.get("ll"))
-	mat_0 	= args.get("CDCDCC_matrix")
-
-	V_c     = np.conj(V)
-	CDC 	= np.zeros((ll*ll*ll*ll,6), dtype=np.float)
-
-	for l in range(ll):
-		for k in range(ll):
-			for j in range(ll):
-				for i in range(ll):		
-
-					cc = i+j*ll+k*ll**2+l*ll**3	
-					dat = np.asarray(mat_0[cc])
-
-					XX 	= dat[:,0]
-					YY 	= dat[:,1]
-					AA 	= dat[:,2]
-					mat = csc_matrix((AA, (XX, YY)), shape=(DIM_H, DIM_H))
-					mat = csc_matrix.todense(mat)
-
-					num = np.einsum('l,lj,j', V, mat, V_c, optimize=True)
-
-					CDC[cc] = [i,j,k,l,np.real(num),np.imag(num)]
-
-
-	return CDC
-
 def CdiCj(V, **args):
 
 	CDC      = args.get("CDC_matrix")
@@ -211,14 +110,14 @@ def CdiCj(V, **args):
 	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
 
-	CdiCj  = np.einsum('xylj,l,j -> xy', CDC, V, V_c, optimize=True)
-	CdiCj += np.diag(dens)
+	CdiCj  = np.einsum('l, xylj,j -> xy', V, CDC, V, optimize=True)
+	#CdiCj += np.diag(dens)
 
 	return CdiCj
 
 def CdCdCC_t(psit, Dstep, **args):
-	
-	mat_0 	 = args.get("CDCDCC_matrix")
+
+	CDC      = args.get("CDC_matrix")
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
@@ -228,36 +127,21 @@ def CdCdCC_t(psit, Dstep, **args):
 	t_num 	= len(t_vec)
 
 	prop_array 	= np.zeros((t_num*ll**4,7), dtype=np.float)
-
+	
 	for t in range(t_num):
 
 		V 	= psit[t]
 		V_c	= np.conj(V)
-
-		for l in range(ll):
-			for k in range(ll):
-				for j in range(ll):
-					for i in range(ll):		
+		for i in range(ll):
+			for j in range(ll):
+				for k in range(ll):
+					for l in range(ll):
 
 						cc = i+j*ll+k*ll**2+l*ll**3
 
-						dat = np.asarray(mat_0[cc])
-
-						XX 	= dat[:,0]
-						YY 	= dat[:,1]
-						AA 	= dat[:,2]
-						mat = csc_matrix((AA, (XX, YY)), shape=(DIM_H, DIM_H))
-						mat = csc_matrix.todense(mat)
-
-						num = np.einsum('l,lj,j', V, mat, V_c, optimize=True)
+						num = np.einsum('l, lj, jk, k', V, CDC[i,j], CDC[l,k], V_c, optimize=True)
 
 						prop_array[cc+t*ll**4] = [t_vec[t],i,j,k,l,np.real(num),np.imag(num)]
-
-	print(prop_array[0])
-	print(prop_array[1])
-	print(prop_array[2])
-	print(prop_array[3])
-
 
 	return prop_array
 

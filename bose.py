@@ -37,9 +37,9 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [2,3,4,5,6]:
+for nn_inp in [3]:#,3,4,5,6]:
 
-	for ll_inp in [10]:
+	for ll_inp in [4]:
 
 		if nn_inp == 2:	U_in = 5.0
 		if nn_inp == 3:	U_in = 3.0	
@@ -49,15 +49,15 @@ for nn_inp in [2,3,4,5,6]:
 
 		U_inp = -1.0*U_in
 		
-	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	
-		'''
+		
 		if nn_inp == 2:	bar_inp = 0.007
 		if nn_inp == 3:	bar_inp = 0.003
 		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
-		'''
+	
 		
 		flux_inp 		= 0.0
 		flux_inp_1 		= 1.0
@@ -73,7 +73,7 @@ for nn_inp in [2,3,4,5,6]:
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 		dt 		 = 10
-		step_num = 1000
+		step_num = 2 #1000
 
 		#t max 4000
 
@@ -463,18 +463,18 @@ for nn_inp in [2,3,4,5,6]:
 
 			Dstep = 1
 
-	#		CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
 	#		CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
-			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
+	#		current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-	#		ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
+			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
 	#		ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
-			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
+	#		ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
 			
-			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
-			ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
-			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
-			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
+	#		ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
+	#		ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
+	#		ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
+	#		ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 
 
 quit()
