@@ -1,5 +1,5 @@
-//	superblock.cc			(C) 2011 Fabio Ortolani	fbo 110614
-//	==================================================================
+//  superblock.cc           (C) 2011 Fabio Ortolani fbo 110614
+//  ==================================================================
 #include "timing.hh"
 #include "superaction.hh"
 #include <cstdlib>
@@ -10,100 +10,105 @@
 #include <fstream>
 //
 //============================================================================
-void densityop_parse (size_t, size_t);				  // [menu.cc]
-void ham_parse (size_t);					  // [menu.cc]
-void hamt_parse (size_t, double);	       			  // [menu.cc]
+void densityop_parse (size_t, size_t);                // [menu.cc]
+void ham_parse (size_t);                      // [menu.cc]
+void hamt_parse (size_t, double);                     // [menu.cc]
 void properties (Block &, Block &,
                  const Action &, const Action &, double, double);    // [superblock.cc]
 static void projection (Action &, Block &, Block &,
                         const Action &, Block &, Block &);  // [superblock.cc]
-void evolution  (Block &, Block &);	         	    // [superblock.cc]
-void updatebase (Block &, Block &, long);		    // [superblock.cc]
+void evolution  (Block &, Block &);                 // [superblock.cc]
+void updatebase (Block &, Block &, long);           // [superblock.cc]
 //============================================================================
-static const size_t csize = 					// [action.cc]
+static const size_t csize =                     // [action.cc]
 (sizeof (complex<double>) + sizeof (double) -1) / sizeof (double);
 //
-extern Barray		blocklft;				  // [dmrg.cc]
-extern Barray		blockrgt;				  // [dmrg.cc]
-extern size_t		show_hamiltonian;			  // [dmrg.cc]
-extern size_t		reflection;				  // [dmrg.cc]
-extern size_t		old_sys;				  // [dmrg.cc]
-extern size_t		old_uni;				  // [dmrg.cc]
-extern size_t		old_sites;				  // [dmrg.cc]
+extern Barray       blocklft;                 // [dmrg.cc]
+extern Barray       blockrgt;                 // [dmrg.cc]
+extern size_t       show_hamiltonian;             // [dmrg.cc]
+extern size_t       reflection;               // [dmrg.cc]
+extern size_t       old_sys;                  // [dmrg.cc]
+extern size_t       old_uni;                  // [dmrg.cc]
+extern size_t       old_sites;                // [dmrg.cc]
 
-extern	double		n_cutlft;					// [dmrg.cc]
-extern	double		n_cutrgt;					// [dmrg.cc]
+extern  double      n_cutlft;                   // [dmrg.cc]
+extern  double      n_cutrgt;                   // [dmrg.cc]
 
-static size_t		sites_old 		= 0;
-static long			showham 		= 0;
-static Superaction	hamaction;
+static size_t       sites_old       = 0;
+static long         showham         = 0;
+static Superaction  hamaction;
 static Superaction  timeaction;
 static Superaction  initialaction;
 //
-double				tensorweight		= 1.e-4;
-Apoli		       	hamiltonian;
-Apoli				timehamiltonian;
+double              tensorweight        = 1.e-4;
+Apoli               hamiltonian;
+Apoli               timehamiltonian;
 Aproperty           start_action;
 size_t              ttarget_id;
 size_t              ttarget_index;
 double              timestep                = 0.0;
-size_t              steps_number			= 100;
-size_t		        step_divisions          = 10;
+size_t              steps_number            = 100;
+size_t              step_divisions          = 10;
 size_t              time_zips               = 1;
-vector<Brule>		lfttimerule;
-vector<Brule>		rgttimerule;
+vector<Brule>       lfttimerule;
+vector<Brule>       rgttimerule;
 
 //
-Aarray				super_state;
-Qtarget				super_target;
-vector<Aproperty>	correlation;
-vector<Aproperty>	densityoperator;
-vector<double>		super_weight;
+Aarray              super_state;
+Qtarget             super_target;
+vector<Aproperty>   correlation;
+vector<Aproperty>   densityoperator;
+vector<double>      super_weight;
 //
-//	Lanczos default parameters
+//  Lanczos default parameters
 //
-double			zero_energy		= 1.0e-10;
-double			zero_norm		= 1.0e-10;
-size_t			lanczos_iters		= 30;
-size_t			lanczos_repeats		= 500;
-size_t			lanczos_strategy	= 1;
+double          zero_energy     = 1.0e-10;
+double          zero_norm       = 1.0e-10;
+size_t          lanczos_iters       = 30;
+size_t          lanczos_repeats     = 500;
+size_t          lanczos_strategy    = 1;
 //
-size_t			initial_guess		= 0;
-extern double	       	initial_residual;  		   // [superaction.cc]
-extern double	       	initial_value;	                   // [superaction.cc]
+size_t          initial_guess       = 0;
+extern double           initial_residual;          // [superaction.cc]
+extern double           initial_value;                     // [superaction.cc]
 //
 vector<double>          renyiarg;
-vector<double>		renyientropy;
+vector<double>      renyientropy;
 //
-extern bool            	reflect_blocks;
+extern bool             reflect_blocks;
 extern bool             reflect_universe;
 extern size_t           min_lft;
 extern size_t           max_lft;
 extern double           n_cutlft;
 extern double           n_cutrgt;
 
-extern size_t		min_rgt;
-extern size_t		max_rgt;
-extern double		truncation;
-extern bool		show_states;
-extern bool		show_selection;
-extern size_t		show_density;
-extern size_t		idop_base;
-extern vector<Brule>	lftrule;
-extern vector<Brule>	rgtrule;
+extern size_t       min_rgt;
+extern size_t       max_rgt;
+extern double       truncation;
+extern bool     show_states;
+extern bool     show_selection;
+extern size_t       show_density;
+extern size_t       idop_base;
+extern vector<Brule>    lftrule;
+extern vector<Brule>    rgtrule;
 
 //
-extern vector<size_t>	symmetry;			          // [dmrg.cc]
+extern vector<size_t>   symmetry;                     // [dmrg.cc]
 //
-extern Storage		report;					  // [dmrg.cc]
+extern Storage      report;                   // [dmrg.cc]
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-extern vector<double>	autovalori;
+extern vector<double>   autovalori;
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 //============================================================================
 void evolution (Block & system, Block & universe)
 {
+
+    int tprop;
+    tprop = 19;
+
     Aarray phi;
     Action phihalf;
     size_t ket,l;
@@ -127,7 +132,7 @@ void evolution (Block & system, Block & universe)
     //
     //    Applies initial operator to initial state
     //
-    ket	= 0;
+    ket = 0;
     for (l = 1; l < super_target .subspaces (); ++l)
         if (ttarget_id == super_target .id (l)) ket = l;
     if (ket == 0) {
@@ -168,14 +173,14 @@ void evolution (Block & system, Block & universe)
     double  E0        = 0.0;
     size_t  tsteps    = 0;
     size_t  zips      = 0;
-    long	  zipdirini = -1;
+    long      zipdirini = -1;
     long    zipdir    = zipdirini;
     double  tau       = timestep;
     double  tm, te;
     truncation = 0.0;
-    show_states 	 = false;
+    show_states      = false;
     show_selection = false;
-    show_density	 = 0;
+    show_density     = 0;
     //
     super_weight .clear ();
     for (size_t nw = 0; nw < 4; nw++) super_weight .push_back (weight[nw]);
@@ -184,8 +189,16 @@ void evolution (Block & system, Block & universe)
     complex<double> phase;
  
     //
-    hamt_parse (sites, t);
-    hamiltonian += (-E0);
+
+    int time_site = 0;
+    
+    if (time_site == 0) {
+
+        hamt_parse (sites, t);
+        hamiltonian += (-E0);
+        time_site++;
+        }
+
     hamaction = Superaction (hamiltonian, system, universe, true);
     biapply (phi [1], hamaction, phi [0], true);
     phi[1] *= complex<double> (0.,-tau);
@@ -199,8 +212,11 @@ void evolution (Block & system, Block & universe)
     
     while (true) {
         //
-        //	check for new sweep
+        //  check for new sweep
         //
+
+        //hamiltonian .show ("Hamiltonian polinomial:");
+
         if ((lft_sites == rgt_sites + oddsites) && (zipdir == zipdirini)) zips++;
         norm2 = multiply (phi [0], phi [0]) .real();
         norm = sqrt(norm2);
@@ -226,13 +242,13 @@ void evolution (Block & system, Block & universe)
             tm = t + tau /2.0;
             te = t + tau;
             //
-            hamt_parse (sites, t);
+//            hamt_parse (sites, t);
             hamiltonian += (-E0);
             hamaction = Superaction (hamiltonian, system, universe, true);
             biapply (phi [1], hamaction, phi [0], true);
             phi[1] *= complex<double> (0.,-tau);
             //
-            hamt_parse  (sites, tm);
+//            hamt_parse  (sites, tm);
             hamiltonian += (-E0);
             hamaction = Superaction (hamiltonian, system, universe, true);
             phihalf = phi[1];
@@ -249,7 +265,7 @@ void evolution (Block & system, Block & universe)
             biapply (phi [3], hamaction, phihalf, true);
             phi [3] *= complex<double> (0, -tau);
             //
-            hamt_parse  (sites, te);
+ //           hamt_parse  (sites, te);
             hamiltonian += (-E0);
             hamaction = Superaction (hamiltonian, system, universe, true);
             phihalf =  phi [3];
@@ -281,12 +297,12 @@ void evolution (Block & system, Block & universe)
             }
             super_state [2] = phitwothird;
             //
-            //	AAA:	the actions arrays (operators) of the
-            //		actual system and universe blocks
-            //		are transferred to oldsystem and
-            //		olduniverse blocks (to save memory space)
-            //		system and universe action lists are now empty
-            //		(the space structure is the same)
+            //  AAA:    the actions arrays (operators) of the
+            //      actual system and universe blocks
+            //      are transferred to oldsystem and
+            //      olduniverse blocks (to save memory space)
+            //      system and universe action lists are now empty
+            //      (the space structure is the same)
             //
             Block oldsystem    = system;
             Block olduniverse  = universe;
@@ -297,9 +313,9 @@ void evolution (Block & system, Block & universe)
             phi [3] = phi [5];
             //
             //
-            //	Set the number of wanted dmrg states according to input rules.
-            //	A rule specify the minimum and maximum number of DMRG states
-            //	starting from a given sweep (zip) and number of sites.
+            //  Set the number of wanted dmrg states according to input rules.
+            //  A rule specify the minimum and maximum number of DMRG states
+            //  starting from a given sweep (zip) and number of sites.
             //
             size_t actual_zip = zips;
             if (zips == 0) actual_zip = 1;
@@ -330,31 +346,31 @@ void evolution (Block & system, Block & universe)
                 }
             }
             updatebase (system, universe, zipdir);
-            
+/*          
             if (zips == time_zips) {
-            	double ent = phi [0] .entropy ();
-            	cout << "Entropy_inner " << setw (10) << setprecision (6) << fixed
+                double ent = phi [0] .entropy ();
+                cout << "Entropy_inner " << setw (10) << setprecision (6) << fixed
                 << t << setw (10) << setprecision (6) << fixed
                 << system .sites () << " " << setw (14) << setprecision (10) << ent << endl; }               
-            
+*/            
             
             if (zipdir < 0) {
                 universe .reflectreset ();
                 blockrgt [rgt_sites]  .actionclear (0, name_action ());
                 blockrgt [rgt_sites] = universe;
                 //
-                //	define new system and universe (for next step)
+                //  define new system and universe (for next step)
                 //
                 system   = Block (blocklft [lft_sites-2], blocklft [1]);
                 universe = Block (blockrgt [rgt_sites],   blockrgt [1]);
             } else {
                 //
-                //	Update list of blocks (with action transfer)
+                //  Update list of blocks (with action transfer)
                 //
                 blocklft [lft_sites] .actionclear (0, name_action ());;
                 blocklft [lft_sites] = system;
                 //
-                //	define new system and universe (for next step)
+                //  define new system and universe (for next step)
                 //
                 system   = Block (blocklft [lft_sites],   blocklft [1]);
                 universe = Block (blockrgt [rgt_sites-2], blockrgt [1]);
@@ -372,13 +388,13 @@ void evolution (Block & system, Block & universe)
              density .transpose ();
              universe .select_states (density, min_rgt, max_rgt, n_cut);
              //
-             //	Update list of blocks (with action transfer)
+             // Update list of blocks (with action transfer)
              //
              universe .reflectreset ();
              blockrgt [rgt_sites]  .actionclear (0, name_action ());
              blockrgt [rgt_sites] = universe;
              //
-             //	define new system and universe (for next step)
+             // define new system and universe (for next step)
              //
              system   = Block (blocklft [lft_sites-2], blocklft [1]);
              universe = Block (blockrgt [rgt_sites],   blockrgt [1]);
@@ -394,19 +410,19 @@ void evolution (Block & system, Block & universe)
              }
              system .select_states (density, min_lft, max_lft, n_cut);
              //
-             //	Update list of blocks (with action transfer)
+             // Update list of blocks (with action transfer)
              //
              blocklft [lft_sites] .actionclear (0, name_action ());;
              blocklft [lft_sites] = system;
              //
-             //	define new system and universe (for next step)
+             // define new system and universe (for next step)
              //
              system   = Block (blocklft [lft_sites],   blocklft [1]);
              universe = Block (blockrgt [rgt_sites-2], blockrgt [1]);
              }
              */
             //
-            //	Reflection
+            //  Reflection
             //
             if (reflect_blocks) {
                 universe .reflectlft ();
@@ -435,7 +451,17 @@ void evolution (Block & system, Block & universe)
             // Runge Kutta fine steps
             //
             tau = timestep / step_divisions;
+            
+        // calcolo proprietà durante l'evoluzione
+
+        //properties every 100 tstep
+ 
+        tprop++;
+        if ( tprop == 100) {
             properties (system, universe, phi [0], phi [0], norm2, t);
+            tprop = 0;
+            }
+
             double norm0 = multiply (phi [6], phi [6]) .real ();
             double ent = phi [0] .entropy ();
             cout << "Entropy " << setw (14) << setprecision (10) << ent << endl;
@@ -450,7 +476,7 @@ void evolution (Block & system, Block & universe)
                 for (size_t i = 1; i < 5; ++i) phi [i] = Action ();
                 tm = t + tau/2.0;
                 te = t + tau;
-                hamt_parse (sites, t);
+//                hamt_parse (sites, t);
                 hamiltonian += (-E0);
                 hamaction = Superaction (hamiltonian, system, universe, true);
                 biapply (phi [1], hamaction, phi [0], true);
@@ -478,7 +504,7 @@ void evolution (Block & system, Block & universe)
                 << resetiosflags (ios_base::fixed) << endl;
                 phi[1] *= complex<double> (0.,-tau);
                 //
-                hamt_parse  (sites, tm);
+//                hamt_parse  (sites, tm);
                 hamiltonian += (-E0);
                 hamaction = Superaction (hamiltonian, system, universe, true);
                 phihalf = phi[1];
@@ -495,7 +521,7 @@ void evolution (Block & system, Block & universe)
                 biapply (phi [3], hamaction, phihalf, true);
                 phi [3] *= complex<double> (0, -tau);
                 //
-                hamt_parse  (sites, te);
+//                hamt_parse  (sites, te);
                 hamiltonian += (-E0);
                 hamaction = Superaction (hamiltonian, system, universe, true);
                 phihalf =  phi [3];
@@ -530,6 +556,8 @@ void evolution (Block & system, Block & universe)
     << " zip " << zips << " " << lft_sites << "+" << rgt_sites
     << " " << system .states () << "x" << universe .states ()
     << endl;
+
+    cout << "seconda" << endl;
     properties (system, universe, phi [0], phi [0], norm2, t);
 }
 //
@@ -537,12 +565,12 @@ void evolution (Block & system, Block & universe)
 void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
 {
     //
-    //	Compute wanted eigenstates and eigenvalues of the hamiltonian
+    //  Compute wanted eigenstates and eigenvalues of the hamiltonian
     //
     Aarray super;
     size_t sites = system .sites () + universe .sites ();
     //
-    //	Update hamiltonian expression (if needed)
+    //  Update hamiltonian expression (if needed)
     //
     if (sites_old != sites) {
         ham_parse (sites);
@@ -550,9 +578,9 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
             hamiltonian .show ("Hamiltonian polinomial:");
     }
     //
-    //	Trasform the hamiltonian polinomial into a sum of
-    //	tensor products of operators acting on system and
-    //	universe.
+    //  Trasform the hamiltonian polinomial into a sum of
+    //  tensor products of operators acting on system and
+    //  universe.
     //
     hamaction = Superaction (hamiltonian, system, universe, true);
     if (sites <= show_hamiltonian || showham) {
@@ -567,14 +595,14 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
     if ((reflection & 1) && (universe .sites () % 2 == 0)) qa = -qa;
     for (size_t nq = 1; nq < target .subspaces (); nq++) {
         //
-        //	Setup initial guess (and result structure)
+        //  Setup initial guess (and result structure)
         //
         Action state (system .quantum (), universe .quantum (),
                       target .number (nq), complexham, qa);
         state .storage  (state .size ());
         state .scalar   (1.0);
         //
-        //	Look if we can project old state as initial guess
+        //  Look if we can project old state as initial guess
         //
         double norm = 1.0;
         double * m;
@@ -610,11 +638,11 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
             else norm = 1.0;
         }
         //
-        //	Random initial guess
+        //  Random initial guess
         //
         if (initial_guess == 0)  state .random   ();
         //
-        //	Prepare for hamiltonian applications (no explicit releasing)
+        //  Prepare for hamiltonian applications (no explicit releasing)
         //
         size_t oldsize   = state .size ();
         size_t olddim    = state .dimension ();
@@ -630,7 +658,7 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
         << "statistic " << setw (2) << right << target .statistic (nq)
         << setw (0) << endl;
         //
-        //	Setup thick-restatrt Lanczos algorithm
+        //  Setup thick-restatrt Lanczos algorithm
         //
         Lanczos lanczos;
         lanczos .parameters (state .size (), oldsize,
@@ -639,12 +667,12 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
                              zero_energy, zero_norm);
         size_t found = lanczos .thick (hamaction, state);
         //
-        //	Store energies and super states
+        //  Store energies and super states
         //
         target .energy (lanczos .value (), nq, found);
         vector<double> entropy;
         //
-        //	Output energies, tolerances and extimated errors
+        //  Output energies, tolerances and extimated errors
         //
         
         cout << setw (37) << right << "Energy"
@@ -681,8 +709,8 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
             
             
             if ((j < found) || accept) {
-                if (trust) 	cout << setw (8) << right << "Trusted ";
-                else	        cout << setw (8) << right << " ";
+                if (trust)  cout << setw (8) << right << "Trusted ";
+                else            cout << setw (8) << right << " ";
                 cout << "E [" << setw (3) << j << "] = "
                 << setw (19) << setprecision (12) << fixed << v << " ("
                 << setw (9) << setprecision (2)  << scientific << t << " "
@@ -729,7 +757,7 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
         }
     }
     //
-    //	Remember states and target for next dmrg step
+    //  Remember states and target for next dmrg step
     //
     sites_old    = sites;
     super_state  = super;
@@ -739,7 +767,7 @@ void hamiltonian_energies (Block & system, Block & universe, Qtarget & target)
     super_target = target;
     super_state .release ();  // release memory
     //
-    //	reset output options
+    //  reset output options
     //
     cout .setf ((ios_base::fmtflags) 0, ios_base::floatfield);
     cout << setprecision (6);
@@ -755,26 +783,26 @@ static void projection (Action & newstate,
     // Build projection of oldstate to newstate
     //
     // newstate [ll pp; rr qq] = < ll pp R(rr qq) | l p R(r q) >
-    //				        oldstate [l p ; r q]
+    //                      oldstate [l p ; r q]
     //
     // Sweep to right:
     //
     // sites (ll) > sites (l), reflection=0, R(k t)= k t:
     //  newstate [ll pp; rr qq] = < ll | l p > < pp rr | r >
-    //				< qq | q > oldstate [l p ; r q]
+    //              < qq | q > oldstate [l p ; r q]
     //
     // sites (ll) > sites (l), reflection=1, R(k t)= t R(k)
-    //						   (-1)^F(k,t):
+    //                         (-1)^F(k,t):
     //  newstate [ll pp; rr qq] = < ll | l p > < qq R(rr) | R(r) >
     //     < pp | q > (-1)^F(rr qq) (-1)^F(r q) oldstate [l p ; r q]
     //   = < ll | l p > < pp | q > < rr qq | r >(-1)^F(r q)
-    //					oldstate [l p ; r q]
+    //                  oldstate [l p ; r q]
     //
     // sites (ll) > sites (l), reflection=2, R(k t)= R(k) t:
     //  newstate [ll pp; rr qq] = < ll | l p > < pp R(rr) | R(r) >
-    //			 < qq | q > oldstate [l p ; r q]
+    //           < qq | q > oldstate [l p ; r q]
     //   = < ll | l p >  < rr pp | r > < qq | q >
-    //		       (-1)^F(rr pp) oldstate [l p; r q]
+    //             (-1)^F(rr pp) oldstate [l p; r q]
     //
     // sites (ll) > sites (l), reflection=3, R(k t)= t k (-1)^F(k t):
     //  newstate [ll pp; rr qq] = < ll | l p > < qq rr | r >
@@ -784,23 +812,23 @@ static void projection (Action & newstate,
     //
     // sites (ll) < sites (l), reflection=0, R(k t)= k t:
     //  newstate [ll pp; rr qq] = < ll pp | l > < rr | p r >
-    //			 < qq | q >  oldstate [l p ; r q]
+    //           < qq | q >  oldstate [l p ; r q]
     //
     // sites (ll) < sites (l), reflection=1, R(k t)= t R(k)
-    //						   (-1)^F(k,t):
+    //                         (-1)^F(k,t):
     //  newstate [ll pp; rr qq] = < ll pp | l > < R(rr) | q R(r) >
     //     < qq | p > (-1)^F(rr qq) (-1)^F(r q) oldstate [l p ; r q]
     //  = < ll pp | l > < qq | p > < rr | r q > (-1)^F(rr qq)
-    //					oldstate [l p ; r q]
+    //                  oldstate [l p ; r q]
     //
     // sites (ll) < sites (l), reflection=2,  R(k t)= R(k) t:
     //  newstate [ll pp; rr qq] = < ll pp | l > < R(rr) | p R(r) >
-    //  				< qq | q > oldstate [l p ; r q]
+    //                  < qq | q > oldstate [l p ; r q]
     //   = < ll pp | l > < rr | r p > < qq | q > (-1)^F(r p)
-    //				oldstate [l p ; r q]
+    //              oldstate [l p ; r q]
     //
     // sites (ll) < sites (l), reflection=3, R(k t)= t k
-    //						   (-1)^F(k t):
+    //                         (-1)^F(k t):
     //  newstate [ll pp; rr qq] = <ll pp | l > < qq | p > < rr | q r >
     //                   (-1)^F(rr qq) (-1)^F(r q) oldstate [l p; r q]
     //
@@ -831,7 +859,7 @@ static void projection (Action & newstate,
         // sweep to right
         //
         ubase = blocklft [newlsites] .base ();
-        ubase .dagger ();			// ubase [ll; l p] = < ll | l p >
+        ubase .dagger ();           // ubase [ll; l p] = < ll | l p >
     }
     else {
         //
@@ -898,7 +926,7 @@ static void projection (Action & newstate,
                                   (reflection == 1) || (reflection == 3));
         //
         // project [q] [newl ; newr t] = ubase [newl; oldr q]
-        //		   * rbase [newr t; oldr] (-1)^F(oldr q)
+        //         * rbase [newr t; oldr] (-1)^F(oldr q)
         //
         size_t oldmsize = newlstates * newrstates*pstates;
         Storage oldfull (oldmsize * sizeof (complex<double>));
@@ -970,7 +998,7 @@ static void projection (Action & newstate,
                 //  No reflection or block reflection (reflection == 0 | 2):
                 //
                 //  newstate [ll pp; rr qq] = oldm(p) [ll pp; r q] *
-                //			      rgtbase [rr; r p ] < qq | q >
+                //                rgtbase [rr; r p ] < qq | q >
                 //                            * sign (reflection)
                 //
                 size_t qq = q;
@@ -980,7 +1008,7 @@ static void projection (Action & newstate,
                     //  Universe reflection (reflection == 1 | 3):
                     //
                     //  newstate [ll pp; rr qq] = oldm(p) [ll pp; r q ]
-                    //				rgtbase [rr; r q ] <qq | p>
+                    //              rgtbase [rr; r q ] <qq | p>
                     //                            * sign (reflection)
                     qq = p;
                     rb = q;
@@ -1025,7 +1053,7 @@ void properties (Block & system, Block & universe,
                  double norm2, double time)
 {
     //
-    //	Compute properties or correlations
+    //  Compute properties or correlations
     //
     vector<Aproperty> actual;
     size_t sites = system .sites () + universe .sites ();
@@ -1034,11 +1062,11 @@ void properties (Block & system, Block & universe,
     ta = timecpu ();
     prolen = 1;
     //
-    //	Remember n. of used actions.
+    //  Remember n. of used actions.
     //
     size_t last_action = name_action ();
     //
-    //	Look for wanted correlations with actual chain length
+    //  Look for wanted correlations with actual chain length
     //
     for (n = 0, m = 0; n < correlation .size (); ++n)
         if (correlation [n] .ap_sites == (sites+1)) {
@@ -1049,7 +1077,7 @@ void properties (Block & system, Block & universe,
             l = name_define (actual [m] .ap_id) .size ();
             if (l > prolen) prolen = l;
             //
-            //	Compute property (use hamaction as super action)
+            //  Compute property (use hamaction as super action)
             //
             actual [m] .reorder (sites);
             hamaction = Superaction (actual [m], system, universe, true);
@@ -1061,7 +1089,7 @@ void properties (Block & system, Block & universe,
             
         }
     //
-    //	clear new defined actions (to save memory)
+    //  clear new defined actions (to save memory)
     //
 
             cout << "correlation before " << report.usage() << " time " << timecpustr (timecpu ()) << endl;
@@ -1095,8 +1123,8 @@ void properties (Block & system, Block & universe,
         //pout << "# " << name_define (id) << " L=" << sites << endl;
         //
         complex<double> total  = 0.0;
-        double 	    total2 = 0.0;
-        size_t	    tcount = 0;
+        double      total2 = 0.0;
+        size_t      tcount = 0;
         for (l = n; l < m; ++l) {
             //
             if (actual [l] .ap_id != id) continue;
@@ -1104,8 +1132,8 @@ void properties (Block & system, Block & universe,
             long index = actual [l] .ap_index;
             //
             complex<double> partial  = 0.0;
-            double	      partial2 = 0.0;
-            size_t	      pcount   = 0;
+            double        partial2 = 0.0;
+            size_t        pcount   = 0;
             for (k = l; k < m; ++k) {
                 if ((actual [k] .ap_id    != id)  ||
                     (actual [k] .ap_index != index)) continue;
@@ -1166,7 +1194,7 @@ void properties (Block & system, Block & universe,
         }
     }
     //
-    //	reset output options
+    //  reset output options
     //
     cout .setf ((ios_base::fmtflags) 0, ios_base::floatfield);
     cout .precision (6);
@@ -1176,7 +1204,7 @@ void properties (Block & system, Block & universe,
 void properties (Block & system, Block & universe)
 {
     //
-    //	Compute properties or correlations
+    //  Compute properties or correlations
     //
     vector<Aproperty> actual;
     size_t sites = system .sites () + universe .sites ();
@@ -1186,11 +1214,11 @@ void properties (Block & system, Block & universe)
     bralen = ketlen = 0;
     prolen = 1;
     //
-    //	Remember n. of used actions.
+    //  Remember n. of used actions.
     //
     size_t last_action = name_action ();
     //
-    //	Look for wanted correlations with actual chain length
+    //  Look for wanted correlations with actual chain length
     //
     for (n = 0, m = 0; n < correlation .size (); ++n)
         if ((correlation [n] .ap_sites == sites) ||
@@ -1199,7 +1227,7 @@ void properties (Block & system, Block & universe)
             //
             //  look for |ket> and <bra|
             //
-            bra 	= 0;
+            bra     = 0;
             bra_id    = correlation [n] .ap_braid;
             bra_index = correlation [n] .ap_braindex;
             if (bra_id) {
@@ -1213,7 +1241,7 @@ void properties (Block & system, Block & universe)
                 else continue;
             }
             else continue;
-            ket	= 0;
+            ket = 0;
             ket_id    = correlation [n] .ap_ketid;
             ket_index = correlation [n] .ap_ketindex;
             if (ket_id) {
@@ -1246,7 +1274,7 @@ void properties (Block & system, Block & universe)
             l = name_define (actual [m] .ap_id) .size ();
             if (l > prolen) prolen = l;
             //
-            //	Compute property (use hamaction as super action)
+            //  Compute property (use hamaction as super action)
             //
             Action & vket = super_state [ket];
             Action & vbra = super_state [bra];
@@ -1258,7 +1286,7 @@ void properties (Block & system, Block & universe)
             m++;
         }
     //
-    //	clear new defined actions (to save memory)
+    //  clear new defined actions (to save memory)
     //
     if (name_action () > last_action)
         system .actionclear (last_action, name_action ());
@@ -1276,15 +1304,15 @@ void properties (Block & system, Block & universe)
         //
         size_t bra       = actual [n] .ap_braid;
         size_t ket       = actual [n] .ap_ketid;
-        size_t nc 	     = actual [n] .ap_braindex;
+        size_t nc        = actual [n] .ap_braindex;
         //
         size_t bra_id    = correlation [nc] .ap_braid;
         size_t bra_index = correlation [nc] .ap_braindex;
         size_t ket_id    = correlation [nc] .ap_ketid;
         size_t ket_index = correlation [nc] .ap_ketindex;
         complex<double> total  = 0.0;
-        double 	    total2 = 0.0;
-        size_t	    tcount = 0;
+        double      total2 = 0.0;
+        size_t      tcount = 0;
         for (l = n; l < m; ++l) {
             // 
             if ((actual [l] .ap_id    != id) ||
@@ -1294,8 +1322,8 @@ void properties (Block & system, Block & universe)
             long index = actual [l] .ap_index;
             //
             complex<double> partial  = 0.0;
-            double	      partial2 = 0.0;
-            size_t	      pcount   = 0;
+            double        partial2 = 0.0;
+            size_t        pcount   = 0;
             for (k = l; k < m; ++k) {
                 if ((actual [k] .ap_id    != id)  ||
                     (actual [k] .ap_braid != bra) ||
@@ -1337,7 +1365,7 @@ void properties (Block & system, Block & universe)
                        partial .imag () * partial .imag ());
             tcount++;
         }
-        //			 
+        //           
         if (tcount > 1) {
             cout << "Sum, Mean "  << setw (29) << setprecision (8) 
             << fixed << right << showpos << total << noshowpos << ",";
@@ -1355,19 +1383,19 @@ void properties (Block & system, Block & universe)
         }
     }
     //
-    //	reset output options
+    //  reset output options
     //
     cout .setf ((ios_base::fmtflags) 0, ios_base::floatfield);
     cout .precision (6);
 }
 //
 //____________________________________________________________________________
-void	updatebase (Block & system, Block & universe, long tag)
+void    updatebase (Block & system, Block & universe, long tag)
 {
-    //	
-    //	update basis states of system or universe depending on tag.
+    //  
+    //  update basis states of system or universe depending on tag.
     //
-    //	Parse eventual operators to be applyed to target states
+    //  Parse eventual operators to be applyed to target states
     //
     densityop_parse (system .sites (), universe .sites ());
     Action densitylft (system   .quantum (), 0.0);
@@ -1378,20 +1406,20 @@ void	updatebase (Block & system, Block & universe, long tag)
         Action ket = super_state [n];
         Action bra = ket; 
         bra .dagger ();
-        if (tag >= 0) {	// system reduced density 
+        if (tag >= 0) { // system reduced density 
             actual  = ket;
             actual *= bra;
             actual *= super_weight [n];
             densitylft += actual;
         }
-        if (tag <= 0) {	// universe reduced density
+        if (tag <= 0) { // universe reduced density
             actual  = bra;
             actual *= ket;
             actual *= super_weight [n];
             densityrgt += actual;
         }
         //
-        //	Apply tensor components of hamiltonian to the target states
+        //  Apply tensor components of hamiltonian to the target states
         //
         if (tensorweight > 0.0) {
             double weight = 0.0;
@@ -1446,19 +1474,19 @@ void	updatebase (Block & system, Block & universe, long tag)
             }
         }
         //
-        //	Apply wanted operators and compute corresponding density matrices
+        //  Apply wanted operators and compute corresponding density matrices
         //
         for (size_t nop = 0; nop < densityoperator .size (); nop++) {
             initialaction = Superaction (densityoperator [nop], 
                                          system, universe, true);
             //cout << "stateblocks " << super_state [n] .blocks () 
-            //	   << " " << super_state [n] .size () << endl;
+            //     << " " << super_state [n] .size () << endl;
             //super_state [n] .show ("stato");
             biapply (ket, initialaction, super_state [n], true);
             factor = multiply (ket, ket) .real ();
             if (factor <= 1.e-15) continue;
             //
-            //	temporary cleanup (to do)
+            //  temporary cleanup (to do)
             //
             size_t dim = ket .width () * ket .height ();
             Storage st (dim * sizeof (complex<double>));
@@ -1469,13 +1497,13 @@ void	updatebase (Block & system, Block & universe, long tag)
             //ket .show ("cdag");
             bra = ket;
             bra .dagger ();
-            if (tag >= 0) {	// system reduced density 
+            if (tag >= 0) { // system reduced density 
                 actual  = ket;
                 actual *= bra;
                 densitylft += actual;
                 //actual .show ("dopsys");
             }
-            if (tag <= 0) {	// universe reduced density
+            if (tag <= 0) { // universe reduced density
                 actual  = bra;
                 actual *= ket;
                 densityrgt += actual;
@@ -1484,7 +1512,7 @@ void	updatebase (Block & system, Block & universe, long tag)
         }
     }
     //
-    // 	update basis
+    //  update basis
     //
     Action sum;
     if (tag >= 0) {
