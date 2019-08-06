@@ -1,0 +1,225 @@
+define                  L               10
+define                  N               4
+
+define                  Nstat           1
+
+define                  t               -1.0
+define 					U      			+2.0
+define 					omegai    		0.0
+define 					omegaf    		0.5
+
+define 					mu      		0.001
+
+define                  iu              sqrt(-1.0)
+define                  pi              2.0*arg(iu)
+
+define                  sq2             sqrt(2)
+define                  sq3             sqrt(3)
+define                  sq5             sqrt(5)
+define                  sq6             sqrt(6)
+
+dmrg_states					0	0	40	200		0.0000000001
+dmrg_timestates			0.0 0	0	15	400		0.0001
+
+memory					8000
+show					memory
+
+reflect_blocks                  false
+reflect_universe                true 
+halfsweep                       false
+
+zips                                    20
+zipinner                                6
+
+sites                   L
+show            hamiltonian             4
+
+
+//..................................................................SPAZIO      DI      HILBERT
+
+space   state0                          // 0
+						states                  1
+						quantum                 Num             0
+						bose
+
+space   state1                          // 1
+						states                  1
+						quantum                 Num             1
+						bose
+
+space   state2                          // 2
+						states                  1
+						quantum                 Num             2
+						bose
+
+space   state3                          // 3
+						states                  1
+						quantum                 Num             3
+						bose
+
+space   state4                          // 4
+						states                  1
+						quantum                 Num             4
+						bose
+						bose
+
+
+//..................................................................OPERATORI
+
+action  n
+		0.      0.      0.      0.      0.
+		0.      1.      0.      0.      0.
+		0.      0.      2.      0.      0.
+		0.      0.      0.      3.      0.
+		0.      0.      0.      0.      4.
+
+action  nm1
+		-1.     0.      0.      0.      0.
+		0.      0.      0.      0.      0.
+		0.      0.      1.      0.      0.
+		0.      0.      0.      2.      0.
+		0.      0.      0.      0.      3.
+
+action  bd
+		0.      0.      0.      0.      0.
+		1.      0.      0.      0.      0.
+		0.      sq2     0.      0.      0.
+		0.      0.      sq3     0.      0.
+		0.      0.      0.      2.      0.
+
+action  b
+		0.      1.      0.      0.      0.
+		0.      0.      sq2     0.      0.
+		0.      0.      0.      sq3     0.
+		0.      0.      0.      0.      2.
+		0.      0.      0.      0.      0.
+
+
+//..................................................................HAMILTONIANA        STATICA
+
+ham_begin       Sites
+
+				do      i       0       Sites-1 1
+
+						term    coeff	t*exp(+2*pi*iu*omegai/Sites)
+								action  bd      i
+								action  b       i+1
+
+						term    coeff	t*exp(-2*pi*iu*omegai/Sites)
+								action  bd      i+1
+								action  b       i
+
+						term    coeff           -U/2
+								action  nm1     i
+								action  n       i
+
+				done
+
+						term    coeff           mu
+								action  n       0
+
+ham_end
+
+//.........................calcola i primi 20 autovalori della mat.den.srid
+
+#renyi -20
+
+//..................................................................TARGET
+
+
+		do      len 2   L       2
+				target  psi
+						sites                           len
+						states                          Nstat
+						quantum         Num             N
+		done
+
+
+//..................................................................TIME_EVO
+
+evolution		time
+				time_zips				1
+				timestep				0.01
+				steps_number			100
+				target psi				0
+
+
+//..................................................................TIME_EVO
+
+evolution		time
+				time_zips				1
+				timestep				0.1
+				steps_number			25000
+				target psi				0
+
+
+//..................................................................CINETICA
+
+	timeham_begin		Sites
+
+				do      i       0       Sites-1 1
+
+						term    coeff           t*exp(+2*pi*iu*omegaf/Sites)
+								action  bd      i
+								action  b       i+1
+
+						term    coeff           t*exp(-2*pi*iu*omegaf/Sites)
+								action  bd      i+1
+								action  b       i
+
+						term    coeff           -U/2
+								action  nm1     i
+								action  n       i
+
+				done
+
+						term    coeff           mu
+								action  n       0
+
+	timeham_end
+
+
+//..................................................................Poperty_st
+
+
+
+	do i 0 L-1 1
+	do j 0 L-1 1	
+	do k 0 L-1 1
+	do l 0 L-1 1	
+
+property	uga	 sites 	L+1
+	index i*1000000+j*10000+k*100+l
+				term 	action 	bd 	i
+					 	action 	b 	j
+						action 	bd 	k
+					 	action 	b 	l					 	
+	done
+	done
+	done
+	done
+
+
+	do i 0 L-1 1
+	do j 0 L-1 1	
+property	cdc	 sites 	L+1
+	index i*100+j
+				term 	action 	bd 	i
+					 	action 	b 	j
+	done
+	done
+
+
+property	corrente	 sites 	L+1
+	do 	i 	0 	L-2 	1
+				term 	coeff 		+iu
+						action 	bd 	i
+					 	action 	b 	i+1
+				term	coeff 		-iu
+						action 	bd 	i+1
+					 	action 	b 	i
+	done
+
+
+end
+

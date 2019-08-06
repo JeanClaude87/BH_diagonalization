@@ -18,7 +18,7 @@ import observables        as ob
 import time_evolution	  as t_ev
 import Hamiltonian_MPI	  as ham_MPI
 
-np.set_printoptions(precision=3,suppress=True)
+np.set_printoptions(precision=6,suppress=True)
 
 COMM = MPI.COMM_WORLD
 
@@ -37,9 +37,9 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [3]:#,3,4,5,6]:
+for nn_inp in [2]:#,3,4,5,6]:
 
-	for ll_inp in [4]:
+	for ll_inp in [5]:
 
 		if nn_inp == 2:	U_in = 5.0
 		if nn_inp == 3:	U_in = 3.0	
@@ -57,7 +57,7 @@ for nn_inp in [3]:#,3,4,5,6]:
 
 		if nn_inp == 2:	bar_inp = 0.007
 		if nn_inp == 3:	bar_inp = 0.003
-		if nn_inp == 4:	bar_inp = 0.0007	
+		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007	
 
@@ -156,14 +156,20 @@ for nn_inp in [3]:#,3,4,5,6]:
 		Global_dictionary["HOP_list"]  = HOP_list
 
 		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
-		CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)
 
-		Global_dictionary["CDC_matrix"]   = CDC
-		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
+		print(ob.C_d(1,**Global_dictionary))
+
+#		profile.run('CDCDCC 		 = ob.CdCdCC_creation(**Global_dictionary)')	
+		
+#		print("mat", 'll', ll_inp, 'nn', nn_inp)
+
+#		Global_dictionary["CDC_matrix"]   = CDC
+#		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
 
 		#print(CDCDCC[0])
 
-
+quit()
+'''
 
 #################### HAMILTONIAN 1  CREATION OMEGA = 0
 
@@ -487,3 +493,4 @@ quit()
 
 
 
+'''

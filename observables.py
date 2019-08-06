@@ -5,6 +5,8 @@ import time
 import function as ff
 from scipy import sparse
 from scipy.sparse import csc_matrix
+import profile
+
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
@@ -72,6 +74,25 @@ def CdiCj_creation(**args):
 	return CDC
 
 
+def C_d(x,**args):
+	
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))		
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
+	
+	for st in range(DIM_H):	
+
+		vec 	= B_bose[st]*1
+		vec[x] += 1
+
+		if sum(vec) == nn:
+			ind = ff.get_index(ff.FROM_bose_TO_bin(vec,**args), **args)
+
+			print(B_bose[st],vec,ind)
+
+	return 0
+
 def CdCdCC_creation(**args):
 
 	ll  	 = np.int(args.get("ll"))
@@ -128,27 +149,28 @@ def weight_4_ind(i,j,k,l,st,**args):
 	nn  	 = np.int(args.get("nn"))	
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
-	peso   = 1
+	peso   = int(1)
 	uga    = B_bose[st]*1
 
 	peso   *= uga[l]
-	uga[l] -= 1
+	uga[l] -= int(1)
 
 	peso   *= uga[k]+1
-	uga[k] += 1
+	uga[k] += int(1)
 
 	peso   *= uga[j]
-	uga[j] -= 1
+	uga[j] -= int(1)
 
 	peso   *= uga[i]+1
-	uga[i] += 1
-
-	ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
+	uga[i] += int(1)
 
 	if peso > 0:
+
+		ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
 		return ind, np.sqrt(peso)
+	
 	else:
-		return ind, 0
+		return 0, 0
 
 def CdCdCC(V, **args):
 	
