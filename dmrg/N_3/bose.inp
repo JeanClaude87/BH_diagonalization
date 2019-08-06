@@ -47,6 +47,11 @@ space   state1                          // 1
 						quantum                 Num             1
 						bose
 
+space   state2                          // 2
+						states                  1
+						quantum                 Num             2
+						bose
+
 space   state3                          // 3
 						states                  1
 						quantum                 Num             3
