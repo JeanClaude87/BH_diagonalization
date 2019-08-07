@@ -16,7 +16,7 @@ set autoscale
  first(x) = ($0 > 0 ? base : base = x)
  first1(x) = ($0 > 0 ? base : base = abs(x))
 
-	set multiplot layout 3,2
+	set multiplot layout 2,2
 
     set style line 1	lt 1 	lw 3 pt 2 	ps 1.4 lc rgb '#a6cee3' 
     set style line 2	lt 2	lw 3 pt 4 	ps 1.4 lc rgb '#1f78b4' 
@@ -71,8 +71,8 @@ set autoscale
 			0.5 w l dt 3 lc 'black' notitle
 
 
-	set title 'N=6 L=10 U/J=-1.5 V_0=0.0007'
-	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+#	set title 'N=6 L=10 U/J=-1.5 V_0=0.0007'
+#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
 			'../dati/L_10/N_6/U_-1.0/bb_0.0007/corrente.dat'		w l ls 6 t 'cur',\
 			1.0 w l dt 1 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle

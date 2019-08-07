@@ -16,7 +16,7 @@ set autoscale
  first(x) = ($0 > 0 ? base : base = x)
  first1(x) = ($0 > 0 ? base : base = abs(x))
 
-	set multiplot layout 5,3
+	set multiplot layout 4,3
 
 	set key font "SFRM1200,22" vertical maxrows 3 samplen 1.6 spacing 1.2
 
@@ -221,8 +221,8 @@ set autoscale
 
 
 
-	set title 'N=6 L=10 U/J=-1 SYMMETRIC CAT'
-	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+#	set title 'N=6 L=10 U/J=-1 SYMMETRIC CAT'
+#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
@@ -235,8 +235,8 @@ set autoscale
 			'../dati/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
-	set title 'N=6 L=10 U/J=-1 ANTISYMMETRIC CAT'
-	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+#	set title 'N=6 L=10 U/J=-1 ANTISYMMETRIC CAT'
+#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
@@ -249,8 +249,8 @@ set autoscale
 			'../dati/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
-	set title 'N=6 L=10 U/J=-1 CURRENT'
-	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+#	set title 'N=6 L=10 U/J=-1 CURRENT'
+#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
 			'../dati/L_10/N_6/U_-1.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\

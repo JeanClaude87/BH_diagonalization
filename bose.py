@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [2]:#,3,4,5,6]:
+for nn_inp in [4]:#,3,4,5,6]:
 
 	for ll_inp in [10]:
 
@@ -73,7 +73,7 @@ for nn_inp in [2]:#,3,4,5,6]:
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 		t_start  = 0
-		dt 		 = 1
+		dt 		 = 10
 		step_num = 1000
 
 		#t max 4000
@@ -458,19 +458,16 @@ for nn_inp in [2]:#,3,4,5,6]:
 ####################	OBSERVABLES -->> 
 			
 
-			directory = os.sep+'dati_fish'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+			directory = os.sep+'dati_prove'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
 			Dstep = 1
 
-			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
-			
-			#profile.run('CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)')
-
-			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
+			#CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			#CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
-			ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
+			#ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
+			#ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
 			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
 			
 			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)

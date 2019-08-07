@@ -167,13 +167,16 @@ def CdiCj_t(psit, Dstep, **args):
 def corrente(V, **args):
 
 	ll  	 = np.int(args.get("ll"))
+	CDC      = args.get("CDC_matrix")
 
-	CdC 	 = CdiCj(V, **args)
+	V_c 	 = np.conj(V)
 
-	#print(CdC)
+	xx 		 = [V.dot(CDC[i,i+1].dot(V_c))-V.dot(CDC[i+1,1].dot(V_c)) for i in range(ll-1) ]
+	
+	xx 		+=	 V.dot(CDC[ll-1,0].dot(V_c))
+	xx 		-=	 V.dot(CDC[0,ll-1].dot(V_c))
 
-	xx 		 = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
-	corrente = np.sum(xx)
+	corrente =  -np.imag(np.sum(xx))
 
 	return corrente
 
