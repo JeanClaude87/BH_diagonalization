@@ -72,6 +72,7 @@ for nn_inp in [6]:#,3,4,5,6]:
 		cores_num_inp    = 2
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
+		t_start  = 0
 		dt 		 = 100
 		step_num = 100
 
@@ -100,7 +101,8 @@ for nn_inp in [6]:#,3,4,5,6]:
 			"LOCAL" 	: os.path.abspath('.'),
 			"parity"   	: parity_inp,
 			"dt"      	: dt,
-			"step_num"	: step_num
+			"step_num"	: step_num,
+			"t_start"	: t_start
 			}
 
 		n_diag_state 	= Constants_dictionary.get("n_diag_state")
@@ -148,14 +150,10 @@ for nn_inp in [6]:#,3,4,5,6]:
 
 
 		HOP_list     = ff.Hop_prep(**Constants_dictionary)
-
 		Global_dictionary["HOP_list"]  = HOP_list
 
 		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
 		Global_dictionary["CDC_matrix"]   = CDC
-
-#		Global_dictionary["CDCDCC_matrix"]   = CDCDCC
-
 
 
 
