@@ -110,7 +110,7 @@ def CdiCj(V, **args):
 	V_c      = np.conj(V)
 	dens 	 = density(V, **args)
 
-	CdiCj  = np.einsum('l, xylj,j -> xy', V, CDC, V, optimize=True)
+	CdiCj  = np.einsum('l, xylj,j -> xy', V, CDC, V_c, optimize=True)
 	#CdiCj += np.diag(dens)
 
 	return CdiCj
@@ -122,6 +122,7 @@ def CdCdCC_t(psit, Dstep, **args):
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
 	DIM_H 	 = np.int(args.get("DIM_H"))
+	t_start  = args.get("t_start")
 
 	t_vec 	= range(0,step_num,Dstep)
 	t_num 	= len(t_vec)
@@ -132,6 +133,7 @@ def CdCdCC_t(psit, Dstep, **args):
 
 		V 	= psit[t]
 		V_c	= np.conj(V)
+
 		for i in range(ll):
 			for j in range(ll):
 				for k in range(ll):
@@ -140,8 +142,8 @@ def CdCdCC_t(psit, Dstep, **args):
 						cc = i+j*ll+k*ll**2+l*ll**3
 
 						num = np.einsum('l, lj, jk, k', V, CDC[i,j], CDC[l,k], V_c, optimize=True)
-
-						prop_array[cc+t*ll**4] = [t_vec[t],i,j,k,l,np.real(num),np.imag(num)]
+						#print(i,j,k,l,num)
+						prop_array[cc+t*ll**4] = [t_vec[t]+t_start,i,j,k,l,np.real(num),np.imag(num)]
 
 	return prop_array
 
@@ -153,10 +155,11 @@ def CdiCj_t(psit, Dstep, **args):
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
+	t_start  = args.get("t_start")
 
 	t_vec 	   = range(0,step_num,Dstep)
 	t_num      = len(t_vec)
-	prop_array = np.array([[[[t*dt, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((t_num*ll*ll,5))
+	prop_array = np.array([[[[t*dt+t_start, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((t_num*ll*ll,5))
 
 	return prop_array
 
@@ -166,6 +169,9 @@ def corrente(V, **args):
 	ll  	 = np.int(args.get("ll"))
 
 	CdC 	 = CdiCj(V, **args)
+
+	#print(CdC)
+
 	xx 		 = -np.imag([(CdC[i,i+1]-CdC[i+1,i]) for i in range(ll-1) ])
 	corrente = np.sum(xx)
 
@@ -176,9 +182,10 @@ def corrente_t(psit, Dstep, **args):
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
+	t_start  = args.get("t_start")
 	
 	t_vec          = range(0,step_num,Dstep)
-	corrente_array = np.array([[t*dt, corrente(psit[t], **args)] for t in t_vec])
+	corrente_array = np.array([[t*dt+t_start, corrente(psit[t], **args)] for t in t_vec])
 
 	return corrente_array
 
@@ -242,6 +249,7 @@ def Export_Observable_time(psi_t,directory,name,**args):
 	U  	  = args.get("U")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
+	t_start  = args.get("t_start")
 	
 	DEN   = []
 
@@ -251,7 +259,7 @@ def Export_Observable_time(psi_t,directory,name,**args):
 
 		for j in range(ll):
 
-			DEN.append([i*dt,j,dens[0,j]])	
+			DEN.append([i*dt+t_start,j,dens[0,j]])	
 	
 	Export_Observable(DEN, directory, name, **args)
 
@@ -267,13 +275,14 @@ def Export_Fidelity(psi_t, state_B, directory, name,**args):
 	bar   = args.get("bar")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
+	t_start  = args.get("t_start")
 
 	FID   = []
 
 	for i in range(nstep):
 
 		FID_t = np.square(np.absolute(np.vdot(psi_t[i],state_B)))
-		FID.append([i*dt,FID_t])
+		FID.append([i*dt+t_start,FID_t])
 	
 	Export_Observable(FID, directory, name, **args)
 
@@ -288,6 +297,7 @@ def Export_Fidelity_CAT_s(psi_t, psi1, psi2, directory, name,**args):
 	bar   = args.get("bar")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
+	t_start  = args.get("t_start")
 	
 	FID   = []
 
@@ -297,7 +307,7 @@ def Export_Fidelity_CAT_s(psi_t, psi1, psi2, directory, name,**args):
 		z2 = np.vdot(psi_t[i],psi2[:,0])
 	
 		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) + z1*np.conj(z2) + z2*np.conj(z1) ) / 2.0 )
-		FID.append([i*dt,zz])
+		FID.append([i*dt+t_start,zz])
 
 	Export_Observable(FID, directory, name, **args)
 
@@ -312,6 +322,7 @@ def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
 	bar   = args.get("bar")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
+	t_start  = args.get("t_start")
 	
 	FID   = []
 
@@ -321,7 +332,7 @@ def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
 		z2 = np.vdot(psi_t[i],psi2[:,0])
 	
 		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) - z1*np.conj(z2) - z2*np.conj(z1) ) / 2.0 )
-		FID.append([i*dt,zz])
+		FID.append([i*dt+t_start,zz])
 
 	Export_Observable(FID, directory, name, **args)
 

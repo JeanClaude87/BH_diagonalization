@@ -22,6 +22,7 @@ def time_evolution(psi_0, H_ev, **args):
 	DIM_H    = args.get("DIM_H")
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
+	t_start  = args.get("t_start")
 
 
 	psi0 = psi_0[:,0]
@@ -30,26 +31,27 @@ def time_evolution(psi_0, H_ev, **args):
 	
 		HT      = np.squeeze(np.asarray(-1j*dt*H_ev))
 		psit    = linalgS.expm_multiply(HT, psi0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
-
+		
 	else:
 
 		print('denso')
 	
-		HT      = np.asarray(-1j*dt*H_ev)
 		psit    = np.zeros((step_num, DIM_H), dtype=np.complex)
-
+		
+		HT      = np.asarray(-t_start*1j*H_ev)
 		mat_exp = sp.linalg.expm(HT)
 
-		phi = psi0
-		for tt in range(step_num):
+		phi  	= psi0.dot(mat_exp.T)
+
+		HT      = np.asarray(-1j*dt*H_ev)
+		mat_exp = sp.linalg.expm(HT)
+
+		for tt in range(0,step_num):
 			
 			psit[tt] = phi
 			phi  = phi.dot(mat_exp.T)
 
-
-
 	return psit
-
 
 
 def inital_state(part_ind,**args):
