@@ -39,7 +39,7 @@ set autoscale
 	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
 	set mytic	
 
-	set xrange[*:10000]
+	set xrange[0:10000]
 	set yrange[0:2.2]
 
 

@@ -42,11 +42,8 @@ set autoscale
 	set mytic	
 
 	set xrange[*:7000]
-	set yrange[*:*]
+	set yrange[*:2]
 
-
-
-	set yrange[0:2.2]
 	set title 'N=2 L=10 U/J=-5 SYMMETRIC CAT'
 	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_2/U_-5.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
@@ -75,6 +72,12 @@ set autoscale
 			'../dati/L_10/N_2/U_-5.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
+	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic				offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:3]
+
 	set title 'N=2 L=10 U/J=-5 CURRENT'
 	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_2/U_-5.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
@@ -89,6 +92,12 @@ set autoscale
 			'../dati/L_10/N_2/U_-5.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
+
+	set ylabel 'fidelity'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:2]
 
 	set title 'N=3 L=10 U/J=-3 SYMMETRIC CAT'
 	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
@@ -118,6 +127,11 @@ set autoscale
 			'../dati/L_10/N_3/U_-3.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
+	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic				offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:3]
 
 	set title 'N=3 L=10 U/J=-3 CURRENT'
 	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
@@ -133,6 +147,12 @@ set autoscale
 			'../dati/L_10/N_3/U_-3.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
+
+	set ylabel 'fidelity'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:2]
 
 	set title 'N=4 L=10 U/J=-2 SYMMETRIC CAT'
 	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
@@ -162,6 +182,12 @@ set autoscale
 			'../dati/L_10/N_4/U_-2.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
+	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic				offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:3]
+
 	set title 'N=4 L=10 U/J=-2 CURRENT'
 	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_4/U_-2.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
@@ -176,6 +202,13 @@ set autoscale
 			'../dati/L_10/N_4/U_-2.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
+
+	set ylabel 'fidelity'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set xrange[*:7000]
+	set yrange[*:2]
 
 	set title 'N=5 L=10 U/J=-1.5 SYMMETRIC CAT'
 	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
@@ -205,6 +238,12 @@ set autoscale
 			'../dati/L_10/N_5/U_-1.5/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
+	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic				offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set yrange[*:3]
+
 	set title 'N=5 L=10 U/J=-1.5 CURRENT'
 	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
 			'../dati/L_10/N_5/U_-1.5/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
@@ -220,6 +259,13 @@ set autoscale
 			1 w l ls 9 notitle
 
 
+
+	set ylabel 'fidelity'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
+	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mytic	
+
+	set xrange[*:7000]
+	set yrange[*:1.5]
 
 #	set title 'N=6 L=10 U/J=-1 SYMMETRIC CAT'
 #	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
