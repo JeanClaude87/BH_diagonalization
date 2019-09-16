@@ -139,11 +139,11 @@ def CdCdCC_t(psit, Dstep, **args):
 				for k in range(ll):
 					for l in range(ll):
 
-						cc = i+j*ll+k*ll**2+l*ll**3
+						cc = i+j*ll+l*ll**2+k*ll**3
 
 						num = np.einsum('l, lj, jk, k', V, CDC[i,j], CDC[l,k], V_c, optimize=True)
-						#print(i,j,k,l,num)
-						prop_array[cc+t*ll**4] = [t_vec[t]+t_start,i,j,k,l,np.real(num),np.imag(num)]
+						#print(t,i,j,k,l)
+						prop_array[cc+t*ll**4] = [t_vec[t]+t_start,i,j,l,k,np.real(num),np.imag(num)]
 
 	return prop_array
 
@@ -159,7 +159,7 @@ def CdiCj_t(psit, Dstep, **args):
 
 	t_vec 	   = range(0,step_num,Dstep)
 	t_num      = len(t_vec)
-	prop_array = np.array([[[[t*dt+t_start, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for t in t_vec] for i in range(ll)] for j in range(ll)] ).reshape((t_num*ll*ll,5))
+	prop_array = np.array([[[[t*dt+t_start, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for i in range(ll)] for j in range(ll)] for t in t_vec ] ).reshape((t_num*ll*ll,5))
 
 	return prop_array
 
