@@ -37,7 +37,7 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [5]:
+for nn_inp in [2]:
 
 	for ll_inp in [10]:
 
@@ -49,14 +49,14 @@ for nn_inp in [5]:
 
 		U_inp = -1.0*U_in
 		
-	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	
 		
-		#if nn_inp == 2:	bar_inp = 0.007
-		#if nn_inp == 3:	bar_inp = 0.003
-		#if nn_inp == 4:	bar_inp = 0.001	
+		if nn_inp == 2:	bar_inp = 0.007
+		if nn_inp == 3:	bar_inp = 0.003
+		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
-		#if nn_inp == 6:	bar_inp = 0.0007			
+		if nn_inp == 6:	bar_inp = 0.0007			
 	
 		
 		flux_inp 		= 0.0
@@ -73,7 +73,7 @@ for nn_inp in [5]:
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 		t_start  = 0
-		dt 		 = 10
+		dt 		 = 20
 		step_num = 1000
 
 		#t max 4000
@@ -458,16 +458,16 @@ for nn_inp in [5]:
 ####################	OBSERVABLES -->> 
 			
 
-			directory = os.sep+'dati_prove'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+			directory = os.sep+'dati_prove_2'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
 			Dstep = 1
 
-			#CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
-			#CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
+			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			#ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
-			#ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
+			ob.Export_Observable(CCDD, directory,    'densdens.dat', **Global_dictionary)
+			ob.Export_Observable(CD,   directory,    'dens.dat',     **Global_dictionary)
 			ob.Export_Observable(current, directory, 'corrente.dat', **Global_dictionary)								
 			
 			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)

@@ -61,7 +61,7 @@ def evaluate_ham(i,**args):
 		ham_ind2.append( i )
 		ham_val.append( int_bar )
 
-##----- KINETIC
+##----- KINETIC_first
 	for hop in HOP_list:
 		hop_state_bin = ff.TO_bin(state)^ff.TO_bin(hop)
 		
@@ -112,9 +112,41 @@ def evaluate_ham(i,**args):
 
 	return [ham_ind1, ham_ind2, ham_val]
 
-
-
 def action_hopping(x,y,**args):
+
+	ll 		 = args.get("ll")	
+	BASE_bin = args.get("BASE_bin")
+	t 		 = args.get("t")
+
+	state_x   = BASE_bin[x]
+	bosecon_x = ff.TO_bose_conf(state_x,ll)
+
+	state_y   = BASE_bin[y]
+	bosecon_y = ff.TO_bose_conf(state_y,ll)
+
+
+	jump_cd  =	np.argmin(bosecon_x-bosecon_y)
+	jump_c  =	np.argmax(bosecon_x-bosecon_y)
+
+	rem = (jump_c+1)%ll
+
+	if   rem == jump_cd:
+		direction = 'right'
+		hop       = np.conjugate(t) 
+	elif jump_c == jump_cd:
+		direction = 'stand'
+	else:
+		direction = 'left'
+		hop       = t		
+
+#	print(bosecon_x,bosecon_y,direction)
+
+	result	  = np.sqrt((bosecon_x[jump_cd]+1)*(bosecon_x[jump_c])) 
+
+	return hop*result
+
+
+def action_hopping_second(x,y,**args):
 
 	ll 		 = args.get("ll")	
 	BASE_bin = args.get("BASE_bin")
