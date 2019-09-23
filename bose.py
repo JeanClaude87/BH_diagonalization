@@ -50,16 +50,16 @@ for nn_inp in [2,3,4,5]:
 
 		U_inp = -1.0*U_in
 		
-	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	
-		
+		'''	
 		if nn_inp == 1:	bar_inp = 0.007
 		if nn_inp == 2:	bar_inp = 0.007
 		if nn_inp == 3:	bar_inp = 0.003
 		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
-	
+		'''
 		
 		flux_inp 		= 0.0
 		flux_inp_1 		= 1.0
@@ -460,7 +460,7 @@ for nn_inp in [2,3,4,5]:
 ####################	OBSERVABLES -->> 
 			
 
-			directory = os.sep+'dati_prove_2'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+			directory = os.sep+'ciao'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
 			Dstep = 1
 
