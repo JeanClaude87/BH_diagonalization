@@ -8,6 +8,9 @@ from scipy.sparse import csc_matrix
 import profile
 
 
+from opt_einsum import contract
+
+
 ## .................................................................
 ## ....................OBSERVABLES..................................
 ## .................................................................
@@ -125,6 +128,7 @@ def CdCdCC_t(psit, Dstep, **args):
 	t_start  = args.get("t_start")
 
 	t_vec 	= range(0,step_num,Dstep)
+	#print(t_vec)
 	t_num 	= len(t_vec)
 
 	prop_array 	= np.zeros((t_num*ll**4,7), dtype=np.float)
@@ -134,6 +138,7 @@ def CdCdCC_t(psit, Dstep, **args):
 		V 	= psit[t]
 		V_c	= np.conj(V)
 
+
 		for i in range(ll):
 			for j in range(ll):
 				for k in range(ll):
@@ -142,8 +147,9 @@ def CdCdCC_t(psit, Dstep, **args):
 						cc = i+j*ll+l*ll**2+k*ll**3
 
 						num = np.einsum('l, lj, jk, k', V, CDC[i,j], CDC[l,k], V_c, optimize=True)
-						#print(t,i,j,k,l)
 						prop_array[cc+t*ll**4] = [t_vec[t]+t_start,i,j,l,k,np.real(num),np.imag(num)]
+
+		#print(t)
 
 	return prop_array
 
@@ -159,9 +165,23 @@ def CdiCj_t(psit, Dstep, **args):
 
 	t_vec 	   = range(0,step_num,Dstep)
 	t_num      = len(t_vec)
-	prop_array = np.array([[[[t*dt+t_start, i, j, np.real(psit[t].dot(CDC[i,j].dot(np.conj(psit[t])))), np.imag(psit[t].dot(CDC[i,j].dot(np.conj(psit[t]))))] for i in range(ll)] for j in range(ll)] for t in t_vec ] ).reshape((t_num*ll*ll,5))
 
-	return prop_array
+	array = np.zeros((t_num,ll,ll,5), dtype=np.float)
+
+	for t in t_vec:
+		for i in range(ll):	 
+			for j in range(ll):
+
+				V   = psit[t]
+				V_c = np.conj(V)
+
+				val = V.dot(CDC[i,j].dot(V_c))
+
+				array[t,i,j] = [t*dt+t_start, i, j, np.real(val), np.imag(val)] 
+
+	array = array.reshape((t_num*ll*ll,5))
+
+	return array
 
 
 def corrente(V, **args):
@@ -171,13 +191,13 @@ def corrente(V, **args):
 
 	V_c 	 = np.conj(V)
 
-	xx 		 = [V.dot(CDC[i,i+1].dot(V_c))-V.dot(CDC[i+1,1].dot(V_c)) for i in range(ll-1) ]
-	
+	xx 		 = np.sum([V.dot(CDC[i,i+1].dot(V_c)) - V.dot(CDC[i+1,i].dot(V_c)) for i in range(ll-1) ])
+
 	xx 		+=	 V.dot(CDC[ll-1,0].dot(V_c))
 	xx 		-=	 V.dot(CDC[0,ll-1].dot(V_c))
 
 	corrente =  -np.imag(np.sum(xx))
-
+	
 	return corrente
 
 def corrente_t(psit, Dstep, **args):
