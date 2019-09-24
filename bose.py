@@ -464,11 +464,11 @@ for nn_inp in [2,3,4,5]:
 
 			Dstep = 1
 
-			#CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
 			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			#ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
+			ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
 			ob.Export_Observable(CD,   		directory,    'dens.dat',     **Global_dictionary)
 			ob.Export_Observable(current, 	directory, 'corrente.dat', **Global_dictionary)								
 			
