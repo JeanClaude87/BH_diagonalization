@@ -75,7 +75,7 @@ for nn_inp in [2,3,4,5]:
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
 		t_start  = 0
-		dt 		 = 50
+		dt 		 = 100
 		step_num = 100#100
 
 		#t max 4000
@@ -464,11 +464,11 @@ for nn_inp in [2,3,4,5]:
 
 			Dstep = 1
 
-			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+			#CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
 			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
 			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
+			#ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
 			ob.Export_Observable(CD,   		directory,    'dens.dat',     **Global_dictionary)
 			ob.Export_Observable(current, 	directory, 'corrente.dat', **Global_dictionary)								
 			
