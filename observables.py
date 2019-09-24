@@ -8,8 +8,6 @@ from scipy.sparse import csc_matrix
 import profile
 
 
-from opt_einsum import contract
-
 
 ## .................................................................
 ## ....................OBSERVABLES..................................
