@@ -42,13 +42,13 @@ set autoscale
 	set mytic	
 
 	set xrange[0:3000]
-	set yrange[0:1.4]
+	set yrange[0:*]
 
 
 	set title 'N=2 L=10 U/J=-5 V_0=0.007'
 	plot 	'uu.dat'														u 1:2 		w p ls 4 t 'fisher',\
-			'../dati_prove_2/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
-			'../dati_prove_2/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'				w p ls 1 t 'fidelity',\
+			'../dati/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
+			'../dati/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'				w p ls 1 t 'fidelity',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
