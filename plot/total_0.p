@@ -46,9 +46,9 @@ set autoscale
 
 
 	set title 'N=2 L=10 U/J=-5 V_0=0.007'
-	plot 	'uu.dat'														u 1:2 		w p ls 4 t 'fisher',\
-			'../dati/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
-			'../dati/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'				w p ls 1 t 'fidelity',\
+	plot 	'uu.dat'												u 1:2 		w p ls 4 t 'fisher',\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'				w p ls 1 t 'fidelity',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
@@ -59,8 +59,8 @@ set autoscale
 	unset key
 
 	set title 'N=3 L=10 U/J=-3 V_0=0.003'
-	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.003/corrente.dat'			u 1:($2/2)	w l ls 6 t 'cur',\
-			'../dati/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+	plot 	'../ciao/L_10/N_3/U_-3.0/bb_0.003/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'				w p ls 1 t 'fidelity',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
@@ -69,16 +69,16 @@ set autoscale
 	set xrange[0:10000]
 
 	set title 'N=4 L=10 U/J=-2 V_0=0.001'
-	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat'		u 1:($2/2)	w l ls 6 t 'cur',\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+	plot 	'../ciao/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat'		u 1:($2/2)	w l ls 6 t 'cur',\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 	set xrange[0:10000]
 
 	set title 'N=5 L=10 U/J=-1.5 V_0=0.001'
-	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.001/corrente.dat'			u 1:($2/2)	w l ls 6 t 'cur',\
-			'../dati/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat'	w l ls 4 t 'fid',\
+	plot 	'../ciao/L_10/N_5/U_-1.5/bb_0.001/corrente.dat'			u 1:($2/2)	w l ls 6 t 'cur',\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat'	w l ls 4 t 'fid',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 

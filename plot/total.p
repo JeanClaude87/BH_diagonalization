@@ -45,31 +45,31 @@ set autoscale
 	set yrange[*:1.5]
 
 	set title 'N=2 L=10 U/J=-5 SYMMETRIC CAT'
-	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_2/U_-5.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 	set title 'N=2 L=10 U/J=-5 ANTISYMMETRIC CAT'
-	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_2/U_-5.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
 	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
@@ -79,17 +79,17 @@ set autoscale
 	set yrange[*:3]
 
 	set title 'N=2 L=10 U/J=-5 CURRENT'
-	plot 	'../dati/L_10/N_2/U_-5.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_2/U_-5.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_2/U_-5.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_2/U_-5.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
 
@@ -100,31 +100,31 @@ set autoscale
 	set yrange[*:1.5]
 
 	set title 'N=3 L=10 U/J=-3 SYMMETRIC CAT'
-	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_3/U_-3.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
 	set title 'N=3 L=10 U/J=-3 ANTISYMMETRIC CAT'
-	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_3/U_-3.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
 	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
@@ -134,17 +134,17 @@ set autoscale
 	set yrange[*:3]
 
 	set title 'N=3 L=10 U/J=-3 CURRENT'
-	plot 	'../dati/L_10/N_3/U_-3.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_3/U_-3.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_3/U_-3.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_3/U_-3.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle 
 
 
@@ -155,31 +155,31 @@ set autoscale
 	set yrange[*:1.5]
 
 	set title 'N=4 L=10 U/J=-2 SYMMETRIC CAT'
-	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_4/U_-2.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 	set title 'N=4 L=10 U/J=-2 ANTISYMMETRIC CAT'
-	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_4/U_-2.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
@@ -189,17 +189,17 @@ set autoscale
 	set yrange[*:3]
 
 	set title 'N=4 L=10 U/J=-2 CURRENT'
-	plot 	'../dati/L_10/N_4/U_-2.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_4/U_-2.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_4/U_-2.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_4/U_-2.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 
@@ -211,31 +211,31 @@ set autoscale
 	set yrange[*:1.5]
 
 	set title 'N=5 L=10 U/J=-1.5 SYMMETRIC CAT'
-	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_5/U_-1.5/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 	set title 'N=5 L=10 U/J=-1.5 ANTISYMMETRIC CAT'
-	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_5/U_-1.5/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 	set ylabel 'current'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
@@ -245,17 +245,17 @@ set autoscale
 	set yrange[*:3]
 
 	set title 'N=5 L=10 U/J=-1.5 CURRENT'
-	plot 	'../dati/L_10/N_5/U_-1.5/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_5/U_-1.5/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+	plot 	'../ciao/L_10/N_5/U_-1.5/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_5/U_-1.5/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 
@@ -268,45 +268,45 @@ set autoscale
 	set yrange[*:1.5]
 
 #	set title 'N=6 L=10 U/J=-1 SYMMETRIC CAT'
-#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+#	plot 	'../ciao/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_s.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_s.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_s.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_s.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.005/fidelity_cat_s.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.003/fidelity_cat_s.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.001/fidelity_cat_s.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_s.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0005/fidelity_cat_s.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0003/fidelity_cat_s.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_s.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 #	set title 'N=6 L=10 U/J=-1 ANTISYMMETRIC CAT'
-#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+#	plot 	'../ciao/L_10/N_6/U_-1.0/bb_0.05/fidelity_cat_a.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.03/fidelity_cat_a.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.01/fidelity_cat_a.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.007/fidelity_cat_a.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.005/fidelity_cat_a.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.003/fidelity_cat_a.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.001/fidelity_cat_a.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0007/fidelity_cat_a.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0005/fidelity_cat_a.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0003/fidelity_cat_a.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0001/fidelity_cat_a.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 #	set title 'N=6 L=10 U/J=-1 CURRENT'
-#	plot 	'../dati/L_10/N_6/U_-1.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
-			'../dati/L_10/N_6/U_-1.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
+#	plot 	'../ciao/L_10/N_6/U_-1.0/bb_0.05/corrente.dat' 	w l ls 2 t 'V_0 = 0.05' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.03/corrente.dat' 	w l ls 3 t 'V_0 = 0.03' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.01/corrente.dat' 	w l ls 4 t 'V_0 = 0.01' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.007/corrente.dat' w l ls 5 t 'V_0 = 0.007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.005/corrente.dat' w l ls 6 t 'V_0 = 0.005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.003/corrente.dat' w l ls 7 t 'V_0 = 0.003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.001/corrente.dat' w l ls 8 t 'V_0 = 0.001' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0007/corrente.dat' w l ls 9 t 'V_0 = 0.0007' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0005/corrente.dat' w l ls 1 t 'V_0 = 0.0005' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0003/corrente.dat' w l ls 2 t 'V_0 = 0.0003' ,\
+			'../ciao/L_10/N_6/U_-1.0/bb_0.0001/corrente.dat' w l ls 3 t 'V_0 = 0.0001' ,\
 			1 w l ls 9 notitle
 
 
