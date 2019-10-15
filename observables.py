@@ -104,58 +104,57 @@ def weight_2_ind(i,j,st,**args):
 	else:
 		return ind, 0
 
+
+
 def CdiCj(V, **args):
 
 	CDC      = args.get("CDC_matrix")
+	ll  	 = np.int(args.get("ll"))
+
+	array = np.zeros((ll,ll,4), dtype=np.float)
 	
 	V_c      = np.conj(V)
-	dens 	 = density(V, **args)
 
-	CdiCj  = np.einsum('l, xylj,j -> xy', V, CDC, V_c, optimize=True)
-	#CdiCj += np.diag(dens)
+	for i in range(ll):	 
+		for j in range(ll):
 
-	return CdiCj
+			val = V.dot(CDC[i,j].dot(V_c))
 
-def CdCdCC_t(psit, Dstep, **args):
+			array[i,j] = [i,j, np.real(val), np.imag(val)] 
+
+	array = array.reshape((ll*ll,4))
+
+	return array
+
+
+
+def CdCdCC(V, **args):
 
 	CDC      = args.get("CDC_matrix")
 	ll  	 = np.int(args.get("ll"))
-	dt       = args.get("dt")
-	step_num = args.get("step_num")
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	t_start  = args.get("t_start")
 
-	t_vec 	= range(0,step_num,Dstep)
-	#print(t_vec)
-	t_num 	= len(t_vec)
-
-	prop_array 	= np.zeros((t_num*ll**4,7), dtype=np.float)
+	array = np.zeros((ll,ll,ll,ll,6), dtype=np.float)	
 	
-	for t in range(t_num):
+	V_c	= np.conj(V)
 
-		V 	= psit[t]
-		V_c	= np.conj(V)
+	for i in range(ll):
+		for j in range(ll):
+			for k in range(ll):
+				for l in range(ll):
+
+					val = V.dot(CDC[i,j].dot(CDC[l,k].dot(V_c)))
+					array[i,j,l,k] = [i,j,l,k, np.real(val), np.imag(val)]
+
+	array = array.reshape((ll*ll*ll*ll,6))
+
+	return array
 
 
-		for i in range(ll):
-			for j in range(ll):
-				for k in range(ll):
-					for l in range(ll):
-
-						cc = i+j*ll+l*ll**2+k*ll**3
-
-						num = np.einsum('l, lj, jk, k', V, CDC[i,j], CDC[l,k], V_c, optimize=True)
-						prop_array[cc+t*ll**4] = [t_vec[t]+t_start,i,j,l,k,np.real(num),np.imag(num)]
-
-		#print(t)
-
-	return prop_array
 
 
 def CdiCj_t(psit, Dstep, **args):	
 
 	CDC      = args.get("CDC_matrix")
-
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
@@ -167,11 +166,12 @@ def CdiCj_t(psit, Dstep, **args):
 	array = np.zeros((t_num,ll,ll,5), dtype=np.float)
 
 	for t in t_vec:
+
+		V   = psit[t]
+		V_c = np.conj(V)
+
 		for i in range(ll):	 
 			for j in range(ll):
-
-				V   = psit[t]
-				V_c = np.conj(V)
 
 				val = V.dot(CDC[i,j].dot(V_c))
 
@@ -182,34 +182,104 @@ def CdiCj_t(psit, Dstep, **args):
 	return array
 
 
-def corrente(V, **args):
+def CdCdCC_t(psit, Dstep, **args):
 
-	ll  	 = np.int(args.get("ll"))
 	CDC      = args.get("CDC_matrix")
-
-	V_c 	 = np.conj(V)
-
-	xx 		 = np.sum([V.dot(CDC[i,i+1].dot(V_c)) - V.dot(CDC[i+1,i].dot(V_c)) for i in range(ll-1) ])
-
-	xx 		+=	 V.dot(CDC[ll-1,0].dot(V_c))
-	xx 		-=	 V.dot(CDC[0,ll-1].dot(V_c))
-
-	corrente =  -np.imag(np.sum(xx))
-	
-	return corrente
-
-def corrente_t(psit, Dstep, **args):
-
 	ll  	 = np.int(args.get("ll"))
 	dt       = args.get("dt")
 	step_num = args.get("step_num")
 	t_start  = args.get("t_start")
+
+	t_vec 	= range(0,step_num,Dstep)
+	t_num 	= len(t_vec)
+
+	array = np.zeros((t_num,ll,ll,ll,ll,7), dtype=np.float)	
 	
-	t_vec          = range(0,step_num,Dstep)
-	corrente_array = np.array([[t*dt+t_start, corrente(psit[t], **args)] for t in t_vec])
+	for t in t_vec:
 
-	return corrente_array
+		V 	= psit[t]
+		V_c	= np.conj(V)
 
+		for i in range(ll):
+			for j in range(ll):
+				for k in range(ll):
+					for l in range(ll):
+
+						val = V.dot(CDC[i,j].dot(CDC[l,k].dot(V_c)))
+						array[t,i,j,l,k] = [t*dt+t_start, i, j, l, k, np.real(val), np.imag(val)]
+
+	array = array.reshape((t_num*ll*ll*ll*ll,7))
+
+	return array
+
+def corrente_op(**args):
+
+	ll  	 = np.int(args.get("ll"))
+	CDC      = args.get("CDC_matrix")
+	t 		 = args.get("t") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	fl  	 = args.get("flux") 
+
+	J   = t#-1*np.exp(-2*np.pi*1j*0.0/ll)
+	J_c = np.conj(J)
+
+	op       = np.sum([ J*CDC[i,i+1] - J_c*CDC[i+1,i] for i in range(ll-1) ], axis=0)
+	op 		+=	 J*CDC[ll-1,0]
+	op 		-=	 J_c*CDC[0,ll-1]
+
+	op 		*= 	 1j
+
+	return op
+
+
+def fluct_op(**args):
+
+	ll  	 = np.int(args.get("ll"))
+	CDC      = args.get("CDC_matrix")
+	t 		 = args.get("t") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	fl  	 = args.get("flux") 
+
+	J   = t#-1*np.exp(-2*np.pi*1j*0.0/ll)
+	J_c = np.conj(J)
+
+	op = np.zeros((DIM_H,DIM_H), dtype=np.complex)	
+
+	for j in range(ll):
+		for l in range(ll):
+	
+			j1 = j
+			j2 = j+1
+
+			l1 = l
+			l2 = l+1
+
+			if j1 >= ll:
+				j1 -= ll 
+
+			if j2 >= ll:
+				j2 -= ll 				
+
+			if l1 >= ll:
+				l1 -= ll 
+
+			if l2 >= ll:
+				l2 -= ll 				
+
+			#print(j1,j2,l1,l2)
+
+
+			op	+= J*J*    CDC[j1,j2].dot(CDC[l1,l2]) 
+			op	-= J*J_c*  CDC[j1,j2].dot(CDC[l2,l1]) 
+			op	-= J*J_c*  CDC[j2,j1].dot(CDC[l1,l2]) 
+			op	+= J_c*J_c*CDC[j2,j1].dot(CDC[l2,l1])  
+
+#	a   = np.array([fl*0.4278*4 for i in range(DIM_H)])
+#	op += np.diag(a)
+
+	op *= -1
+
+	return op
 
 def Olsh2(V, **args):
 

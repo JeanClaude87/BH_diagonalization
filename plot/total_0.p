@@ -6,7 +6,7 @@ set autoscale
 							fontfile add '/Users/naldesi/Type1/cmmi10.pfb'
 							
 							
-	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 9,6
+	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 9,12
 	set border lw 2 front
 
 	set output	'total_0.eps'		
@@ -18,7 +18,7 @@ set autoscale
 
 	set key font "SFRM1200,22" at graph 0.96,0.94 vertical maxrows 3  samplen 1.0 spacing 1.
 
-	set multiplot layout 2,2
+	set multiplot layout 3,2
 
     set style line 1	lt 1 	lw 3 pt 2 	ps 1.4 lc rgb '#a6cee3' 
     set style line 2	lt 2	lw 3 pt 4 	ps 1.4 lc rgb '#1f78b4' 
@@ -42,13 +42,13 @@ set autoscale
 	set mytic	
 
 	set xrange[0:3000]
-	set yrange[0:*]
+	set yrange[*:*]
 
 
 	set title 'N=2 L=10 U/J=-5 V_0=0.007'
-	plot 	'uu.dat'												u 1:2 		w p ls 4 t 'fisher',\
-			'../ciao/L_10/N_2/U_-5.0/bb_0.007/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
-			'../ciao/L_10/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'				w p ls 1 t 'fidelity',\
+	plot 	'../ciao_0/L_8/N_2/U_-5.0/bb_0.007/fish_t.dat'			u 1:(sqrt($3-$2**2))			w p ls 4 t 'fisher',\
+			'../ciao_0/L_8/N_2/U_-5.0/bb_0.007/corrente.dat'		u 1:2			w p ls 6 t 'current',\
+			'../ciao_0/L_8/N_2/U_-5.0/bb_0.007/fidelity_cat_a.dat'					w p ls 1 t 'fidelity',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
@@ -59,8 +59,9 @@ set autoscale
 	unset key
 
 	set title 'N=3 L=10 U/J=-3 V_0=0.003'
-	plot 	'../ciao/L_10/N_3/U_-3.0/bb_0.003/corrente.dat'			u 1:($2/2)	w p ls 6 t 'current',\
-			'../ciao/L_10/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'				w p ls 1 t 'fidelity',\
+	plot 	'../ciao_0/L_8/N_3/U_-3.0/bb_0.003/fish_t.dat'			u 1:(sqrt($3-$2**2))	w p ls 4 t 'current',\
+			'../ciao_0/L_8/N_3/U_-3.0/bb_0.003/corrente.dat'		u 1:2			w p ls 6 t 'current',\
+			'../ciao_0/L_8/N_3/U_-3.0/bb_0.003/fidelity_cat_s.dat'					w p ls 1 t 'fidelity',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
@@ -69,19 +70,25 @@ set autoscale
 	set xrange[0:10000]
 
 	set title 'N=4 L=10 U/J=-2 V_0=0.001'
-	plot 	'../ciao/L_10/N_4/U_-2.0/bb_0.0007/corrente.dat'		u 1:($2/2)	w l ls 6 t 'cur',\
-			'../ciao/L_10/N_4/U_-2.0/bb_0.0007/fidelity_cat_s.dat'	w l ls 4 t 'fid',\
+	plot 	'../ciao_0/L_8/N_4/U_-2.0/bb_0.001/fish_t.dat'			u 1:(sqrt($3-$2**2))	w l ls 4 t 'cur',\
+			'../ciao_0/L_8/N_4/U_-2.0/bb_0.001/corrente.dat'		u 1:2			w l ls 6 t 'cur',\
+			'../ciao_0/L_8/N_4/U_-2.0/bb_0.001/fidelity_cat_s.dat'					w l ls 1 t 'fid',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
 	set xrange[0:10000]
 
 	set title 'N=5 L=10 U/J=-1.5 V_0=0.001'
-	plot 	'../ciao/L_10/N_5/U_-1.5/bb_0.001/corrente.dat'			u 1:($2/2)	w l ls 6 t 'cur',\
-			'../ciao/L_10/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat'	w l ls 4 t 'fid',\
+	plot 	'../ciao_0/L_8/N_5/U_-1.5/bb_0.001/fish_t.dat'			u 1:3	w l ls 4 t 'cur',\
+			'../ciao_0/L_8/N_5/U_-1.5/bb_0.001/corrente.dat'		u 1:2			w l ls 6 t 'cur',\
+			'../ciao_0/L_8/N_5/U_-1.5/bb_0.001/fidelity_cat_a.dat'					w l ls 1 t 'fid',\
 			1.0 w l dt 3 lc 'black' notitle,\
 			0.5 w l dt 3 lc 'black' notitle
 
+	plot 	'../ciao_0/L_8/N_2/U_-5.0/bb_0.007/fish_t.dat'			u 1:(sqrt($3-$2**2)/4) 	w p ls 1 t 'fisher',\
+			'../ciao_0/L_8/N_3/U_-3.0/bb_0.003/fish_t.dat'			u 1:(sqrt($3-$2**2)/9)	w p ls 2 t 'current',\
+			'../ciao_0/L_8/N_4/U_-2.0/bb_0.001/fish_t.dat'			u 1:(sqrt($3-$2**2)/16)	w l ls 3 t 'cur',\
+			'../ciao_0/L_8/N_5/U_-1.5/bb_0.001/fish_t.dat'			u 1:(sqrt($3-$2**2)/25)	w l ls 4 t 'cur',\
 
 
 	unset multiplot

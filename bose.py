@@ -37,9 +37,9 @@ if COMM.rank == 0:
 # 9.0 	0.40 0.08
 # 10.0 	0.32 0.08
 
-for nn_inp in [2,3,4,5]:
+for nn_inp in [2]:
 
-	for ll_inp in [10]:
+	for ll_inp in [6]:
 
 		if nn_inp == 1:	U_in = 5.0
 		if nn_inp == 2:	U_in = 5.0
@@ -50,7 +50,7 @@ for nn_inp in [2,3,4,5]:
 
 		U_inp = -1.0*U_in
 		
-	for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
+	#for bar_inp in [0.05, 0.03, 0.01, 0.007, 0.005, 0.003, 0.001, 0.0007, 0.0005, 0.0003, 0.0001]:
 	
 		
 		if nn_inp == 1:	bar_inp = 0.007
@@ -74,9 +74,10 @@ for nn_inp in [2,3,4,5]:
 		cores_num_inp    = 2
 		t_inp  			 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 
+		
 		t_start  = 0
-		dt 		 = 20
-		step_num = 500#100
+		dt 		 = 0.1
+		step_num = 100	#100
 
 		#t max 4000
 
@@ -455,27 +456,61 @@ for nn_inp in [2,3,4,5]:
 			psi_0 = V0
 			psit = t_ev.time_evolution(psi_0, Hamiltonian_ev, **Global_dictionary)
 
+
 			#print(ob.CdiCj(psit[0], **Global_dictionary))
 
 ####################	OBSERVABLES -->> 
 			
 
-			directory = os.sep+'ciao'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+			directory = os.sep+'robina'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+
+
+
+			ll = ll_inp
+
+#			ob.Export_Observable(ob.CdCdCC(V_cat_0.T[0], **Global_dictionary), directory, 	'gatto_0.dat', **Global_dictionary)
+#			ca1 = ob.CdiCj(V_cat_0.T[0], **Global_dictionary)
+#			ob.Export_Observable(ca1, directory, 	'gattob_0.dat', **Global_dictionary)
+
+#			ob.Export_Observable(ob.CdCdCC(V_cat_1.T[0], **Global_dictionary), directory, 		'gatto_1.dat', **Global_dictionary)
+#			cb1 = ob.CdiCj(V_cat_1.T[0], **Global_dictionary)
+#			ob.Export_Observable(cb1, directory, 		'gattob_1.dat', **Global_dictionary)
+
+			cu_op = ob.corrente_op(**Global_dictionary)				
+			fl_op = ob.fluct_op(**Global_dictionary)
+			
+			#ff0 = ob.fisherinfo(V_cat_0.T[0], **Global_dictionary)
+			#ff1 = ob.fisherinfo(V_cat_1.T[0], **Global_dictionary)
+
+			#print('fisher',ff0,ff1)
 
 			Dstep = 1
 
-			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
-			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
-			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
 
-			ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
-			ob.Export_Observable(CD,   		directory,    'dens.dat',     **Global_dictionary)
-			ob.Export_Observable(current, 	directory, 'corrente.dat', **Global_dictionary)								
+			t_vec          = range(0,step_num,Dstep)
+			corrente_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t]))] for t in t_vec]))
+			fisherin_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t])), np.conjugate(psit[t]).dot(fl_op.dot(psit[t]))] for t in t_vec]))
+
+
+#			CCDD    = ob.CdCdCC_t  (psit, Dstep, **Global_dictionary)
+#			CD      = ob.CdiCj_t   (psit, Dstep, **Global_dictionary)
+#			fish 	= ob.fisherinfo_t(psit, Dstep, **Global_dictionary)
+#			current = ob.corrente_t(psit, Dstep, **Global_dictionary)
+
+#			ob.Export_Observable(CCDD, 		directory,    'densdens.dat', **Global_dictionary)
+#			ob.Export_Observable(CD,   		directory,    'dens.dat',     **Global_dictionary)
+
+			ob.Export_Observable(fisherin_array,   	directory, 'fish_t.dat',     **Global_dictionary)
+			ob.Export_Observable(corrente_array, 	directory, 'corrente.dat', **Global_dictionary)							
 			
 			ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
 			ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
 			ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
 			ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
+
+			ob.Export_Fidelity(psit, psi_0,   directory, 'fidelity_psi0.dat',**Global_dictionary)
+
+
 
 
 quit()
