@@ -34,7 +34,7 @@ COMM = MPI.COMM_WORLD
 for nn_inp in [3]:
 
 		if nn_inp == 2: ll_inp = 30
-		if nn_inp == 3: ll_inp = 25
+		if nn_inp == 3: ll_inp = 30
 		if nn_inp == 4: ll_inp = 20
 
 		ciao=0
@@ -169,7 +169,11 @@ for nn_inp in [3]:
 
 		if COMM.rank == 0:
 		
-			Hint   = ob.int_op(**Global_dictionary)
+			Hint     = ob.int_op(**Global_dictionary)
+			H_bar    = ob.bar_0(0,**Global_dictionary)
+
+			Hint_mat = csc_matrix(Hint, shape = (DIM_H,DIM_H))
+			H_bar_mat= csc_matrix(H_bar, shape = (DIM_H,DIM_H))
 
 			for om in [0.0]: #np.arange(0,1,0.02):
 
@@ -177,12 +181,14 @@ for nn_inp in [3]:
 				cu_0   = ob.corrente_op(om,  **Global_dictionary)
 				fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
 
+				Kin_mat = csc_matrix(Kin, shape = (DIM_H,DIM_H))
+
 
 				for U_inp in np.arange(-10,0,0.5): #np.arange(0,1,0.02):
 
 					for bar_inp in [0]:#np.arange(0.000,0.01,0.0005):
 
-						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
+						matrix_h = Kin_mat + U_inp/2*Hint_mat + bar_inp*H_bar_mat
 
 						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
 
