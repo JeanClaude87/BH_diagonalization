@@ -389,7 +389,8 @@ def kinetik_op(omega,**args):
 def bar_0(x,**args):
 
 	ll 	= np.int(args.get("ll"))
-	N = args.get("N_matrix")
+	N = args.get("N_matrix") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
 
 	op = csc_matrix(N[x], shape = (DIM_H,DIM_H))
 	#op *= float(bar)	
@@ -437,7 +438,8 @@ def int_op(**args):
 	
 	ll  	 = np.int(args.get("ll"))
 	N        = args.get("N_matrix")
-	NN       = args.get("NN_matrix")
+	NN       = args.get("NN_matrix") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
 
 	Hint = 0*csc_matrix(N[0], shape = (DIM_H,DIM_H))
 	
