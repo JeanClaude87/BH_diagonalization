@@ -2,7 +2,7 @@ import numpy as np
 import os
 import time
 import function as ff
-
+from scipy.sparse import csc_matrix
 
 
 ## .................................................................
