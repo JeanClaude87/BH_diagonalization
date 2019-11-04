@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [2]:
+for nn_inp in [3]:
 
 		if nn_inp == 2: ll_inp = 30
 		if nn_inp == 3: ll_inp = 20
