@@ -31,9 +31,9 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [3]:
+for nn_inp in [2]:
 
-		if nn_inp == 2: ll_inp = 40
+		if nn_inp == 2: ll_inp = 30
 		if nn_inp == 3: ll_inp = 20
 		if nn_inp == 4: ll_inp = 20
 
@@ -178,9 +178,9 @@ for nn_inp in [3]:
 				fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
 
 
-				for U_inp in [0, -1, -2, -3, -4]: #np.arange(0,1,0.02):
+				for U_inp in np.arange(-10,0,0.5): #np.arange(0,1,0.02):
 
-					for bar_inp in np.arange(0.000,0.01,0.0005):
+					for bar_inp in [0]:#np.arange(0.000,0.01,0.0005):
 
 						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
 
