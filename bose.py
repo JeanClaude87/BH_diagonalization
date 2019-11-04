@@ -83,7 +83,7 @@ for nn_inp in [2,3,4]:
 
 			t_start  = 0
 			dt 		 = 10
-			step_num = 300	#100
+			step_num = 500	#100
 			Dstep = 1
 
 			#t max 4000
