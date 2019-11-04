@@ -52,7 +52,7 @@ for nn_inp in [2,3,4]:
 
 		U_inp = -1.0*U_in
 
-	#	'''
+		'''
 
 		if nn_inp == 1:	bar_inp = 0.007
 		if nn_inp == 2:	bar_inp = 0.0085
@@ -61,8 +61,9 @@ for nn_inp in [2,3,4]:
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
 
+		'''
 
-		for uuuuuuu in [0.003]: #np.arange(0.001,0.01,0.0005 ):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
+		for uuuuuuu in np.arange(0.001,0.01,0.0005):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
 
 
 			#print(bar_inp, ll_inp)
@@ -82,8 +83,8 @@ for nn_inp in [2,3,4]:
 
 
 			t_start  = 0
-			dt 		 = 20
-			step_num = 250	#100
+			dt 		 = 10
+			step_num = 600	#100
 			Dstep = 1
 
 			#t max 4000
@@ -178,7 +179,7 @@ for nn_inp in [2,3,4]:
 
 						U_inp = 1.0*U_in
 
-						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0		(0,**Global_dictionary)
+						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
 
 						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
 
