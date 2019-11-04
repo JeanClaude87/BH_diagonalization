@@ -175,23 +175,19 @@ for nn_inp in [2,3,4]:
 					cu_0   = ob.corrente_op(om,  **Global_dictionary)
 					fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
 
-					for U_in in [-1]:
+					matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
 
-						U_inp = 1.0*U_in
+					E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
 
-						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
+					V   = V0.T[0]
+					V_c = np.conjugate(V)					
 
-						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
+					cu = np.real(V_c.dot(cu_0.dot(V)))
+					fl = np.real(V_c.dot(fl_0.dot(V)))
 
-						V   = V0.T[0]
-						V_c = np.conjugate(V)					
+					#print(nn_inp, ll_inp, U_inp, om, E[0], cu, fl)
 
-						cu = np.real(V_c.dot(cu_0.dot(V)))
-						fl = np.real(V_c.dot(fl_0.dot(V)))
-
-						#print(nn_inp, ll_inp, U_inp, om, E[0], cu, fl)
-
-						ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
+					ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
 
 
 
