@@ -52,7 +52,7 @@ for nn_inp in [2,3,4]:
 
 		U_inp = -1.0*U_in
 
-		'''
+
 
 		if nn_inp == 1:	bar_inp = 0.007
 		if nn_inp == 2:	bar_inp = 0.0085
@@ -60,7 +60,8 @@ for nn_inp in [2,3,4]:
 		if nn_inp == 4:	bar_inp = 0.0025	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
-
+		
+		'''
 		'''
 
 		#for bar_inp in np.arange(0.001,0.01,0.0005):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
