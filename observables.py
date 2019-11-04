@@ -429,7 +429,7 @@ def corrente_op(omega, **args):
 
 def fluct_op(op,**args):
 
-	fl_op = op.multiply(op)
+	fl_op = op.dot(op)
     
 	return fl_op
 
