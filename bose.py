@@ -170,32 +170,37 @@ for nn_inp in [3]:
 		if COMM.rank == 0:
 		
 			Hint     = ob.int_op(**Global_dictionary)
+			print('inter')
+
 			H_bar    = ob.bar_0(0,**Global_dictionary)
+			print('barrier')
 
-			for om in [0.0]: #np.arange(0,1,0.02):
+			om =0.0 #np.arange(0,1,0.02):
 
-				Kin	   = ob.kinetik_op (om,  **Global_dictionary)
-				cu_0   = ob.corrente_op(om,  **Global_dictionary)
-				fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
+			Kin	   = ob.kinetik_op (om,  **Global_dictionary)
+			print('kinet')
+			cu_0   = ob.corrente_op(om,  **Global_dictionary)
+			print('corr')
+			fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
+			print('fluct')
 
+			for U_inp in np.arange(-10,0,0.5): #np.arange(0,1,0.02):
 
-				for U_inp in np.arange(-10,0,0.5): #np.arange(0,1,0.02):
+				for bar_inp in [0]:#np.arange(0.000,0.01,0.0005):
 
-					for bar_inp in [0]:#np.arange(0.000,0.01,0.0005):
+					matrix_h = Kin + U_inp/2*Hint + bar_inp*H_bar
 
-						matrix_h = Kin + U_inp/2*Hint + bar_inp*H_bar
+					E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
 
-						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
+					V   = V0.T[0]
+					V_c = np.conjugate(V)					
 
-						V   = V0.T[0]
-						V_c = np.conjugate(V)					
+					cu = np.real(V_c.dot(cu_0.dot(V)))
+					fl = np.real(V_c.dot(fl_0.dot(V)))
 
-						cu = np.real(V_c.dot(cu_0.dot(V)))
-						fl = np.real(V_c.dot(fl_0.dot(V)))
+					print(U_inp, bar_inp, cu, fl)
 
-						print(U_inp, bar_inp, cu, fl)
-
-						#ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
+					#ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
 
 
 					'''
