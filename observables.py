@@ -365,7 +365,8 @@ def kinetik_op(omega,**args):
 	ll 	   = np.int(args.get("ll"))
 	BC 	   = args.get("BC")
 	CDC    = args.get("CDC_matrix")
-	t      = args.get("t")
+	t      = args.get("t") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
 
 
 	J   = t*np.exp(-2*np.pi*1j*omega/ll)
