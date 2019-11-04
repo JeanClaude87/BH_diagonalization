@@ -6,14 +6,14 @@ import time
 
 
 #..................................hilbert space dimension
-def fact_creation(**args):
+def fact_creation(ll0,nn0): #**args):
 
-	ll = args.get("ll")
-	nn = args.get("nn")	
+	ll=int(ll0)
+	nn=int(nn0)
 
-	tab = [1 for x in range(nn+ll+2)]
+	tab = [1 for x in range(nn+ll+3)]
 
-	for i in range(nn+ll-1):
+	for i in range(nn+ll):
 		tab[i+1] = int(tab[i]*(i+1))
 
 	return tab
@@ -50,8 +50,6 @@ def Base_prep(**args):
 	nn = args.get("nn")
 	DIM_H        = args.get("DIM_H")
 
-	cores_num = np.int(args.get("cores_num"))
-
 	base_bin  = [0]*DIM_H
 	base_bose = np.zeros((DIM_H,ll), dtype=np.int8)
 	base_ind  = [0]*DIM_H
@@ -87,7 +85,6 @@ def get_index(state,**args):
 	ll           = args.get("ll")
 	nn           = args.get("nn")
 	DIM_H        = args.get("DIM_H")
-	tab_fact     = args.get("tab_fact")
 	hilb_dim_tab = args.get("hilb_dim_tab")
 
 	size   = int(nn+ll-1)

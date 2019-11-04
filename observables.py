@@ -1,11 +1,7 @@
 import numpy as np
-import scipy as sp
 import os
 import time
 import function as ff
-from scipy import sparse
-from scipy.sparse import csc_matrix
-import profile
 
 
 
@@ -58,6 +54,41 @@ def NiNj(V,**args):
 #############      CdCdCd    CORRELATIONS
 
 
+def N_creation(**args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	op = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
+	
+	for i in range(ll):
+			for st in range(DIM_H):	
+
+				op[i,st,st] = states[st,i]
+
+	return op
+
+def NNm1_creation(**args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	op = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
+	
+	#print(states)
+
+	for i in range(ll):
+
+		for st in range(DIM_H):	
+
+			op[i,st,st] += states[st,i]*(states[st,i])
+
+	return op
+
 def CdiCj_creation(**args):
 
 	states   = args.get("BASE_bose")
@@ -65,44 +96,44 @@ def CdiCj_creation(**args):
 	nn  	 = np.int(args.get("nn"))	
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
-	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
-
-	Cd  = np.power(np.remainder(states+1,nn+1),1/2)
-	C   = np.power(states,1/2)
-
-	CDC = np.zeros((ll,ll,DIM_H,DIM_H), dtype=np.float)
+	CDC = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
 	
-	for i in range(ll):
-		for j in range(ll):
+	for i in range(ll-1):
+		for st in range(DIM_H):			
+			ind, weight = weight_2_ind(i,i+1,st,**args)				
+			CDC[i,st,ind] = weight
 
-			for st in range(DIM_H):	
-
-				ind, weight = weight_2_ind(i,j,st,**args)
-				CDC[i,j,st,ind] = weight
+	for st in range(DIM_H):	
+		ind, weight = weight_2_ind(ll-1,0,st,**args)				
+		CDC[ll-1,st,ind] = weight
 
 	return CDC
 
+
+
+
+
 def weight_2_ind(i,j,st,**args):
 
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
 	B_bose 	 = args.get('BASE_bose')	#.......[3 0 0 0 0 0], numpy.ndarray
 
-	peso   = 1
+	peso   = int(1)
 	uga    = B_bose[st]*1
 
 	peso   *= uga[j]
-	uga[j] -= 1
+	uga[j] -= int(1)
 
 	peso   *= uga[i]+1
-	uga[i] += 1
+	uga[i] += int(1)
 
 	ind = ff.get_index(ff.FROM_bose_TO_bin(uga,**args), **args)	
 
-	if peso > 0:
-		return ind, np.sqrt(peso)
-	else:
-		return ind, 0
+#	if peso > 0:
+	return ind, np.sqrt(peso)
+#	else:
+#		if peso<0:
+#			print(peso)
+#		return ind, 0
 
 
 
@@ -212,111 +243,6 @@ def CdCdCC_t(psit, Dstep, **args):
 
 	return array
 
-def corrente_op(**args):
-
-	ll  	 = np.int(args.get("ll"))
-	CDC      = args.get("CDC_matrix")
-	t 		 = args.get("t") 	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	fl  	 = args.get("flux") 
-
-	J   = t#-1*np.exp(-2*np.pi*1j*0.0/ll)
-	J_c = np.conj(J)
-
-	op       = np.sum([ J*CDC[i,i+1] - J_c*CDC[i+1,i] for i in range(ll-1) ], axis=0)
-	op 		+=	 J*CDC[ll-1,0]
-	op 		-=	 J_c*CDC[0,ll-1]
-
-	op 		*= 	 1j
-
-	return op
-
-
-def fluct_op(**args):
-
-	ll  	 = np.int(args.get("ll"))
-	CDC      = args.get("CDC_matrix")
-	t 		 = args.get("t") 	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-	fl  	 = args.get("flux") 
-
-	J   = t#-1*np.exp(-2*np.pi*1j*0.0/ll)
-	J_c = np.conj(J)
-
-	op = np.zeros((DIM_H,DIM_H), dtype=np.complex)	
-
-	for j in range(ll):
-		for l in range(ll):
-	
-			j1 = j
-			j2 = j+1
-
-			l1 = l
-			l2 = l+1
-
-			if j1 >= ll:
-				j1 -= ll 
-
-			if j2 >= ll:
-				j2 -= ll 				
-
-			if l1 >= ll:
-				l1 -= ll 
-
-			if l2 >= ll:
-				l2 -= ll 				
-
-			#print(j1,j2,l1,l2)
-
-
-			op	+= J*J*    CDC[j1,j2].dot(CDC[l1,l2]) 
-			op	-= J*J_c*  CDC[j1,j2].dot(CDC[l2,l1]) 
-			op	-= J*J_c*  CDC[j2,j1].dot(CDC[l1,l2]) 
-			op	+= J_c*J_c*CDC[j2,j1].dot(CDC[l2,l1])  
-
-#	a   = np.array([fl*0.4278*4 for i in range(DIM_H)])
-#	op += np.diag(a)
-
-	op *= -1
-
-	return op
-
-def Olsh2(V, **args):
-
-	states   = args.get("BASE_bose")
-	ll  	 = args.get("ll")
-	nn  	 = args.get("nn")
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	Cor_B = np.zeros((DIM_H,ll,ll), dtype=np.float)
-	
-	coeff 	= [[ (i-j)**2 for i in range(ll)] for j in range(ll)]
-	coeff	= np.asmatrix(coeff)
-
-	for i in range(DIM_H):
-		Cor_B[i] = np.outer(states[i],states[i])
-
-	aa = (V.T)[0].T
-	ol2 = np.einsum('n,nij,ij -> ij', np.abs(aa)**2, Cor_B, coeff, optimize=True)/(nn**2)
-
-	return ol2
-
-def Olsh1(V, **args):
-
-	states   = args.get("BASE_bose")
-	ll  	 = args.get("ll")
-	nn  	 = args.get("nn")
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	BASE_bose = args.get("BASE_bose")
-
-	den   = np.dot(np.transpose(np.square(np.absolute(V))),BASE_bose)
-
-	coeff 	= [ den[1,i]*(i-3*ll/4)**2 for i in range(ll)]
-
-	ol1 = np.sum(coeff)/(nn)
-
-	return ol1
 
 
 def Export_Observable(obs, directory, name, **args):
@@ -334,13 +260,10 @@ def Export_Observable(obs, directory, name, **args):
 
 def Export_Observable_time(psi_t,directory,name,**args):
 
-	ll    = args.get("ll")
-	nn    = args.get("nn")
-	LOCAL = args.get("LOCAL")
-	U  	  = args.get("U")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
 	t_start  = args.get("t_start")
+	ll  	 = np.int(args.get("ll"))
 	
 	DEN   = []
 
@@ -359,11 +282,6 @@ def Export_Observable_time(psi_t,directory,name,**args):
 
 def Export_Fidelity(psi_t, state_B, directory, name,**args):
 
-	ll    = args.get("ll")
-	nn    = args.get("nn")
-	LOCAL = args.get("LOCAL")
-	U  	  = args.get("U")
-	bar   = args.get("bar")
 	dt 	  = args.get("dt")
 	nstep = args.get("step_num")
 	t_start  = args.get("t_start")
@@ -397,10 +315,15 @@ def Export_Fidelity_CAT_s(psi_t, psi1, psi2, directory, name,**args):
 		z1 = np.vdot(psi_t[i],psi1[:,0])
 		z2 = np.vdot(psi_t[i],psi2[:,0])
 	
-		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) + z1*np.conj(z2) + z2*np.conj(z1) ) / 2.0 )
-		FID.append([i*dt+t_start,zz])
+		#print(i,np.abs(z1),np.abs(z2))
 
-	Export_Observable(FID, directory, name, **args)
+		zz = (np.conj(z1+z2)*(z1+z2))/2
+		
+		#print('A', i, zz)
+
+		FID.append([i*dt+t_start, zz, np.conj(z1)*z1 + np.conj(z2)*z2, np.conj(z1)*z2 + np.conj(z2)*z1])
+
+	Export_Observable(np.real(FID), directory, name, **args)
 
 	return 0
 
@@ -420,14 +343,127 @@ def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
 	for i in range(nstep):
 
 		z1 = np.vdot(psi_t[i],psi1[:,0])
-		z2 = np.vdot(psi_t[i],psi2[:,0])
+		z2 = np.vdot(psi_t[i],-psi2[:,0])
 	
-		zz = np.real(( z1*np.conj(z1) + z2*np.conj(z2) - z1*np.conj(z2) - z2*np.conj(z1) ) / 2.0 )
+		zz = (np.conj(z1 + z2)*(z1+z2))/2
+		
 		FID.append([i*dt+t_start,zz])
 
-	Export_Observable(FID, directory, name, **args)
+	Export_Observable(np.real(FID), directory, name, **args)
 
 	return 0
+
+
+###### HAMILTONIAN OPERATORS
+
+def kinetik_op(omega,**args):
+
+	ll 	   = np.int(args.get("ll"))
+	BC 	   = args.get("BC")
+	CDC    = args.get("CDC_matrix")
+	t      = args.get("t")
+
+
+	J   = t*np.exp(-2*np.pi*1j*omega/ll)
+
+	op  = (0+0j)*CDC[0]
+
+	for i in range(0,ll-1):
+
+		op += CDC[i]
+
+	if BC == 0:
+
+		op += CDC[ll-1]	
+
+	op *= J
+
+	op1 = np.conjugate(op.T)
+
+	return op+op1
+
+def bar_0(x,**args):
+
+	ll 	= np.int(args.get("ll"))
+	N = args.get("N_matrix")
+
+	op = N[x]
+	#op *= float(bar)	
+
+	return op
+
+def corrente_op(omega, **args):
+
+	ll  	 = np.int(args.get("ll"))
+	CDC      = args.get("CDC_matrix")
+	t 		 = args.get("t") 	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+	fl  	 = args.get("flux") 
+
+	J   	 = 1j*t*np.exp(-2*np.pi*1j*omega/ll)
+
+	BC 	   	 = args.get("BC")
+
+
+	op  = (0-0j)*CDC[0]
+
+	for i in range(0,ll-1):
+
+		op += CDC[i]
+
+	if BC == 0:
+
+		op += CDC[ll-1]
+
+	op *= J
+
+	op1 = np.conjugate(op.T)
+
+	return op+op1
+
+def fluct_op(op,**args):
+
+	fl_op = np.matmul(op,op)
+    
+	return fl_op
+
+
+
+def int_op(**args):
+	
+	ll  	 = np.int(args.get("ll"))
+	N        = args.get("N_matrix")
+	NN       = args.get("NN_matrix")
+
+	Hint = 0*N[0]
+	
+	for j in range(ll):
+		Hint += NN[j] - N[j]
+
+	return Hint
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

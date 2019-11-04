@@ -1,13 +1,10 @@
 import numpy as np
 import scipy as sp
-from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 from scipy import linalg as lin
-import time
 import function as ff
 import hamiltonian_parity as ham_par
-import random 
-import functools
+
 
 def evaluate_ham(i,**args):
 
@@ -16,8 +13,6 @@ def evaluate_ham(i,**args):
 	nn 		 = args.get("nn")
 	ll 		 = args.get("ll")	
 	BC 		 = args.get("BC")
-	t 		 = args.get("t")	
-	bar		 = args.get("bar")
 
 #...... Functions in ham.py: action_hopping, action_interactions
 #...... Fundamental tables:  BASE_bin, HOP_list
@@ -215,7 +210,6 @@ def diagonalization(Hamiltonian,**args):
 
 	if num_eig <= 0:
 		num_eig = 1
-
 	
 	if isinstance( Hamiltonian, sp.sparse.csc.csc_matrix):	
 		if num_eig >= DIM_H-1:
@@ -232,29 +226,23 @@ def diagonalization(Hamiltonian,**args):
 			A = np.concatenate((A0,A1))
 			B = np.concatenate((B0.T,B1.T)).T
 
-			B = B[:, A.argsort()]
-			A = np.sort(A)
-
 		else:
-
+			
 			A,B = linalgS.eigsh(Hamiltonian, k=num_eig, which='SA', return_eigenvectors=True)
-
-			B = B[:, A.argsort()]
-			A = np.sort(A)
 
 	else:
 
-		num_eig = DIM_H
+		if num_eig >= DIM_H:
+			num_eig = DIM_H
 
-		A,B   = lin.eigh(Hamiltonian)
-
-		B = B[:, A.argsort()]
-		A = np.sort(A)		
+		A,B = sp.linalg.eigh(Hamiltonian)
 
 	if parity == 'True':
 		
 		B = ham_par.vectors_parity_symmetrize(B,**args)
 
+	B = B[:, A.argsort()]
+	A = np.sort(A)
 
 	return A[:num_eig],B[:,:num_eig]
 

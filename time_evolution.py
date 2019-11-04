@@ -4,12 +4,9 @@ import scipy as sp
 from scipy.sparse import csc_matrix
 from scipy.sparse import linalg as linalgS
 
-import hamiltonian        as ham
 import hamiltonian_parity as ham_par
 import function           as ff
-import observables        as ob
 
-import time
 
 np.set_printoptions(precision=3,suppress=True)
 
@@ -28,8 +25,10 @@ def time_evolution(psi_0, H_ev, **args):
 	psi0 = psi_0[:,0]
 	
 	if isinstance( H_ev, sp.sparse.csc.csc_matrix):	
-	
-		HT      = np.squeeze(np.asarray(-1j*dt*H_ev))
+
+		
+		HT      = -1j*dt*H_ev
+
 		psit    = linalgS.expm_multiply(HT, psi0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
 		
 	else:
@@ -64,7 +63,6 @@ def inital_state(part_ind,**args):
 
 	nn 		 = args.get("nn")
 	ll 		 = args.get("ll")
-	BASE_bose = args.get("BASE_bose")
 	DIM_H    = args.get("DIM_H")
 
 	state    = np.zeros(ll, dtype=np.int)

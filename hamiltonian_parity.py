@@ -1,18 +1,8 @@
-import os
-
 import numpy as np
-from numpy import matlib
-from math import factorial
-import math
-import itertools
 from scipy.sparse import csc_matrix
-from scipy.sparse import linalg
-from numpy import linalg as LA
-import time
 
 import hamiltonian        as ham
 import function           as ff
-import observables        as ob
 
 #..................................parity transformation
 # A states
@@ -122,7 +112,6 @@ def vectors_parity_symmetrize(V0,**args):
 	#print(np.shape(V0))
 
 	b_p_inp	 = args.get("parity_index")
-	DIM_H 	 = np.int(args.get("DIM_H"))
 
 	V   = np.matlib.zeros(np.shape(V0), dtype=np.complex128)
 	
@@ -153,15 +142,12 @@ def bose_Hamiltonian_parity_fast(**args):
 
 	DIM_H 	  = np.int(args.get("DIM_H"))
 	BASE_bin  = args.get("BASE_bin")
-	BASE_bose = args.get("BASE_bose")
 	mat_type  = args.get("mat_type")
 	b_p_inp	  = args.get("parity_index")
 	b_p       = np.asarray(b_p_inp)
 
 	len_sym   = args.get("sim_sec_len")
 	len_b_p   = len(b_p)
-
-	len_asym  = DIM_H - len_sym
 
 	X0_s = []
 	Y0_s = []
