@@ -96,6 +96,8 @@ def CdiCj_creation(**args):
 	nn  	 = np.int(args.get("nn"))	
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
+	mat_type = args.get("mat_type")
+
 	CDC = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
 	
 	for i in range(ll-1):
@@ -107,7 +109,7 @@ def CdiCj_creation(**args):
 
 	for st in range(DIM_H):	
 		ind, weight = weight_2_ind(ll-1,0,st,**args)				
-		CDC[ll-1,st,ind] = weight
+		CDC[ll-1,st,ind] = weight		
 
 	return CDC
 
@@ -368,15 +370,15 @@ def kinetik_op(omega,**args):
 
 	J   = t*np.exp(-2*np.pi*1j*omega/ll)
 
-	op  = (0+0j)*CDC[0]
+	op  = (0-0j)*csc_matrix(CDC[0], shape = (DIM_H,DIM_H))
 
 	for i in range(0,ll-1):
 
-		op += CDC[i]
+		op += csc_matrix(CDC[i], shape = (DIM_H,DIM_H))
 
 	if BC == 0:
 
-		op += CDC[ll-1]	
+		op += csc_matrix(CDC[ll-1], shape = (DIM_H,DIM_H))
 
 	op *= J
 
@@ -389,7 +391,7 @@ def bar_0(x,**args):
 	ll 	= np.int(args.get("ll"))
 	N = args.get("N_matrix")
 
-	op = N[x]
+	op = csc_matrix(N[x], shape = (DIM_H,DIM_H))
 	#op *= float(bar)	
 
 	return op
@@ -407,15 +409,15 @@ def corrente_op(omega, **args):
 	BC 	   	 = args.get("BC")
 
 
-	op  = (0-0j)*CDC[0]
+	op  = (0-0j)*csc_matrix(CDC[0], shape = (DIM_H,DIM_H))
 
 	for i in range(0,ll-1):
 
-		op += CDC[i]
+		op += csc_matrix(CDC[i], shape = (DIM_H,DIM_H))
 
 	if BC == 0:
 
-		op += CDC[ll-1]
+		op += csc_matrix(CDC[ll-1], shape = (DIM_H,DIM_H))
 
 	op *= J
 
@@ -437,10 +439,10 @@ def int_op(**args):
 	N        = args.get("N_matrix")
 	NN       = args.get("NN_matrix")
 
-	Hint = 0*N[0]
+	Hint = 0*csc_matrix(N[0], shape = (DIM_H,DIM_H))
 	
 	for j in range(ll):
-		Hint += NN[j] - N[j]
+		Hint += csc_matrix(NN[j] - N[j], shape = (DIM_H,DIM_H))
 
 	return Hint
 
