@@ -82,8 +82,8 @@ for nn_inp in [2,3,4]:
 
 
 			t_start  = 0
-			dt 		 = 25
-			step_num = 2	#100
+			dt 		 = 20
+			step_num = 250	#100
 			Dstep = 1
 
 			#t max 4000
