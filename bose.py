@@ -63,132 +63,140 @@ for nn_inp in [2,3,4]:
 
 		'''
 
-		for bar_inp in np.arange(0.001,0.01,0.0005):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
+		#for bar_inp in np.arange(0.001,0.01,0.0005):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
 
 
-			#print(bar_inp, ll_inp)
 
-			flux_inp_0 		= 0.0
-			flux_inp_1 		= 1.0
-			flux_inp_psi0 	= 0.0
-			flux_inp_t 		= 0.5		
-			BC_inp 			= 0			# 0 is periodic
+		#print(bar_inp, ll_inp)
 
-			#mat_type_inp     = 'Dense' 	#'Sparse' #.... default Dense
-			mat_type_inp     = 'Sparse' 	#.... default Dense
-			parity_inp       = 'False'		#.... default False
-			n_diag_state_inp = 1
-			cores_num_inp    = 2
-			t_inp  			 = -1
+		flux_inp_0 		= 0.0
+		flux_inp_1 		= 1.0
+		flux_inp_psi0 	= 0.0
+		flux_inp_t 		= 0.5		
+		BC_inp 			= 0			# 0 is periodic
+
+		#mat_type_inp     = 'Dense' 	#'Sparse' #.... default Dense
+		mat_type_inp     = 'Sparse' 	#.... default Dense
+		parity_inp       = 'False'		#.... default False
+		n_diag_state_inp = 1
+		cores_num_inp    = 2
+		t_inp  			 = -1
 
 
-			t_start  = 0
-			dt 		 = 10
-			step_num = 600	#100
-			Dstep = 1
+		t_start  = 0
+		dt 		 = 10
+		step_num = 600	#100
+		Dstep = 1
 
-			#t max 4000
+		#t max 4000
 
-			if mat_type_inp == None:
-				mat_type_inp = 'Sparse'
+		if mat_type_inp == None:
+			mat_type_inp = 'Sparse'
 
-			######............PREPARATION OF DICTIONARSS
+		######............PREPARATION OF DICTIONARSS
 
-			zero = 0.0
+		zero = 0.0
 
-			Global_dictionary = {
-				"ll" 		: ll_inp, 
-				"nn" 		: nn_inp,
-				"BC" 		: BC_inp, 
-				"t"  		: t_inp ,
-				"U"  		: U_inp ,
-				"bar"		: zero,
-				"n_diag_state"  : n_diag_state_inp,
-				"cores_num" : cores_num_inp,
-				"mat_type" 	: mat_type_inp,
-				"LOCAL" 	: os.path.abspath('.'),
-				"parity"   	: parity_inp,
-				"dt"      	: dt,
-				"step_num"	: step_num,
-				"t_start"	: t_start
-				}
+		Global_dictionary = {
+			"ll" 		: ll_inp, 
+			"nn" 		: nn_inp,
+			"BC" 		: BC_inp, 
+			"t"  		: t_inp ,
+			"U"  		: U_inp ,
+			"bar"		: zero,
+			"n_diag_state"  : n_diag_state_inp,
+			"cores_num" : cores_num_inp,
+			"mat_type" 	: mat_type_inp,
+			"LOCAL" 	: os.path.abspath('.'),
+			"parity"   	: parity_inp,
+			"dt"      	: dt,
+			"step_num"	: step_num,
+			"t_start"	: t_start
+			}
 
-			n_diag_state 	= Global_dictionary.get("n_diag_state")
+		n_diag_state 	= Global_dictionary.get("n_diag_state")
 
-			Global_dictionary["tab_fact"]     = ff.fact_creation(ll_inp,nn_inp) #**Global_dictionary)
+		Global_dictionary["tab_fact"]     = ff.fact_creation(ll_inp,nn_inp) #**Global_dictionary)
 
-			DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Global_dictionary.get("tab_fact"))
+		DIM_H 			= ff.hilb_dim(nn_inp, ll_inp, Global_dictionary.get("tab_fact"))
 
-			Global_dictionary["DIM_H"]        = DIM_H 
-			Global_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Global_dictionary)
+		Global_dictionary["DIM_H"]        = DIM_H 
+		Global_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Global_dictionary)
 
-			#if COMM.rank == 0:
-				#print('Hilbert space Dimension:', Global_dictionary.get("DIM_H"))
-				#print('ll', ll_inp, 'nn', nn_inp)
+		#if COMM.rank == 0:
+			#print('Hilbert space Dimension:', Global_dictionary.get("DIM_H"))
+			#print('ll', ll_inp, 'nn', nn_inp)
 
-			COMM.Barrier()
+		COMM.Barrier()
 
-			if COMM.rank == 0:
+		if COMM.rank == 0:
 
-				BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Global_dictionary)
-
-				Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
-				Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
-				Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
-
-			else:
-
-				BASE_bin 		= None
-				BASE_bose 		= None
-				CONF_tab		= None
-
-			COMM.Barrier()
-			BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
-			BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
-			CONF_tab		= COMM.bcast(CONF_tab,	root=0)
+			BASE_bin, BASE_bose, CONF_tab = ff.Base_prep(**Global_dictionary)
 
 			Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
 			Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
 			Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
 
-			HOP_list     = ff.Hop_prep(**Global_dictionary)
-			Global_dictionary["HOP_list"]  = HOP_list
+		else:
 
-			N 		 	= ob.N_creation(**Global_dictionary)	
-			NN 		    = ob.NNm1_creation(**Global_dictionary)	
+			BASE_bin 		= None
+			BASE_bose 		= None
+			CONF_tab		= None
 
-			CDC 		= ob.CdiCj_creation(**Global_dictionary)	
+		COMM.Barrier()
+		BASE_bin 		= COMM.bcast(BASE_bin,	root=0)
+		BASE_bose 		= COMM.bcast(BASE_bose,	root=0)
+		CONF_tab		= COMM.bcast(CONF_tab,	root=0)
 
-			Global_dictionary["CDC_matrix"]   = CDC
-			Global_dictionary["N_matrix"]     = N
-			Global_dictionary["NN_matrix"]  = NN
+		Global_dictionary["BASE_bin"]    = BASE_bin		#.......11100000, str
+		Global_dictionary["BASE_bose"]   = BASE_bose	#.......[3 0 0 0 0 0], numpy.ndarray
+		Global_dictionary["CONF_tab"]    = CONF_tab		#.......224, int
 
-			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+		HOP_list     = ff.Hop_prep(**Global_dictionary)
+		Global_dictionary["HOP_list"]  = HOP_list
 
-			if COMM.rank == 0:
-			
-				Hint   = ob.int_op(**Global_dictionary)
+		N 		 	= ob.N_creation(**Global_dictionary)	
+		NN 		    = ob.NNm1_creation(**Global_dictionary)	
 
-				for om in [0.0]: #np.arange(0,1,0.02):
+		CDC 		= ob.CdiCj_creation(**Global_dictionary)	
 
-					Kin	   = ob.kinetik_op (om,  **Global_dictionary)
-					cu_0   = ob.corrente_op(om,  **Global_dictionary)
-					fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
+		Global_dictionary["CDC_matrix"]   = CDC
+		Global_dictionary["N_matrix"]     = N
+		Global_dictionary["NN_matrix"]  = NN
 
-					matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
+		directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
 
-					E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
+		if COMM.rank == 0:
+		
+			Hint   = ob.int_op(**Global_dictionary)
 
-					V   = V0.T[0]
-					V_c = np.conjugate(V)					
+			for om in [0.0]: #np.arange(0,1,0.02):
 
-					cu = np.real(V_c.dot(cu_0.dot(V)))
-					fl = np.real(V_c.dot(fl_0.dot(V)))
+				Kin	   = ob.kinetik_op (om,  **Global_dictionary)
+				cu_0   = ob.corrente_op(om,  **Global_dictionary)
+				fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
 
-					#print(nn_inp, ll_inp, U_inp, om, E[0], cu, fl)
 
-					ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
+				for U_inp in [0, -1, -2, -3, -4]: #np.arange(0,1,0.02):
 
+					for bar_inp in np.arange(0.000,0.01,0.0005):
+
+						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0(0,**Global_dictionary)
+
+						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
+
+						V   = V0.T[0]
+						V_c = np.conjugate(V)					
+
+						cu = np.real(V_c.dot(cu_0.dot(V)))
+						fl = np.real(V_c.dot(fl_0.dot(V)))
+
+						print(U_inp, om, E[0], cu, fl)
+
+						ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
+
+
+					'''
 
 
 
@@ -255,7 +263,8 @@ for nn_inp in [2,3,4]:
 				ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
 				ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 				ob.Export_Fidelity(psit, psi_0,   directory, 'fidelity_psi0.dat',**Global_dictionary)
+					
+					'''
 
-
-#quit()
+quit()
 
