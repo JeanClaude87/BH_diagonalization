@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [2,3,4]:
+for nn_inp in [4]:
 
 		if nn_inp == 2: ll_inp = 40
 		if nn_inp == 3: ll_inp = 30
@@ -55,8 +55,8 @@ for nn_inp in [2,3,4]:
 	#	'''
 		'''
 		if nn_inp == 1:	bar_inp = 0.007
-		if nn_inp == 2:	bar_inp = 0.007
-		if nn_inp == 3:	bar_inp = 0.0035
+		if nn_inp == 2:	bar_inp = 0.0085
+		if nn_inp == 3:	bar_inp = 0.003
 		if nn_inp == 4:	bar_inp = 0.001	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
@@ -82,8 +82,8 @@ for nn_inp in [2,3,4]:
 
 
 			t_start  = 0
-			dt 		 = 10
-			step_num = 500	#100
+			dt 		 = 25
+			step_num = 150	#100
 			Dstep = 1
 
 			#t max 4000
