@@ -31,10 +31,10 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [2,3,4]:
+for nn_inp in [3]:
 
 		if nn_inp == 2: ll_inp = 40
-		if nn_inp == 3: ll_inp = 30
+		if nn_inp == 3: ll_inp = 20
 		if nn_inp == 4: ll_inp = 20
 
 		ciao=0
@@ -192,9 +192,9 @@ for nn_inp in [2,3,4]:
 						cu = np.real(V_c.dot(cu_0.dot(V)))
 						fl = np.real(V_c.dot(fl_0.dot(V)))
 
-						print(U_inp, om, E[0], cu, fl)
+						print(U_inp, bar_inp, cu, fl)
 
-						ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
+						#ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
 
 
 					'''
