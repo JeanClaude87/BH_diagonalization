@@ -231,7 +231,7 @@ for nn_inp in [2,3,4]:
 		############ HAMILTONIAN t evolution omega = 1/2, YES barrier
 
 				HH_ev  = Hint + Hkin_05 + Hba_0
-				HH_ev  = csc_matrix(HH_ev, shape = (DIM_H,DIM_H))
+				#HH_ev  = csc_matrix(HH_ev, shape = (DIM_H,DIM_H))
                 
 		############ time_evolution
 
