@@ -103,6 +103,8 @@ def CdiCj_creation(**args):
 			ind, weight = weight_2_ind(i,i+1,st,**args)				
 			CDC[i,st,ind] = weight
 
+		print('CDC', i)
+
 	for st in range(DIM_H):	
 		ind, weight = weight_2_ind(ll-1,0,st,**args)				
 		CDC[ll-1,st,ind] = weight
