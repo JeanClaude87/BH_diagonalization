@@ -14,7 +14,7 @@ import observables        as ob
 import time_evolution	  as t_ev
 import Hamiltonian_MPI	  as ham_MPI
 
-np.set_printoptions(precision=2,suppress=True)
+np.set_printoptions(precision=5,suppress=True)
 
 COMM = MPI.COMM_WORLD
 
@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [4]:
+for nn_inp in [2,3,4]:
 
 		if nn_inp == 2: ll_inp = 40
 		if nn_inp == 3: ll_inp = 30
@@ -53,19 +53,19 @@ for nn_inp in [4]:
 		U_inp = -1.0*U_in
 
 	#	'''
-		'''
+
 		if nn_inp == 1:	bar_inp = 0.007
 		if nn_inp == 2:	bar_inp = 0.0085
 		if nn_inp == 3:	bar_inp = 0.003
-		if nn_inp == 4:	bar_inp = 0.001	
+		if nn_inp == 4:	bar_inp = 0.0025	
 		if nn_inp == 5:	bar_inp = 0.001	
 		if nn_inp == 6:	bar_inp = 0.0007			
-		'''
-
-		for bar_inp in np.arange(0.001,0.01,0.0005 ):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
 
 
-			print(bar_inp, ll_inp)
+		for uuuuuuu in [0.003]: #np.arange(0.001,0.01,0.0005 ):#[0.0035, 0.0045]:#[0.007, 0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 0.00005, 0.0005, 0.005, 0.05, 0.5, 5, 50]:
+
+
+			#print(bar_inp, ll_inp)
 
 			flux_inp_0 		= 0.0
 			flux_inp_1 		= 1.0
@@ -83,7 +83,7 @@ for nn_inp in [4]:
 
 			t_start  = 0
 			dt 		 = 25
-			step_num = 150	#100
+			step_num = 2	#100
 			Dstep = 1
 
 			#t max 4000
@@ -162,14 +162,13 @@ for nn_inp in [4]:
 			Global_dictionary["N_matrix"]     = N
 			Global_dictionary["NN_matrix"]  = NN
 
+			directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+
 			if COMM.rank == 0:
 			
-				'''
-
 				Hint   = ob.int_op(**Global_dictionary)
 
-
-				for om in np.arange(0,1,0.02):
+				for om in [0.0]: #np.arange(0,1,0.02):
 
 					Kin	   = ob.kinetik_op (om,  **Global_dictionary)
 					cu_0   = ob.corrente_op(om,  **Global_dictionary)
@@ -179,7 +178,7 @@ for nn_inp in [4]:
 
 						U_inp = 1.0*U_in
 
-						matrix_h = Kin + U_inp/2*Hint
+						matrix_h = Kin + U_inp/2*Hint + bar_inp*ob.bar_0		(0,**Global_dictionary)
 
 						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
 
@@ -189,9 +188,9 @@ for nn_inp in [4]:
 						cu = np.real(V_c.dot(cu_0.dot(V)))
 						fl = np.real(V_c.dot(fl_0.dot(V)))
 
-						print(nn_inp, ll_inp, U_inp, om, E[0], cu, fl)
+						#print(nn_inp, ll_inp, U_inp, om, E[0], cu, fl)
 
-				'''
+						ob.Export_Observable([cu,fl], 	directory, 't=0.dat', **Global_dictionary)
 
 
 
@@ -232,15 +231,12 @@ for nn_inp in [4]:
 		############ HAMILTONIAN t evolution omega = 1/2, YES barrier
 
 				HH_ev  = Hint + Hkin_05 + Hba_0
-				#HH_ev  = csc_matrix(HH_ev, shape = (DIM_H,DIM_H))
-
-				
+				HH_ev  = csc_matrix(HH_ev, shape = (DIM_H,DIM_H))
+                
 		############ time_evolution
 
 				psi_0 = V3
 				psit = t_ev.time_evolution(psi_0, HH_ev, **Global_dictionary)
-
-
 
 		####################	OBSERVABLES -->> 			
 				ll = ll_inp
@@ -252,7 +248,7 @@ for nn_inp in [4]:
 				corrente_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t]))] for t in t_vec]))
 				fisherin_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t])), np.conjugate(psit[t]).dot(fl_op.dot(psit[t]))] for t in t_vec]))
 
-				directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
+				#print('fish', fisherin_array)				
 
 				ob.Export_Observable(fisherin_array,   	directory, 'fish_t.dat',     **Global_dictionary)
 				ob.Export_Observable(corrente_array, 	directory, 'corrente.dat', **Global_dictionary)										
@@ -264,5 +260,5 @@ for nn_inp in [4]:
 				ob.Export_Fidelity(psit, psi_0,   directory, 'fidelity_psi0.dat',**Global_dictionary)
 
 
-quit()
+#quit()
 

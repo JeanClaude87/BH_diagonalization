@@ -15,6 +15,7 @@ np.set_printoptions(precision=3,suppress=True)
 
 def time_evolution(psi_0, H_ev, **args):
 
+	print('evolution')
 
 	DIM_H    = args.get("DIM_H")
 	dt       = args.get("dt")
