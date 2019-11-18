@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [4]:
+for nn_inp in [2,3,4]:
 		
 	U_inp   = -1.0
 	bar_inp = 0.0
@@ -60,7 +60,7 @@ for nn_inp in [4]:
 		if nn_inp == 6:	bar_inp = 0.0007			
 	'''
 
-	for ll_inp in np.arange(4,24,4):
+	for ll_inp in np.arange(8,38,4):
 
 		BC_inp 			= 0			# 0 is periodic
 
