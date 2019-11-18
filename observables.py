@@ -51,67 +51,7 @@ def NiNj(V,**args):
 
 
 
-#############      CdCdCd    CORRELATIONS
-
-
-def N_creation(**args):
-
-	states   = args.get("BASE_bose")
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	op = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
-	
-	for i in range(ll):
-			for st in range(DIM_H):	
-
-				op[i,st,st] = states[st,i]
-
-	return op
-
-def NNm1_creation(**args):
-
-	states   = args.get("BASE_bose")
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	op = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
-	
-	#print(states)
-
-	for i in range(ll):
-
-		for st in range(DIM_H):	
-
-			op[i,st,st] += states[st,i]*(states[st,i])
-
-	return op
-
-def CdiCj_creation(**args):
-
-	states   = args.get("BASE_bose")
-	ll  	 = np.int(args.get("ll"))
-	nn  	 = np.int(args.get("nn"))	
-	DIM_H 	 = np.int(args.get("DIM_H"))
-
-	mat_type = args.get("mat_type")
-
-	CDC = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
-	
-	for i in range(ll-1):
-		for st in range(DIM_H):			
-			ind, weight = weight_2_ind(i,i+1,st,**args)				
-			CDC[i,st,ind] = weight
-
-		print('CDC', i)
-
-	for st in range(DIM_H):	
-		ind, weight = weight_2_ind(ll-1,0,st,**args)				
-		CDC[ll-1,st,ind] = weight		
-
-	return CDC
+#############      CdCdCd    CORRELATION
 
 
 
@@ -257,7 +197,7 @@ def Export_Observable(obs, directory, name, **args):
 		os.makedirs(LOCAL+os.sep+directory)
 
 	name_obs = LOCAL+os.sep+directory+os.sep+str(name)
-	np.savetxt(name_obs, obs , fmt='%.9f')
+	np.savetxt(name_obs, obs , fmt='%.15f')
 
 	return 0
 
@@ -349,7 +289,7 @@ def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
 		z1 = np.vdot(psi_t[i],psi1[:,0])
 		z2 = np.vdot(psi_t[i],-psi2[:,0])
 	
-		zz = (np.conj(z1 + z2)*(z1+z2))/2
+		zz = (np.conj(z1+z2)*(z1+z2))/2
 		
 		FID.append([i*dt+t_start,zz])
 
@@ -357,6 +297,65 @@ def Export_Fidelity_CAT_a(psi_t, psi1, psi2, directory, name,**args):
 
 	return 0
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def N_creation(**args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	op = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
+	
+	for i in range(ll):
+			for st in range(DIM_H):	
+
+				op[i,st,st] = states[st,i]
+
+	return op
+
+def CdiCj_creation(**args):
+
+	states   = args.get("BASE_bose")
+	ll  	 = np.int(args.get("ll"))
+	nn  	 = np.int(args.get("nn"))	
+	DIM_H 	 = np.int(args.get("DIM_H"))
+
+	mat_type = args.get("mat_type")
+
+	CDC = np.zeros((ll,DIM_H,DIM_H), dtype=np.float)
+	
+	for i in range(ll-1):
+		for st in range(DIM_H):			
+			ind, weight = weight_2_ind(i,i+1,st,**args)				
+			CDC[i,st,ind] = weight
+
+	for st in range(DIM_H):	
+		ind, weight = weight_2_ind(ll-1,0,st,**args)				
+		CDC[ll-1,st,ind] = weight		
+
+	return CDC
 
 ###### HAMILTONIAN OPERATORS
 
@@ -371,21 +370,23 @@ def kinetik_op(omega,**args):
 
 	J   = t*np.exp(-2*np.pi*1j*omega/ll)
 
-	op  = (0-0j)*csc_matrix(CDC[0], shape = (DIM_H,DIM_H))
+	
+	op  = J*CDC[0]
 
-	for i in range(0,ll-1):
+	for i in range(1,ll-1):
 
-		op += csc_matrix(CDC[i], shape = (DIM_H,DIM_H))
+		op += J*CDC[i]
 
 	if BC == 0:
 
-		op += csc_matrix(CDC[ll-1], shape = (DIM_H,DIM_H))
+		op += J*CDC[ll-1]
 
-	op *= J
 
 	op1 = np.conjugate(op.T)
 
-	return op+op1
+	op_sp = csc_matrix(op+op1, shape = (DIM_H,DIM_H), dtype=np.complex)
+
+	return op_sp
 
 def bar_0(x,**args):
 
@@ -393,10 +394,11 @@ def bar_0(x,**args):
 	N = args.get("N_matrix") 	
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
-	op = csc_matrix(N[x], shape = (DIM_H,DIM_H))
-	#op *= float(bar)	
+	op = N[x]
 
-	return op
+	op_sp = csc_matrix(op, shape = (DIM_H,DIM_H), dtype=np.complex)
+
+	return op_sp
 
 def corrente_op(omega, **args):
 
@@ -411,21 +413,22 @@ def corrente_op(omega, **args):
 	BC 	   	 = args.get("BC")
 
 
-	op  = (0-0j)*csc_matrix(CDC[0], shape = (DIM_H,DIM_H))
+	op  = J*CDC[0]
 
-	for i in range(0,ll-1):
+	for i in range(1,ll-1):
 
-		op += csc_matrix(CDC[i], shape = (DIM_H,DIM_H))
+		op += J*CDC[i]
 
 	if BC == 0:
 
-		op += csc_matrix(CDC[ll-1], shape = (DIM_H,DIM_H))
-
-	op *= J
+		op += J*CDC[ll-1]
 
 	op1 = np.conjugate(op.T)
 
-	return op+op1
+	op_sp = csc_matrix(op+op1, shape = (DIM_H,DIM_H), dtype=np.complex)
+
+	return op_sp
+
 
 def fluct_op(op,**args):
 
@@ -434,20 +437,23 @@ def fluct_op(op,**args):
 	return fl_op
 
 
-
 def int_op(**args):
-	
+
+	states   = args.get("BASE_bose")
 	ll  	 = np.int(args.get("ll"))
-	N        = args.get("N_matrix")
-	NN       = args.get("NN_matrix") 	
+	nn  	 = np.int(args.get("nn"))	
 	DIM_H 	 = np.int(args.get("DIM_H"))
 
-	Hint = 0*csc_matrix(N[0], shape = (DIM_H,DIM_H))
-	
-	for j in range(ll):
-		Hint += csc_matrix(NN[j] - N[j], shape = (DIM_H,DIM_H))
+	op = np.zeros((DIM_H,DIM_H), dtype=np.float)
 
-	return Hint
+	for st in range(DIM_H):	
+		for i in range(ll):
+
+			op[st,st] += states[st,i]**2 - states[st,i]
+
+	op_sp = csc_matrix(op, shape = (DIM_H,DIM_H), dtype=np.complex)
+
+	return op_sp
 
 
 

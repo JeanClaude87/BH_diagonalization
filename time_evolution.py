@@ -8,9 +8,7 @@ import hamiltonian_parity as ham_par
 import function           as ff
 
 
-np.set_printoptions(precision=3,suppress=True)
-
-
+#np.set_printoptions(precision=3,suppress=True)
 
 
 def time_evolution(psi_0, H_ev, **args):
@@ -24,12 +22,12 @@ def time_evolution(psi_0, H_ev, **args):
 
 
 	psi0 = psi_0[:,0]
+
+	
 	
 	if isinstance( H_ev, sp.sparse.csc.csc_matrix):	
 
-		
 		HT      = -1j*dt*H_ev
-
 		psit    = linalgS.expm_multiply(HT, psi0, start=0, stop=dt*step_num, num=step_num+1, endpoint=True)
 		
 	else:
