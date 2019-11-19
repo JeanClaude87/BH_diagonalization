@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [3]:
+for nn_inp in [3,4]:
 		
 	bar_inp = 0.0
 
