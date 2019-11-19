@@ -31,9 +31,8 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [2,3,4]:
+for nn_inp in [3]:
 		
-	U_inp   = -1.0
 	bar_inp = 0.0
 
 	
@@ -41,17 +40,14 @@ for nn_inp in [2,3,4]:
 	if nn_inp == 3: ll_inp = 28
 	if nn_inp == 4: ll_inp = 20
 	
+	if nn_inp == 2:	U_in = 0.58
+	if nn_inp == 3:	U_in = 0.51	
+	if nn_inp == 4:	U_in = 0.52	
+	
+	U_inp   = -1.0*U_in
+
+
 	'''
-		ciao=0
-
-		if nn_inp == 1:	U_in = 5.0
-		if nn_inp == 2:	U_in = 1.0
-		if nn_inp == 3:	U_in = 1.0	
-		if nn_inp == 4:	U_in = 2.0	
-		if nn_inp == 5:	U_in = 1.5	
-		if nn_inp == 6:	U_in = 1.0						
-
-
 		if nn_inp == 1:	bar_inp = 0.007
 		if nn_inp == 2:	bar_inp = 0.0085
 		if nn_inp == 3:	bar_inp = 0.003
@@ -155,13 +151,13 @@ for nn_inp in [2,3,4]:
 	################################################################################################
 	############ HAMILTONIAN CAT 0
 
-	Hint   		= ob.int_op     (**Global_dictionary)
-	Hkin_0 		= ob.kinetik_op (0,  **Global_dictionary)
-	#Hkin_1 		= ob.kinetik_op (1,  **Global_dictionary)
-	#Hkin_05 	= ob.kinetik_op (0.5,  **Global_dictionary)
-	#Hba_0   	= ob.bar_0		(0,**Global_dictionary)
+	Hint   		= ob.int_op     (		**Global_dictionary)
+	Hkin_0 		= ob.kinetik_op (0,  	**Global_dictionary)
+	Hkin_1 		= ob.kinetik_op (1,  	**Global_dictionary)
+	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
+	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
-
+	'''
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
@@ -199,187 +195,72 @@ for nn_inp in [2,3,4]:
 
 quit()
 
-'''
+	'''
 
-		for om in [0]:
-			for U_inp in np.arange(-6,0,0.5):
-				for bar_inp in np.arange(0,0.1,0.005):
+############ HAMILTONIAN CAT omega = 0 no barrier
 
-			############ HAMILTONIAN CAT omega = 0 no barrier
+	HH_1   = U_inp/2*Hint + Hkin_0
 
-					HH_1   = U_inp/2*Hint + Hkin_0
+	E1,V_cat_0  = ham.diagonalization(HH_1, **Global_dictionary)
 
-					E1,V_cat_0  = ham.diagonalization(HH_1, **Global_dictionary)
+############ HAMILTONIAN CAT omega = 1 no barrier
 
-			############ HAMILTONIAN CAT omega = 1 no barrier
+	HH_2   = U_inp/2*Hint + Hkin_1
 
-					HH_2   = U_inp/2*Hint + Hkin_1
+	E2,V_cat_1  = ham.diagonalization(HH_2, **Global_dictionary)
 
-					E2,V_cat_1  = ham.diagonalization(HH_2, **Global_dictionary)
 
+	for bar_inp in np.arange(0,0.1,0.005):
 
-			############ HAMILTONIAN t=0 omega = 0, YES barrier
+############ HAMILTONIAN t=0 omega = 0, YES barrier
 
-					HH_3   = U_inp/2*Hint + Hkin_0 + bar_inp*Hba_0
+		HH_3   = U_inp/2*Hint + Hkin_0 + bar_inp*Hba_0
+		E3,V3  = ham.diagonalization(HH_3, **Global_dictionary)
 
-					E3,V3  = ham.diagonalization(HH_3, **Global_dictionary)
+		n0 = "{:.0f}".format(nn_inp)
+		l0 = "{:.0f}".format(ll_inp)
+		u0 = "{:.2f}".format(U_inp)
+		b0 = "{:.5f}".format(bar_inp)
 
-					z1 = np.vdot(V3,V_cat_0)
-					z2 = np.vdot(V3,V_cat_1)
-					zz = 0.5*np.conj(z1+z2)*(z1+z2)					
+		directory = os.sep+'dati'+os.sep+'L_'+l0+os.sep+'N_'+n0+os.sep+'U_'+u0+os.sep+'bb_'+b0
 
-					xoxo.append([U_inp, bar_inp, om, np.real(zz)])
+############ HAMILTONIAN t evolution omega = 1/2, YES barrier
 
-					ob.Export_Observable(xoxo, directory, 'fid_0.dat', **Global_dictionary)
+		HH_ev = U_inp/2*Hint + Hkin_05 + bar_inp*Hba_0
+		HH_ev  = HH_ev.todense()
+        
+############ time_evolution
 
+		psi_0 = V3
+		psit = t_ev.time_evolution(psi_0, HH_ev, **Global_dictionary)
 
+####################	OBSERVABLES -->> 			
+		ll = ll_inp
 
+		cu_op 		= ob.corrente_op(0,    **Global_dictionary)
+		fl_op   	= ob.fluct_op   (cu_op,**Global_dictionary)
 
+		t_vec          = range(0,step_num,Dstep)
+		corrente_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t]))] for t in t_vec]))
+		fisherin_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t])), np.conjugate(psit[t]).dot(fl_op.dot(psit[t]))] for t in t_vec]))			
 
-					Kin	   = ob.kinetik_op (om,  **Global_dictionary)
-					cu_0   = ob.corrente_op(om,  **Global_dictionary)
-					fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
+		ob.Export_Observable(fisherin_array,   	directory, 'fish_t.dat',     **Global_dictionary)
+		ob.Export_Observable(corrente_array, 	directory, 'corrente.dat', **Global_dictionary)										
 
-					matrix_h = Kin + U_inp/2*Hint + bar_inp*Hba_0
+		ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
+		ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
+		ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
+		ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
+		ob.Export_Fidelity(psit, psi_0,     directory, 'fidelity_psi0.dat',**Global_dictionary)
 
-					E,V0  = ham.diagonalization( matrix_h, **Global_dictionary)
 
-					V   = V0.T[0]
-					V_c = np.conjugate(V)					
 
-					cu = np.real(V_c.dot(cu_0.dot(V)))
-					fl = np.real(V_c.dot(fl_0.dot(V)))
 
-					xuxu.append([U_inp, bar_inp, om, cu, fl])
 
 
-					ob.Export_Observable(xuxu, directory, 't_0.dat', **Global_dictionary)
 
 
-					#########
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			uuu = []
-
-			for U_inp in [-5]:#np.arange(-3,0.1,0.1):
-
-		############ HAMILTONIAN CAT omega = 0 no barrier
-
-				HH_1   = U_inp/2*Hint + Hkin_0
-
-				E1,V_cat_0  = ham.diagonalization(HH_1, **Global_dictionary)
-
-		############ HAMILTONIAN CAT omega = 1 no barrier
-
-				HH_2   = U_inp/2*Hint + Hkin_1
-
-				E2,V_cat_1  = ham.diagonalization(HH_2, **Global_dictionary)
-
-				for bar_inp in [0]:#, 0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]:
-					
-					directory = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)+os.sep+'U_'+str(U_inp)+os.sep+'bb_'+str(bar_inp)
-
-					
-					print(bar_inp, ll_inp)
-
-					xuxu = []
-
-					for om in np.arange(0,1.0,0.005): #np.arange(0,1,0.02):
-
-						Kin	   = ob.kinetik_op (om,  **Global_dictionary)
-						cu_0   = ob.corrente_op(om,  **Global_dictionary)
-						fl_0   = ob.fluct_op   (cu_0,**Global_dictionary)
-
-						matrix_h = Kin + U_inp/2*Hint + bar_inp*Hba_0
-
-						E,V0  = ham.diagonalization( matrix_h , **Global_dictionary)
-
-						V   = V0.T[0]
-						V_c = np.conjugate(V)					
-
-						cu = np.real(V_c.dot(cu_0.dot(V)))
-						fl = np.real(V_c.dot(fl_0.dot(V)))
-
-						xuxu.append([nn_inp, U_inp, bar_inp, om, cu, fl])
-
-						ob.Export_Observable(xuxu, directory, 't_0.dat', **Global_dictionary)
-
-
-			############ HAMILTONIAN t=0 omega = 0, YES barrier
-
-					HH_3   = U_inp/2*Hint + Hkin_0 + bar_inp*Hba_0
-
-					E3,V3  = ham.diagonalization(HH_3, **Global_dictionary)
-
-					z1 = np.vdot(V3,V_cat_0)
-					z2 = np.vdot(V3,V_cat_1)
-					zz = 0.5*np.conj(z1+z2)*(z1+z2)
-
-					print(U_inp, bar_inp, np.absolute(np.vdot(V_cat_0,V_cat_1))**2, np.absolute(np.vdot(V_cat_0,V_cat_0))**2)
-
-					uuu.append([U_inp, bar_inp, zz, np.conj(z1)*z1, np.conj(z2)*z2, np.conj(z1)*z2, np.conj(z2)*z1])
-			
-					directory_0 = os.sep+'dati'+os.sep+'L_'+str(ll_inp)+os.sep+'N_'+str(nn_inp)					
-					ob.Export_Observable(uuu, directory_0, 'fid.dat', **Global_dictionary)
-
-			############ HAMILTONIAN t evolution omega = 1/2, YES barrier
-
-
-					HH_ev  = U_inp/2*Hint + Hkin_05 + bar_inp*Hba_0
-					HH_ev  = HH_ev.todense()
-					#HH_ev  = csc_matrix(HH_ev, shape = (DIM_H,DIM_H))
-		            
-			############ time_evolution
-
-					psi_0 = V3
-					psit = t_ev.time_evolution(psi_0, HH_ev, **Global_dictionary)
-
-			####################	OBSERVABLES -->> 			
-					ll = ll_inp
-
-					cu_op 		= ob.corrente_op(0,    **Global_dictionary)
-					fl_op   	= ob.fluct_op   (cu_op,**Global_dictionary)
-
-					t_vec          = range(0,step_num,Dstep)
-					corrente_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t]))] for t in t_vec]))
-					fisherin_array = np.real(np.array([[t*dt+t_start, np.conjugate(psit[t]).dot(cu_op.dot(psit[t])), np.conjugate(psit[t]).dot(fl_op.dot(psit[t]))] for t in t_vec]))
-
-					#print('fish', fisherin_array)				
-
-					ob.Export_Observable(fisherin_array,   	directory, 'fish_t.dat',     **Global_dictionary)
-					ob.Export_Observable(corrente_array, 	directory, 'corrente.dat', **Global_dictionary)										
-
-					ob.Export_Fidelity_CAT_s(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_s.dat',**Global_dictionary)
-					ob.Export_Fidelity_CAT_a(psit, V_cat_0, V_cat_1, directory, 'fidelity_cat_a.dat',**Global_dictionary)			
-					ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
-					ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
-					ob.Export_Fidelity(psit, psi_0,   directory, 'fidelity_psi0.dat',**Global_dictionary)
-
-
-
-'''

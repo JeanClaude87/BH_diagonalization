@@ -121,18 +121,18 @@ plot 	'datafit_2.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
 	set mxtic			
 
 	set ylabel 'csi'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
-	set ytic		offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set ytic	0.01	offset 0.0,0.0	 mirror		font "SFRM1200,22"
 	set mytic	
 
 set key
-set yrange [0.10:0.15]
-set xrange [0.2:1]
+set yrange [0.098:0.102]
+set xrange [0.5:0.6]
 
 
-plot 	'datafit_2.dat' index 6  u 3:4 w lp ls 1 t 'L=36',\
+plot 	'datafit_2.dat' index 7  u 3:4 w lp ls 1 t 'L=36',\
 	 	'datafit_3.dat' index 5  u 3:4 w lp ls 2 t 'L=28',\
 	 	'datafit_4.dat' index 3  u 3:4 w lp ls 3 t 'L=20',\
-	 	0.12
+	 	0.10
 
 	!pstopdf fit_dat_tot.eps
 	!rm fit_dat_tot.eps
