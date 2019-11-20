@@ -37,7 +37,7 @@ for nn_inp in [3]:
 
 	
 	if nn_inp == 2: ll_inp = 28
-	if nn_inp == 3: ll_inp = 16
+	if nn_inp == 3: ll_inp = 32
 	if nn_inp == 4: ll_inp = 12
 	#if nn_inp == 5: ll_inp = 10
 	
