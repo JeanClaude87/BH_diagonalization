@@ -196,7 +196,7 @@ for nn_inp in [5]:
 
 quit()
 
-	'''
+'''
 
 ############ HAMILTONIAN CAT omega = 0 no barrier
 
@@ -264,5 +264,4 @@ quit()
 
 
 
-
-	'''
+'''
