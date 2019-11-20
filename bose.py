@@ -159,7 +159,7 @@ for nn_inp in [2,3,4,5]:
 	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
 	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
-
+	'''
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
@@ -257,7 +257,6 @@ for nn_inp in [2,3,4,5]:
 
 
 
-	'''
 
 
 
