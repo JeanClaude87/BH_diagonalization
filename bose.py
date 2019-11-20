@@ -31,7 +31,7 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [3,4]:
+for nn_inp in [5]:
 		
 	bar_inp = 0.0
 
@@ -39,6 +39,7 @@ for nn_inp in [3,4]:
 	if nn_inp == 2: ll_inp = 36
 	if nn_inp == 3: ll_inp = 28
 	if nn_inp == 4: ll_inp = 20
+	if nn_inp == 4: ll_inp = 14
 	
 	if nn_inp == 2:	U_in = 0.58
 	if nn_inp == 3:	U_in = 0.51	
@@ -157,12 +158,12 @@ for nn_inp in [3,4]:
 	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
 	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
-	'''
+
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
 
-	for U_inp in np.arange(-0.6,-0.45,0.01):
+	for U_inp in np.arange(-1,-0.2,0.05):
 
 		xoxo = []
 
@@ -264,3 +265,4 @@ quit()
 
 
 
+	'''
