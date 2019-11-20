@@ -44,6 +44,7 @@ for nn_inp in [5]:
 	if nn_inp == 2:	U_in = 0.58
 	if nn_inp == 3:	U_in = 0.51	
 	if nn_inp == 4:	U_in = 0.52	
+	if nn_inp == 5:	U_in = 0.5
 	
 	U_inp   = -1.0*U_in
 
