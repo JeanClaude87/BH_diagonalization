@@ -31,19 +31,19 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [2,3,4,5]:
+for nn_inp in [3]:
 		
 	bar_inp = 0.0
 
 	
-	if nn_inp == 2: ll_inp = 32
-	if nn_inp == 3: ll_inp = 24
-	if nn_inp == 4: ll_inp = 16
-	if nn_inp == 5: ll_inp = 10
+	if nn_inp == 2: ll_inp = 28
+	if nn_inp == 3: ll_inp = 16
+	if nn_inp == 4: ll_inp = 12
+	#if nn_inp == 5: ll_inp = 10
 	
-	if nn_inp == 2:	U_in = 0.65
-	if nn_inp == 3:	U_in = 0.59
-	if nn_inp == 4:	U_in = 0.63	
+	if nn_inp == 2:	U_in = 0.76
+	if nn_inp == 3:	U_in = 0.46
+	if nn_inp == 4:	U_in = 0.80	
 	if nn_inp == 5:	U_in = 0.72
 	
 	U_inp   = -1.0*U_in
@@ -159,12 +159,14 @@ for nn_inp in [2,3,4,5]:
 	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
 	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
+
+
 	'''
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
 
-	for U_inp in np.arange(-0.7,-0.5,0.02):
+	for U_inp in np.arange(-0.8,-0.2,0.05):
 
 		xoxo = []
 
@@ -212,7 +214,7 @@ for nn_inp in [2,3,4,5]:
 	E2,V_cat_1  = ham.diagonalization(HH_2, **Global_dictionary)
 
 
-	for bar_inp in np.arange(0,0.1,0.005):
+	for bar_inp in np.arange(0,0.06,0.001):
 
 ############ HAMILTONIAN t=0 omega = 0, YES barrier
 
@@ -254,7 +256,6 @@ for nn_inp in [2,3,4,5]:
 		ob.Export_Fidelity(psit, V_cat_0,   directory, 'fidelity_0.dat',**Global_dictionary)
 		ob.Export_Fidelity(psit, V_cat_1,   directory, 'fidelity_1.dat',**Global_dictionary)
 		ob.Export_Fidelity(psit, psi_0,     directory, 'fidelity_psi0.dat',**Global_dictionary)
-
 
 
 

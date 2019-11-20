@@ -92,57 +92,58 @@ plot 	'datafit_5.dat' index 0  u 3:4 w lp ls 2 t 'L=14'
 
 
 
-	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 8,3
+	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 10,5
 	set output	'fit_dat_tot.eps'		
-	set multiplot layout 1,2
+	set multiplot layout 2,2
 
 unset key
 
-plot 	'datafit_2.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
-		''				index 1  u 3:4 w lp ls 3 t 'L=12',\
-		''				index 2  u 3:4 w lp ls 4 t 'L=16',\
-		''				index 3  u 3:4 w lp ls 5 t 'L=20',\
-		''				index 4  u 3:4 w lp ls 6 t 'L=24',\
-		''				index 5  u 3:4 w lp ls 7 t 'L=28',\
-		''				index 6  u 3:4 w lp ls 8 t 'L=32',\
-		''				index 7  u 3:4 w lp ls 9 t 'L=36',\
-	 	'datafit_3.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
-		''				index 1  u 3:4 w lp ls 3 t 'L=12',\
-		''				index 2  u 3:4 w lp ls 4 t 'L=16',\
-		''				index 3  u 3:4 w lp ls 5 t 'L=20',\
-		''				index 4  u 3:4 w lp ls 6 t 'L=24',\
-		''				index 5  u 3:4 w lp ls 7 t 'L=28',\
-		''				index 6  u 3:4 w lp ls 8 t 'L=32',\
-		''				index 7  u 3:4 w lp ls 9 t 'L=36',\
-	 	'datafit_4.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
-		''				index 1  u 3:4 w lp ls 3 t 'L=12',\
-		''				index 2  u 3:4 w lp ls 4 t 'L=16',\
-		''				index 3  u 3:4 w lp ls 5 t 'L=20',\
-		''				index 4  u 3:4 w lp ls 6 t 'L=24' 
 
 	unset log 
 
 	set xlabel 'U'	offset 0.0,0.0	norotate 	font "SFTI1200,28" 
-	set xtic 		offset 0.0,0.0	 mirror		font "SFRM1200,22"
-	set mxtic			
+	set xtic 	0.2	offset 0.0,0.0	 mirror		font "SFRM1200,22"
+	set mxtic	5		
 
 	set ylabel 'csi'	offset 0.0,0.0 	rotate 		font "SFTI1200,28" 
 	set ytic	0.01	offset 0.0,0.0	 mirror		font "SFRM1200,22"
 	set mytic	
 
 set key
-set yrange [0.085:0.115]
-set xrange [0.45:0.75]
+set yrange [0.07:0.13]
+set xrange [0.3:2]
 
 
-plot 	'datafit_2.dat' index 7  u 3:4 w lp ls 1 t '2,L=36',\
-	 	'datafit_3.dat' index 5  u 3:4 w lp ls 2 t '3,L=28',\
-	 	'datafit_4.dat' index 3  u 3:4 w lp ls 3 t '4,L=20',\
-	 	'datafit_5.dat' index 1  u 3:4 w lp ls 4 t '5,L=14',\
-	 	'datafit_2.dat' index 6  u 3:4 w lp ls 5 t '2,L=32',\
-	 	'datafit_3.dat' index 4  u 3:4:5 w e ls 6 t '3,L=24',\
-	 	'datafit_4.dat' index 2  u 3:4:5 w e ls 7 t '4,L=16',\
-	 	'datafit_5.dat' index 0  u 3:4:5 w e ls 4 t '5,L=10',\
+plot 	'datafit_2.dat' index 10 u 3:4 w lp ls 1 t '2,L=48',\
+		'datafit_2.dat' index 9  u 3:4 w lp ls 1 t '2,L=44',\
+	 	'datafit_2.dat' index 8  u 3:4 w lp ls 2 t '2,L=40',\
+	 	'datafit_2.dat' index 7  u 3:4 w lp ls 3 t '2,L=36',\
+	 	'datafit_2.dat' index 6  u 3:4 w lp ls 4 t '2,L=32',\
+	 	'datafit_2.dat' index 5  u 3:4 w lp ls 5 t '2,L=28',\
+	 	'datafit_2.dat' index 4  u 3:4 w lp ls 6 t '2,L=24',\
+	 	'datafit_2.dat' index 3  u 3:4 w lp ls 7 t '2,L=20',\
+	 	'datafit_2.dat' index 2  u 3:4 w lp ls 8 t '2,L=16',\
+	 	'datafit_2.dat' index 1  u 3:4 w lp ls 9 t '2,L=12',\
+	 	0.10
+
+plot 	'datafit_3.dat' index 7  u 3:4 w lp ls 1 t '3,L=36',\
+	 	'datafit_3.dat' index 6  u 3:4 w lp ls 2 t '3,L=32',\
+	 	'datafit_3.dat' index 5  u 3:4 w lp ls 3 t '3,L=28',\
+	 	'datafit_3.dat' index 4  u 3:4 w lp ls 4 t '3,L=24',\
+	 	'datafit_3.dat' index 3  u 3:4 w lp ls 5 t '3,L=20',\
+	 	'datafit_3.dat' index 2  u 3:4 w lp ls 6 t '3,L=16',\
+	 	'datafit_3.dat' index 1  u 3:4 w lp ls 7 t '3,L=12',\
+	 	'datafit_3.dat' index 0  u 3:4 w lp ls 8 t '3,L=8',\
+	 	0.10
+
+plot 	'datafit_4.dat' index 3  u 3:4 w lp ls 1 t '4,L=20',\
+	 	'datafit_4.dat' index 2  u 3:4 w lp ls 2 t '4,L=16',\
+	 	'datafit_4.dat' index 1  u 3:4 w lp ls 3 t '4,L=12',\
+	 	'datafit_4.dat' index 0  u 3:4 w lp ls 4 t '4,L=8',\
+	 	0.10
+	 	
+plot 	'datafit_5.dat' index 1  u 3:4 w lp ls 4 t '5,L=14',\
+	 	'datafit_5.dat' index 0  u 3:4 w lp ls 4 t '5,L=10',\
 	 	0.10
 
 	!pstopdf fit_dat_tot.eps
