@@ -1,4 +1,4 @@
-import os
+ import os
 import profile
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -31,20 +31,20 @@ COMM = MPI.COMM_WORLD
 # 10.0 	0.32 0.08
 
 
-for nn_inp in [5]:
+for nn_inp in [2,3,4,5]:
 		
 	bar_inp = 0.0
 
 	
-	if nn_inp == 2: ll_inp = 36
-	if nn_inp == 3: ll_inp = 28
-	if nn_inp == 4: ll_inp = 20
-	if nn_inp == 5: ll_inp = 14
+	if nn_inp == 2: ll_inp = 32
+	if nn_inp == 3: ll_inp = 24
+	if nn_inp == 4: ll_inp = 16
+	if nn_inp == 5: ll_inp = 10
 	
-	if nn_inp == 2:	U_in = 0.58
-	if nn_inp == 3:	U_in = 0.51	
-	if nn_inp == 4:	U_in = 0.52	
-	if nn_inp == 5:	U_in = 0.55
+	if nn_inp == 2:	U_in = 0.65
+	if nn_inp == 3:	U_in = 0.59
+	if nn_inp == 4:	U_in = 0.63	
+	if nn_inp == 5:	U_in = 0.72
 	
 	U_inp   = -1.0*U_in
 
@@ -111,8 +111,8 @@ for nn_inp in [5]:
 	Global_dictionary["hilb_dim_tab"] = ff.hilb_dim_tab(**Global_dictionary)
 
 	#if COMM.rank == 0:
-	#print('Hilbert space Dimension:', Global_dictionary.get("DIM_H"))
-		#print('ll', ll_inp, 'nn', nn_inp)
+	print('Hilbert space Dimension:', Global_dictionary.get("DIM_H"))
+	print('ll', ll_inp, 'nn', nn_inp)
 
 	COMM.Barrier()
 
@@ -159,12 +159,12 @@ for nn_inp in [5]:
 	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
 	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
-	'''
+
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
 
-	for U_inp in np.arange(-1,-0.2,0.05):
+	for U_inp in np.arange(-0.7,-0.5,0.02):
 
 		xoxo = []
 
@@ -191,11 +191,11 @@ for nn_inp in [5]:
 		l0 = "{:.0f}".format(ll_inp)
 		u0 = "{:.2f}".format(U_inp)
 
-		print(u0)
+		print(l0,u0)
 
 		ob.Export_Observable(xoxo, directory, 'corr-L_'+l0+'-U_'+u0+'.dat', **Global_dictionary)
 
-	quit()
+	#quit()
 
 	'''
 
@@ -257,7 +257,7 @@ for nn_inp in [5]:
 
 
 
-
+	'''
 
 
 

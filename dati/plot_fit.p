@@ -19,6 +19,10 @@ set autoscale
 !mv data_fit4b.dat datafit_4.dat 
 !putblank datafit_4.dat 2 2
 
+!sort -n -k2  datafit_5.dat > data_fit5b.dat
+!mv data_fit5b.dat datafit_5.dat 
+!putblank datafit_5.dat 2 2
+
 							
 	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 10,5
 	set border lw 2 front
@@ -127,14 +131,18 @@ plot 	'datafit_2.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
 	set mytic	
 
 set key
-set yrange [0.098:0.102]
-set xrange [0.5:0.6]
+set yrange [0.085:0.115]
+set xrange [0.45:0.75]
 
 
-plot 	'datafit_2.dat' index 7  u 3:4 w lp ls 1 t 'L=36',\
-	 	'datafit_3.dat' index 5  u 3:4 w lp ls 2 t 'L=28',\
-	 	'datafit_4.dat' index 3  u 3:4 w lp ls 3 t 'L=20',\
-	 	'datafit_5.dat' index 0  u 3:4 w lp ls 2 t 'L=14',\
+plot 	'datafit_2.dat' index 7  u 3:4 w lp ls 1 t '2,L=36',\
+	 	'datafit_3.dat' index 5  u 3:4 w lp ls 2 t '3,L=28',\
+	 	'datafit_4.dat' index 3  u 3:4 w lp ls 3 t '4,L=20',\
+	 	'datafit_5.dat' index 1  u 3:4 w lp ls 4 t '5,L=14',\
+	 	'datafit_2.dat' index 6  u 3:4 w lp ls 5 t '2,L=32',\
+	 	'datafit_3.dat' index 4  u 3:4:5 w e ls 6 t '3,L=24',\
+	 	'datafit_4.dat' index 2  u 3:4:5 w e ls 7 t '4,L=16',\
+	 	'datafit_5.dat' index 0  u 3:4:5 w e ls 4 t '5,L=10',\
 	 	0.10
 
 	!pstopdf fit_dat_tot.eps
