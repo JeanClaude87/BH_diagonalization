@@ -44,7 +44,7 @@ for nn_inp in [5]:
 	if nn_inp == 2:	U_in = 0.58
 	if nn_inp == 3:	U_in = 0.51	
 	if nn_inp == 4:	U_in = 0.52	
-	if nn_inp == 5:	U_in = 0.5
+	if nn_inp == 5:	U_in = 0.55
 	
 	U_inp   = -1.0*U_in
 
@@ -159,7 +159,7 @@ for nn_inp in [5]:
 	Hkin_05 	= ob.kinetik_op (0.5, 	**Global_dictionary)
 	Hba_0   	= ob.bar_0		(0,		**Global_dictionary)
 
-
+	'''
 
 	directory = os.sep+'dati'+os.sep+'N_'+str(nn_inp)
 
@@ -195,9 +195,9 @@ for nn_inp in [5]:
 
 		ob.Export_Observable(xoxo, directory, 'corr-L_'+l0+'-U_'+u0+'.dat', **Global_dictionary)
 
-quit()
+	quit()
 
-'''
+	'''
 
 ############ HAMILTONIAN CAT omega = 0 no barrier
 
@@ -262,7 +262,3 @@ quit()
 
 
 
-
-
-
-'''

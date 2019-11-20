@@ -20,12 +20,12 @@ set autoscale
 !putblank datafit_4.dat 2 2
 
 							
-	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 10,3
+	set terminal postscript	eps color enhanced font "SFRM1200" 22	size 10,5
 	set border lw 2 front
 
 	set output	'fit_dat.eps'		
  	
-	set multiplot layout 1,3
+	set multiplot layout 2,2
 
 	set key font "SFRM1200,22" vertical samplen 1.6 spacing 1.2
 
@@ -78,6 +78,8 @@ plot 	'datafit_4.dat' index 0  u 3:4 w lp ls 2 t 'L=8',\
 		''				index 2  u 3:4 w lp ls 4 t 'L=16',\
 		''				index 3  u 3:4 w lp ls 5 t 'L=20',\
 		''				index 4  u 3:4 w lp ls 6 t 'L=24'
+
+plot 	'datafit_5.dat' index 0  u 3:4 w lp ls 2 t 'L=14'
 
 	unset multiplot
 
@@ -132,6 +134,7 @@ set xrange [0.5:0.6]
 plot 	'datafit_2.dat' index 7  u 3:4 w lp ls 1 t 'L=36',\
 	 	'datafit_3.dat' index 5  u 3:4 w lp ls 2 t 'L=28',\
 	 	'datafit_4.dat' index 3  u 3:4 w lp ls 3 t 'L=20',\
+	 	'datafit_5.dat' index 0  u 3:4 w lp ls 2 t 'L=14',\
 	 	0.10
 
 	!pstopdf fit_dat_tot.eps

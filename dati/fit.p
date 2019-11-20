@@ -6,10 +6,10 @@ set terminal postscript	eps color enhanced font "SFRM1200" 32	size 5,3
 
 first(x) = ($0 > 0 ? base : base = x)
 
-lista = system('ls N_4/corr*.dat')
+lista = system('ls N_5/corr*.dat')
 
 set fit errorvariables
-set print 'datafit_4.dat'
+set print 'datafit_5.dat'
 
 f(x) = a*( exp(-x/b) )
 
