@@ -39,7 +39,7 @@ for nn_inp in [5]:
 	if nn_inp == 2: ll_inp = 36
 	if nn_inp == 3: ll_inp = 28
 	if nn_inp == 4: ll_inp = 20
-	if nn_inp == 4: ll_inp = 14
+	if nn_inp == 5: ll_inp = 14
 	
 	if nn_inp == 2:	U_in = 0.58
 	if nn_inp == 3:	U_in = 0.51	
