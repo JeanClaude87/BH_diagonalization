@@ -40,7 +40,7 @@ if COMM.rank == 0:
 
 for nn_inp in [4]:
 
-	for ll_inp in [20,22]:
+	for ll_inp in [20,22 ]:
 	
 #		flux_inp = 0.6
 
@@ -125,8 +125,8 @@ for nn_inp in [4]:
 		HOP_list     = ff.Hop_prep(**Constants_dictionary)
 		Global_dictionary["HOP_list"]  = HOP_list
 
-		CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
-		Global_dictionary["CDC_matrix"]   = CDC
+		#CDC 		 = ob.CdiCj_creation(**Global_dictionary)		
+		#Global_dictionary["CDC_matrix"]   = CDC
 
 #################### PARAMETERS
 
