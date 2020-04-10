@@ -40,7 +40,7 @@ if COMM.rank == 0:
 
 for nn_inp in [4]:
 
-	for ll_inp in [20,22,24]:
+	for ll_inp in [4,6,8]:
 	
 #		flux_inp = 0.6
 
