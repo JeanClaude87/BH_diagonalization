@@ -40,7 +40,7 @@ if COMM.rank == 0:
 
 for nn_inp in [4]:
 
-	for ll_inp in [20,22,24]:
+	for ll_inp in [22,24]:
 	
 #		flux_inp = 0.6
 
@@ -148,7 +148,7 @@ for nn_inp in [4]:
 
 			Global_dictionary["U"]   = U_inp
 
-			for flux_inp in np.arange(0.4,2.6,0.02):		
+			for flux_inp in np.arange(0.4,1.3,0.02):		
 					
 				t_inp 	 = -1*np.exp(-2*np.pi*1j*flux_inp/ll_inp)
 				Global_dictionary["t"]      = t_inp
